@@ -17,7 +17,7 @@ export function attempt_insert( queue: fibonacci_heap*, node: fibonacci_node* ):
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): fibonacci_heap* {
+export function pq_create( map: mem_map ): fibonacci_heap* {
     let queue: fibonacci_heap* = new Array<fibonacci_heap>(1);
     queue.map = map;
 

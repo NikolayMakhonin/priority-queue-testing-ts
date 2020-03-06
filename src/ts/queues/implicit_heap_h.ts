@@ -62,7 +62,7 @@ export type pq_type = implicit_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map* ): implicit_heap;
+export function pq_create( map: mem_map ): implicit_heap;
 
 /**
  * Frees all the memory used by the queue.

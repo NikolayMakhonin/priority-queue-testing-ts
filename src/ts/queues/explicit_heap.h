@@ -48,7 +48,7 @@ export type pq_node_type = explicit_node;
  */
 export interface explicit_heap_t {
     //! Memory map to use for node allocation
-    let map: mem_map*;
+    let map: mem_map;
     //! The root of the d-ary tree representing the queue
     let root: explicit_node*;
     //! The number of items held in the queue
@@ -68,7 +68,7 @@ export type pq_type = explicit_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map* ): explicit_heap* ;
+export function pq_create( map: mem_map ): explicit_heap* ;
 
 /**
  * Frees all the memory used by the queue.

@@ -118,7 +118,7 @@ export type pq_node_type = strict_fibonacci_node;
  * an auxiliary queue and a fix list.  Entirely pointer-based.
  */
 export interface strict_fibonacci_heap_t {
-    let map: mem_map*;
+    let map: mem_map;
     let size: uint32;
 
     let root: strict_fibonacci_node*;
@@ -144,7 +144,7 @@ export type pq_type = strict_fibonacci_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map* ): strict_fibonacci_heap* ;
+export function pq_create( map: mem_map ): strict_fibonacci_heap* ;
 
 /**
  * Frees all the memory used by the queue.

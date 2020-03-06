@@ -810,7 +810,7 @@ export function merge4(KNElement<Key, Value> **f0,
   *f3   = from3;
 }
 
-export function pq_create( map: mem_map* ): pq_type* {
+export function pq_create( map: mem_map ): pq_type* {
   return new pq_type(PQ_KEY_SUP, PQ_KEY_INF);
 }
 

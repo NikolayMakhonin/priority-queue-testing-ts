@@ -26,7 +26,7 @@ export function sever_spine( queue: rank_pairing_heap*,
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): rank_pairing_heap* {
+export function pq_create( map: mem_map ): rank_pairing_heap* {
     let queue: rank_pairing_heap* = new Array(1);
     queue.map = map;
 

@@ -23,7 +23,7 @@ export function is_root( queue: violation_heap*, node: violation_node* ): int16 
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): violation_heap* {
+export function pq_create( map: mem_map ): violation_heap* {
     let queue: violation_heap* = new Array(1);
     queue.map = map;
 

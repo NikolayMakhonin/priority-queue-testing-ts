@@ -23,7 +23,7 @@ export function is_leaf( queue: explicit_heap*, node: explicit_node* ): boolean 
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): explicit_heap* {
+export function pq_create( map: mem_map ): explicit_heap* {
     let queue: explicit_heap* = new Array<explicit_heap>(1);
     queue.map = map;
 

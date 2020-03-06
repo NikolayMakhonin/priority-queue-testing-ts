@@ -5,15 +5,15 @@ import {} from 'memory_management_eager.h'
 // PUBLIC METHODS
 //==============================================================================
 
-export function mm_create( types: uint32, sizes: uint32[], capacities: uint32[] ): mem_map* {
+export function mm_create( types: uint32, sizes: uint32[], capacities: uint32[] ): mem_map {
     let i: int16;
 
-    let map: mem_map* = malloc( sizeof( mem_map ) );
+    let map: mem_map = malloc( sizeof( mem_map ) );
     map.types = types;
-    map.sizes = malloc( types * sizeof( uint32 ) );
-    map.capacities = malloc( types * sizeof( uint32 ) );
-    map.data = malloc( types * sizeof( uint8[] ) );
-    map.free = malloc( types * sizeof( uint8[][] ) );
+    map.sizes = new Array<uint32>(types);
+    map.capacities = new Array<uint32>(types);
+    map.data = new Array<uint8[]>(types);
+    map.free = new Array<uint8[][]>(types);
     map.index_data = new Array(types);
     map.index_free = new Array(types);
 
@@ -33,7 +33,7 @@ export function mm_create( types: uint32, sizes: uint32[], capacities: uint32[] 
     return map;
 }
 
-export function mm_destroy( map: mem_map* ): void {
+export function mm_destroy( map: mem_map ): void {
     let i: int16;
     for( i = 0; i < map.types; i++ )
     {
@@ -49,7 +49,7 @@ export function mm_destroy( map: mem_map* ): void {
     free( map );
 }
 
-export function mm_clear( map: mem_map* ): void {
+export function mm_clear( map: mem_map ): void {
     let i: int16;
     for( i = 0; i < map.types; i++ )
     {
@@ -58,7 +58,7 @@ export function mm_clear( map: mem_map* ): void {
     }
 }
 
-export function pq_alloc_node( map: mem_map*, type: uint32 ): void* {
+export function pq_alloc_node( map: mem_map, type: uint32 ): void* {
     let node: void*;
     if ( map.index_free[type] === 0 )
         node = ( map.data[type] + ( map.sizes[type] *
@@ -71,6 +71,6 @@ export function pq_alloc_node( map: mem_map*, type: uint32 ): void* {
     return node;
 }
 
-export function pq_free_node( map: mem_map*, type: uint32, node: void* ): void {
+export function pq_free_node( map: mem_map, type: uint32, node: void* ): void {
     map.free[type][(map.index_free[type])++] = node;
 }

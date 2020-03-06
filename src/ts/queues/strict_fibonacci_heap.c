@@ -102,7 +102,7 @@ export function garbage_collection( queue: strict_fibonacci_heap* ): void ;
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): strict_fibonacci_heap* {
+export function pq_create( map: mem_map ): strict_fibonacci_heap* {
     let queue: strict_fibonacci_heap* = new Array<strict_fibonacci_heap>(1);
     queue.map = map;
 

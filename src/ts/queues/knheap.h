@@ -341,7 +341,7 @@ let PQ_KEY_INF: key_type = 0;
 typedef KNHeap<key_type, item_type> pq_type;
 typedef KNElement<key_type, item_type> pq_node_type;
 
-export function pq_create( map: mem_map* ): pq_type* ;
+export function pq_create( map: mem_map ): pq_type* ;
 export function pq_destroy( queue: pq_type* ): void ;
 export function pq_clear( queue: pq_type* ): void ;
 export function pq_get_key( queue: pq_type*, node: pq_node_type* ): key_type ;

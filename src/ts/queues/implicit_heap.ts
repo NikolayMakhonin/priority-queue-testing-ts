@@ -14,7 +14,7 @@ import {} from 'implicit_heap.h'
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): implicit_heap {
+export function pq_create( map: mem_map ): implicit_heap {
     let queue: implicit_heap = new Array(1);
 #ifndef USE_EAGER
     queue.capacity = 1;

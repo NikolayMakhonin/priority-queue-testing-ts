@@ -18,7 +18,7 @@ export function swap_with_parent( queue: binomial_queue*, node: binomial_node*,
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): binomial_queue* {
+export function pq_create( map: mem_map ): binomial_queue* {
     let queue: binomial_queue* = new Array(1);
     queue.map = map;
 

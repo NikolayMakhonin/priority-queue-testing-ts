@@ -41,7 +41,7 @@ export type pq_node_type = pairing_node;
  */
 export interface pairing_heap_t {
     //! Memory map to use for node allocation
-    let map: mem_map*;
+    let map: mem_map;
     //! The number of items held in the queue
     let size: uint32;
     //! Pointer to the minimum node in the queue
@@ -61,7 +61,7 @@ export type pq_type = pairing_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map* ): pairing_heap* ;
+export function pq_create( map: mem_map ): pairing_heap* ;
 
 /**
  * Frees all the memory used by the queue.

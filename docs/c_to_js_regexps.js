@@ -34,6 +34,18 @@ addRule(
 	`new Array($1);`,
 )
 
+// malloc -> new Array<>
+addRule(
+	`\\bmalloc\\s*\\(\\s*([^;\\*]+?)\\s* +\\* +sizeof\\s*\\(\\s*([^\\);]+?)\\s*\\)\\s*\\)\\s*;`,
+	`new Array<$2>($1);`,
+)
+
+// malloc -> new Array
+// addRule(
+// 	`\\bmalloc\\s*\\(\\s*([^;\\*]+?)\\s* +\\* +[^;,]+;`,
+// 	`new Array($1);`,
+// )
+
 // null
 addRule(
 	`\\bNULL\\b`,
@@ -179,7 +191,7 @@ addRule(
 
 // struct as object
 addRule(
-	`(implicit_heap|implicit_node)\\*`,
+	`\b(implicit_heap|implicit_node|mem_map)\\*`,
 	`$1`,
 )
 

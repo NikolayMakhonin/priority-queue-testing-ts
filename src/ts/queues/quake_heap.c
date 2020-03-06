@@ -22,7 +22,7 @@ export function is_root( queue: quake_heap*, node: quake_node* ): boolean ;
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): quake_heap* {
+export function pq_create( map: mem_map ): quake_heap* {
     let queue: quake_heap* = new Array(1);
     queue.map = map;
     

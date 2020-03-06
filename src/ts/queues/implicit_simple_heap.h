@@ -37,7 +37,7 @@ export type pq_node_type = implicit_simple_node;
  */
 export interface implicit_simple_heap_t {
     //! Memory map to use for node allocation
-    let map: mem_map*;
+    let map: mem_map;
     //! The array of node pointers encoding the tree structure
     let nodes: implicit_simple_node*;
     //! The number of items held in the queue
@@ -59,7 +59,7 @@ export type pq_type = implicit_simple_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map* ): implicit_simple_heap* ;
+export function pq_create( map: mem_map ): implicit_simple_heap* ;
 
 /**
  * Frees all the memory used by the queue.

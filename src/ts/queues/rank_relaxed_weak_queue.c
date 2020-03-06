@@ -51,7 +51,7 @@ export function transformation_zigzag(
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map* ): rank_relaxed_weak_queue* {
+export function pq_create( map: mem_map ): rank_relaxed_weak_queue* {
     let queue: rank_relaxed_weak_queue* = new Array(1);
     queue.map = map;
 

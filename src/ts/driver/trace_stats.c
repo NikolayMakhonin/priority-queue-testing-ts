@@ -151,9 +151,9 @@ export function main( argc: int16, argv: string* ): int16 {
     mem_capacities[0] = header.node_ids;
 #endif
 #ifdef USE_EAGER
-    let map: mem_map* = mm_create( mem_types, mem_sizes, mem_capacities );
+    let map: mem_map = mm_create( mem_types, mem_sizes, mem_capacities );
 #else
-    let map: mem_map* = mm_create( mem_types, mem_sizes );
+    let map: mem_map = mm_create( mem_types, mem_sizes );
 #endif
 
     let op_remaining: uint64 = header.op_count;
