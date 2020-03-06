@@ -38,7 +38,7 @@ export function pq_clear( queue: quake_heap* ): void {
     mm_clear( queue.map );
     queue.minimum = null;
     memset( queue.roots, 0, MAXRANK * sizeof( quake_node* ) );
-    memset( queue.nodes, 0, MAXRANK * sizeof( uint32_t ) );
+    memset( queue.nodes, 0, MAXRANK * sizeof( uint32 ) );
     queue.highest_node = 0;
     queue.violation = 0;
     queue.size = 0;
@@ -52,7 +52,7 @@ export function pq_get_item( queue: quake_heap*, node: quake_node* ): item_type*
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: quake_heap* ): uint32_t {
+export function pq_get_size( queue: quake_heap* ): uint32 {
     return queue.size;
 }
 
@@ -130,7 +130,7 @@ export function pq_meld( a: quake_heap*, b: quake_heap* ): quake_heap* {
     result.minimum.parent = trash.minimum.parent;
     trash.minimum.parent = temp;
     
-    let k: int;
+    let k: int16;
     for( k = 0; k < result.highest_node; k++ )
         result.nodes[k] += trash.nodes[k];
 
@@ -269,7 +269,7 @@ export function join( queue: quake_heap*, a: quake_node*, b: quake_node* ): quak
  */
 export function fix_roots( queue: quake_heap* ): void {
     let current: quake_node*, next, tail, head, joined;
-    let i: uint32_t, height;
+    let i: uint32, height;
 
     if ( queue.minimum == null )
         return;
@@ -339,7 +339,7 @@ export function fix_roots( queue: quake_heap* ): void {
  * @return      True if inserted, false if not
  */
 export function attempt_insert( queue: quake_heap*, node: quake_node* ): boolean {
-    let height: uint32_t = node.height;
+    let height: uint32 = node.height;
     if ( ( queue.roots[height] != null ) && ( queue.roots[height] !== node ) )
         return FALSE;
 
@@ -375,7 +375,7 @@ export function fix_min( queue: quake_heap* ): void {
  * @param queue Queue to fix
  */
 export function fix_decay( queue: quake_heap* ): void {
-    let i: uint32_t;
+    let i: uint32;
     check_decay( queue );
     if ( violation_exists( queue ) )
     {
@@ -393,7 +393,7 @@ export function fix_decay( queue: quake_heap* ): void {
  * @param queue Queue to check
  */
 export function check_decay( queue: quake_heap* ): void {
-    let i: uint32_t;
+    let i: uint32;
     for ( i = 1; i <= queue.highest_node; i++ )
     {
         if ( ( (float) queue.nodes[i] ) > ( (float) ( ALPHA *

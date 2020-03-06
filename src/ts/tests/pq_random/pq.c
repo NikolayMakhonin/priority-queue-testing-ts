@@ -21,15 +21,15 @@ export function HeapConstruct(H: heap_type*): void {
   H.data[0].prio=0;
   H.data[0].name=0xFFFFFFFF;
 }
-export function HeapNodeExchange(A: heap_type*,x: int,y: int): void {
+export function HeapNodeExchange(A: heap_type*,x: int16,y: int16): void {
   cell dummy;
   dummy=A.data[x];
   A.data[x]=A.data[y];
   A.data[y]=dummy;
 }
 
-export function Heapify(A: heap_type*,i: int): void {
- let l: int,r,smallest;
+export function Heapify(A: heap_type*,i: int16): void {
+ let l: int16,r,smallest;
 
  l=left(i);
  r=right(i);
@@ -47,9 +47,9 @@ export function Heapify(A: heap_type*,i: int): void {
 }
 
 export function printheap(A: heap_type*): void {
-  let i: int;
+  let i: int16;
   for (i=1;i<=A.size;++i)
-    printf ("%d:%lu %llu\n",i,(long unsigned int)A.data[i].name,(long long unsigned int)A.data[i].prio);
+    printf ("%d:%lu %llu\n",i,(uint32)A.data[i].name,(uint64)A.data[i].prio);
 }
 
 export function prioval(H: heap_type*,x: it_type): pr_type {
@@ -88,7 +88,7 @@ export function HeapInsert(A: heap_type*,name: in_type,key: pr_type): it_type {
   return i;
 }
 export function HeapDecreaseKey(A: heap_type*, node: it_type, key: pr_type): void {
-  let x: int;
+  let x: int16;
 
   if (A.data[node].prio<key)
     return;

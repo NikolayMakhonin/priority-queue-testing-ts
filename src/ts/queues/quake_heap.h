@@ -22,7 +22,7 @@ export interface quake_node_t {
     struct right: quake_node_t*;
 
     //! The height of this node
-    let height: uint8_t;
+    let height: uint8;
 
     //! Pointer to a piece of client data
     let item: item_type;
@@ -42,18 +42,18 @@ export interface quake_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: quake_node*;
     //! An array of roots of the queue, indexed by height
     let roots: quake_node*[MAXRANK];
     //! An array of counters corresponding to the number of nodes at height
     //! equal to the index
-    let nodes: uint32_t[MAXRANK];
+    let nodes: uint32[MAXRANK];
     //! Current height of highest node in queue
-    let highest_node: uint32_t;
+    let highest_node: uint32;
     //! Index at which first decay violation occurs, MAXRANK if none
-    let violation: uint32_t;
+    let violation: uint32;
 };
 
 export type quake_heap = quake_heap_t;
@@ -109,7 +109,7 @@ export function pq_get_item( queue: quake_heap*, node: quake_node* ): item_type*
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: quake_heap* ): uint32_t ;
+export function pq_get_size( queue: quake_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

@@ -4,10 +4,10 @@ import {} from 'implicit_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-// export function push( queue: implicit_heap, src: uint32_t, dst: uint32_t ): void ;
-// export function dump( queue: implicit_heap, node: implicit_node, dst: uint32_t ): void ;
-// export function heapify_down( queue: implicit_heap, node: implicit_node ): uint32_t ;
-// export function heapify_up( queue: implicit_heap, node: implicit_node ): uint32_t ;
+// export function push( queue: implicit_heap, src: uint32, dst: uint32 ): void ;
+// export function dump( queue: implicit_heap, node: implicit_node, dst: uint32 ): void ;
+// export function heapify_down( queue: implicit_heap, node: implicit_node ): uint32 ;
+// export function heapify_up( queue: implicit_heap, node: implicit_node ): uint32 ;
 // export function grow_heap( queue: implicit_heap ): void ;
 
 //==============================================================================
@@ -47,7 +47,7 @@ export function pq_get_item( queue: implicit_heap, node: implicit_node ): item_t
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: implicit_heap ): uint32_t {
+export function pq_get_size( queue: implicit_heap ): uint32 {
     return queue.size;
 }
 
@@ -116,7 +116,7 @@ export function pq_empty( queue: implicit_heap ): boolean {
  * @param src   Index of data to be duplicated
  * @param dst   Index of data to overwrite
  */
-export function push( queue: implicit_heap, src: uint32_t, dst: uint32_t ): void {
+export function push( queue: implicit_heap, src: uint32, dst: uint32 ): void {
     if ( ( src >= queue.size ) || ( dst >= queue.size ) || ( src === dst ) )
         return;
 
@@ -132,7 +132,7 @@ export function push( queue: implicit_heap, src: uint32_t, dst: uint32_t ): void
  * @param node  Pointer to node to be dumped
  * @param dst   Index of location to dump node
  */
-export function dump( queue: implicit_heap, node: implicit_node, dst: uint32_t ): void {
+export function dump( queue: implicit_heap, node: implicit_node, dst: uint32 ): void {
     queue.nodes[dst] = node;
     node.index = dst;
 }
@@ -144,12 +144,12 @@ export function dump( queue: implicit_heap, node: implicit_node, dst: uint32_t )
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-export function heapify_down( queue: implicit_heap, node: implicit_node ): uint32_t {
+export function heapify_down( queue: implicit_heap, node: implicit_node ): uint32 {
     if ( node == null )
         return -1;
 
-    let sentinel: uint32_t, i, min;
-    let base: uint32_t = node.index;
+    let sentinel: uint32, i, min;
+    let base: uint32 = node.index;
     while( base * BRANCHING_FACTOR + 1 < queue.size )
     {
         i = base * BRANCHING_FACTOR + 1;
@@ -184,11 +184,11 @@ export function heapify_down( queue: implicit_heap, node: implicit_node ): uint3
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-export function heapify_up( queue: implicit_heap, node: implicit_node ): uint32_t {
+export function heapify_up( queue: implicit_heap, node: implicit_node ): uint32 {
     if ( node == null )
         return -1;
 
-    let i: uint32_t;
+    let i: uint32;
     for( i = node.index; i > 0; i = (i-1)/BRANCHING_FACTOR|0 )
     {
         if ( node.key < queue.nodes[(i-1)/BRANCHING_FACTOR|0].key )
@@ -202,7 +202,7 @@ export function heapify_up( queue: implicit_heap, node: implicit_node ): uint32_
 }
 
 export function grow_heap( queue: implicit_heap ): void {
-    let new_capacity: uint32_t = queue.capacity * 2;
+    let new_capacity: uint32 = queue.capacity * 2;
     let new_array: implicit_node[] = realloc( queue.nodes, new_capacity *
         sizeof( implicit_node ) );
 

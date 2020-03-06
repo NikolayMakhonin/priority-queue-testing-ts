@@ -2,6 +2,8 @@ function addRule(search, replace) {
 	new RegExp(search, 'sgm')
 }
 
+const primitives = `(?:\\b(?:u?int(?:_least|_fast)?(?:8|16|32|64)_t|size_t|(?:(?:un)?signed +)?(?:char|double|float|bool|(?:long|short)(?: +int)?))\\b)`
+
 // import
 addRule(
 	`#include\\s+["']([^'"]+)['"];?`,
@@ -58,8 +60,8 @@ addRule(
 
 // variables or arguments declarations
 addRule(
-	`\\b(([\\w+]+)((\\*+) +| +(\\*+))|([\\w+]+_[\\w+]+|\\b((un)?signed +)?(char|double|float|bool|long +int|short +int|long|short|int)\\b) +)(\\w+)((\\[\\w*\\])+)?(\\s*)([;,\\)]|=[^=;]+;)`,
-	`$10: $2$4$5$6$11$13$14`,
+	`\\b(?:([\\w+]+)(?:(\\*+) +| +(\\*+))|([\\w+]+_[\\w+]+|${primitives}) +)(\\w+)((?:\\[\\w*\\])+)?(\\s*)([;,\\)]|=[^=;]+;)`,
+	`$5: $1$2$3$4$6$7$8`,
 )
 
 // add let to variables declarations
@@ -117,8 +119,9 @@ addRule(
 )
 
 // primitive* to array
+// ((?:\b(?:u?int(?:_least|_fast)?(?:8|16|32|64)_t|size_t|(?:(?:un)?signed +)?(?:char|double|float|bool|(?:long|short)(?: +int)?))\b))\*
 addRule(
-	`\\b((un)?signed +)?(char|double|float|bool|long +int|short +int|long|short|int)\\b\\*`,
+	`(${primitives})\\*`,
 	`$1\\[\\]`,
 )
 
@@ -145,6 +148,26 @@ addRule(
 	`\\bbool\\b`,
 	`boolean`,
 )
+
+// int
+addRule(
+	`\\b(u?int)(?:_least|_fast)?(8|16|32|64)_t\\b`,
+	`$1$2`,
+)
+
+// int
+addRule(`\\b(long +long +unsigned +int|unsigned +long +long( +int)?)\\b`, `uint64`)
+addRule(`\\b(long +long +signed +int|(signed +)?long +long( +int)?)\\b`, `int64`)
+addRule(`\\b(long +unsigned +int|unsigned +long( +int)?)\\b`, `uint32`)
+addRule(`\\b(long +signed +int|(signed +)?long( +int)?)\\b`, `int32`)
+addRule(`\\b(short +unsigned +int|unsigned +(short( +int)?|int))\\b`, `uint16`)
+addRule(`\\b(short +signed +int|(signed +)?(short( +int)?|int))\\b`, `int16`)
+addRule(`\\b(unsigned +char)\\b`, `uint8`)
+addRule(`\\b(signed +char)\\b`, `int8`)
+
+// size
+addRule(`\\bsize_t\\b`, `uint32`)
+addRule(`\\bssize_t\\b`, `int32`)
 
 // region specific
 

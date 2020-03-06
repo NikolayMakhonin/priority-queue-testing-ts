@@ -23,7 +23,7 @@ import {} from './queue_common_h'
  */
 export interface implicit_node_t {
     //! Index for the item in the "tree" array
-    index: uint32_t;
+    index: uint32;
 
     //! Pointer to a piece of client data
     item: item_type;
@@ -44,9 +44,9 @@ export interface implicit_heap_t {
     //! The array of node pointers encoding the tree structure
     nodes: implicit_node[];
     //! The number of items held in the queue
-    size: uint32_t;
+    size: uint32;
     //! Current capacity of the heap
-    capacity: uint32_t;
+    capacity: uint32;
 }
 
 export type implicit_heap = implicit_heap_t;
@@ -102,7 +102,7 @@ export function pq_get_item( queue: implicit_heap, node: implicit_node ): item_t
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: implicit_heap ): uint32_t ;
+export function pq_get_size( queue: implicit_heap ): uint32 ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new

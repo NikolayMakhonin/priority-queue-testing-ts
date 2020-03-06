@@ -10,11 +10,11 @@
   {
     let currentPos: Entry*;
     Key currentKey;
-    let currentIndex: int; // leaf pointed to by current entry
+    let currentIndex: int16; // leaf pointed to by current entry
     let done: Element* = to + l;
     let regEntry: Entry*   = entry;
     let regCurrent: Element*[] = current;
-    let winnerIndex: int = regEntry[0].index;
+    let winnerIndex: int16 = regEntry[0].index;
     Key      winnerKey   = regEntry[0].key;
     let winnerPos: Element*;
     Key sup = dummy.key; // supremum
@@ -44,7 +44,7 @@
         Entry *pos##L = regEntry+((winnerIndex+(1<<LogK)) >> ((LogK-L)+1));\
         Key    key##L = pos##L.key;\
         if (key##L < winnerKey) {\
-          int index##L  = pos##L.index;\
+          int16 index##L  = pos##L.index;\
           pos##L.key   = winnerKey;\
           pos##L.index = winnerIndex;\
           winnerKey     = key##L;\

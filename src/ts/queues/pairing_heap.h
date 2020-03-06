@@ -43,7 +43,7 @@ export interface pairing_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let root: pairing_node*;
 };
@@ -101,7 +101,7 @@ export function pq_get_item( queue: pairing_heap*, node: pairing_node* ): item_t
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: pairing_heap* ): uint32_t ;
+export function pq_get_size( queue: pairing_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

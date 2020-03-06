@@ -15,18 +15,18 @@ export const MULTIPLIER = 16807;
 export const MODULUS = 2147483647;
 
 #ifdef NDEBUG
-static saved_seed: long = 123456; /*default seed*/
-static no_seed: int=0;
+static saved_seed: int32 = 123456; /*default seed*/
+static no_seed: int16=0;
 #else
-static saved_seed: long;
-static no_seed: int=1;
+static saved_seed: int32;
+static no_seed: int16=1;
 #endif
 
 
 /*** set_random - initialize constants and seed */
 
 void SetRandom(seed)
-let seed: long;
+let seed: int32;
 {
   saved_seed = seed;
   no_seed=0;
@@ -35,10 +35,10 @@ let seed: long;
 
 /*** random - generate a random integer in the interval [a,b] (b >= a >= 0) */
 
-long Random(a, b)
-let a: long, b;
+int32 Random(a, b)
+let a: int32, b;
 {
-  register hi: long, lo;
+  register hi: int32, lo;
 
 #ifndef NDEBUG
   if (no_seed)
@@ -65,18 +65,18 @@ let a: long, b;
 
 double DblUnitRandom()
 {
-  return Random((long) 0,(long)MODULUS-1)/((double)MODULUS-1);
+  return Random((int32) 0,(int32)MODULUS-1)/((double)MODULUS-1);
 }
 
 void RandomPermute(rgi,iMac)
-     let iMac: int;
-     int rgi[/*iMac*/];
+     let iMac: int16;
+     int16 rgi[/*iMac*/];
 {
-  let j: int,t;
+  let j: int16,t;
   
   while(--iMac)
     {
-      j = Random((long)0,(long)iMac);
+      j = Random((int32)0,(int32)iMac);
       t = rgi[j];
       rgi[j] = rgi[iMac];
       rgi[iMac] = t;

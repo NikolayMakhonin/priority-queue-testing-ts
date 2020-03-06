@@ -3,9 +3,9 @@ export const MAXNAMES = 160000000;
 
 #include <stdint.h>
 
-export type it_type = uint32_t;
-export type pr_type = uint64_t;
-export type in_type = uint32_t;
+export type it_type = uint32;
+export type pr_type = uint64;
+export type in_type = uint32;
 
 typedef struct {
   let name: in_type;
@@ -13,7 +13,7 @@ typedef struct {
 } cell;
 
 typedef struct {
-  let size: long;
+  let size: int32;
   let data: cell*;
 } heap_type;
 
@@ -24,8 +24,8 @@ export function HeapExtractMin(heap_type *): pr_type ;
 export function prioval(heap_type *,it_type): pr_type ;
 export function infoval(heap_type *,it_type): in_type ;
 export function HeapConstruct(H: heap_type*): void ;
-export function HeapNodeExchange(A: heap_type*,x: int,y: int): void ;
-export function Heapify(A: heap_type*,i: int): void ;
+export function HeapNodeExchange(A: heap_type*,x: int16,y: int16): void ;
+export function Heapify(A: heap_type*,i: int16): void ;
 export function printheap(A: heap_type*): void ;
 export function HeapInsert(A: heap_type*,name: in_type,key: pr_type): it_type ;
 export function HeapDecreaseKey(A: heap_type*, node: it_type, key: pr_type): void ;

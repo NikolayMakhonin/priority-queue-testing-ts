@@ -17,7 +17,7 @@ export function propagate_ranks( queue: violation_heap*, node: violation_node* )
 export function strip_list( queue: violation_heap*, node: violation_node* ): void ;
 export function is_active( queue: violation_heap*, node: violation_node* ): boolean ;
 export function get_parent( queue: violation_heap*, node: violation_node* ): violation_node* ;
-export function is_root( queue: violation_heap*, node: violation_node* ): int ;
+export function is_root( queue: violation_heap*, node: violation_node* ): int16 ;
 
 //==============================================================================
 // PUBLIC METHODS
@@ -51,7 +51,7 @@ export function pq_get_item( queue: violation_heap*, node: violation_node* ): it
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: violation_heap* ): uint32_t {
+export function pq_get_size( queue: violation_heap* ): uint32 {
     return queue.size;
 }
 
@@ -293,7 +293,7 @@ export function triple_join( queue: violation_heap*, a: violation_node*,
 export function join( queue: violation_heap*, parent: violation_node*,
     child1: violation_node*, child2: violation_node* ): violation_node* {
     let active1: violation_node*, active2;
-    let rank1: uint32_t, rank2;
+    let rank1: uint32, rank2;
 
     if ( parent.child != null )
     {
@@ -338,8 +338,8 @@ export function join( queue: violation_heap*, parent: violation_node*,
  */
 export function fix_roots( queue: violation_heap* ): void {
     let current: violation_node*, next, head, tail;
-    let i: int;
-    let rank: int32_t;
+    let i: int16;
+    let rank: int32;
 
     for ( i = 0; i <= queue.largest_rank; i++ )
     {
@@ -408,7 +408,7 @@ export function fix_roots( queue: violation_heap* ): void {
  * @return      True if inserted, false if not
  */
 export function attempt_insert( queue: violation_heap*, node: violation_node* ): boolean {
-    let rank: int32_t = node.rank;
+    let rank: int32 = node.rank;
     if ( ( queue.roots[rank][0] != null ) && ( queue.roots[rank][0] !== node ) )
     {
         if ( ( queue.roots[rank][1] != null ) && ( queue.roots[rank][1] !==
@@ -433,7 +433,7 @@ export function attempt_insert( queue: violation_heap*, node: violation_node* ):
  * @param queue Queue to fix
  */
 export function set_min( queue: violation_heap* ): void {
-    let i: int;
+    let i: int16;
     queue.minimum = null;
     for ( i = 0; i <= queue.largest_rank; i++ )
     {
@@ -478,9 +478,9 @@ export function find_prev_root( queue: violation_heap*,
  * @param node  Initial node to begin updating from.
  */
 export function propagate_ranks( queue: violation_heap*, node: violation_node* ): void {
-    let rank1: int32_t = -1;
-    let rank2: int32_t = -1;
-    let new_rank: int32_t, total;
+    let rank1: int32 = -1;
+    let rank2: int32 = -1;
+    let new_rank: int32, total;
     let updated: boolean;
     let parent: violation_node*;
 
@@ -575,7 +575,7 @@ export function get_parent( queue: violation_heap*, node: violation_node* ): vio
  * @param node  Node to query
  * @return      TRUE if a root, FALSE otherwise
  */
-export function is_root( queue: violation_heap*, node: violation_node* ): int {
+export function is_root( queue: violation_heap*, node: violation_node* ): int16 {
     return ( ( node.prev == null ) && ( node.next.prev == null ) &&
         ( node.next.child !== node ) );
 }

@@ -8,7 +8,7 @@ import {} from 'strict_fibonacci_heap.h'
 // BASIC NODE FUNCTIONS
 //--------------------------------------
 
-static inline int is_active( queue: strict_fibonacci_heap*,
+static inline int16 is_active( queue: strict_fibonacci_heap*,
     let node: strict_fibonacci_node* );
 static inline void choose_order_pair( a: strict_fibonacci_node*,
     b: strict_fibonacci_node*, parent: strict_fibonacci_node*[],
@@ -48,13 +48,13 @@ export function decrease_loss( queue: strict_fibonacci_heap*,
 export function switch_node_rank( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node*, new_rank: rank_record* ): void ;
 export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
-    type: int ): void ;
+    type: int16 ): void ;
 export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
-    type: int ): void ;
+    type: int16 ): void ;
 export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
-    type: int ): void ;
+    type: int16 ): void ;
 export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
-    type: int, direction: int ): void ;
+    type: int16, direction: int16 ): void ;
 
 //--------------------------------------
 // NODE TYPE CONVERSIONS
@@ -77,9 +77,9 @@ export function convert_to_passive( queue: strict_fibonacci_heap*,
 // REDUCTIONS
 //--------------------------------------
 
-export function reduce_active_roots( queue: strict_fibonacci_heap* ): int ;
-export function reduce_root_degree( queue: strict_fibonacci_heap* ): int ;
-export function reduce_loss( queue: strict_fibonacci_heap* ): int ;
+export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 ;
+export function reduce_root_degree( queue: strict_fibonacci_heap* ): int16 ;
+export function reduce_loss( queue: strict_fibonacci_heap* ): int16 ;
 export function post_meld_reduction( queue: strict_fibonacci_heap* ): void ;
 export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void ;
 export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void ;
@@ -89,7 +89,7 @@ export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): vo
 //--------------------------------------
 
 export function create_rank_record( queue: strict_fibonacci_heap*,
-    rank: uint32_t, pred: rank_record* ): rank_record* ;
+    rank: uint32, pred: rank_record* ): rank_record* ;
 export function release_active_record( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node* ): void ;
 export function release_rank_record( queue: strict_fibonacci_heap*,
@@ -136,7 +136,7 @@ export function pq_get_item( queue: strict_fibonacci_heap*,
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: strict_fibonacci_heap* ): uint32_t {
+export function pq_get_size( queue: strict_fibonacci_heap* ): uint32 {
     return queue.size;
 }
 
@@ -182,7 +182,7 @@ export function pq_delete_min( queue: strict_fibonacci_heap* ): key_type {
 
     let key: key_type = queue.root.key;
     let current: strict_fibonacci_node*, new_root, old_root;
-    let i: int, j;
+    let i: int16, j;
 
     old_root = queue.root;
 
@@ -357,7 +357,7 @@ export function pq_empty( queue: strict_fibonacci_heap* ): boolean {
  * @param node  Node to check
  * @return      1 if active, 0 otherwise
  */
-static inline int is_active( queue: strict_fibonacci_heap*,
+static inline int16 is_active( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node* )
 {
     if( node.active == null )
@@ -638,7 +638,7 @@ export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_
 export function increase_rank( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node* ): void {
     let new_rank: rank_record* = node.rank.inc;
-    let target_rank: uint32_t = node.rank.rank + 1;
+    let target_rank: uint32 = node.rank.rank + 1;
     if( new_rank.rank !== target_rank )
         new_rank = create_rank_record( queue, target_rank, new_rank );
 
@@ -655,7 +655,7 @@ export function increase_rank( queue: strict_fibonacci_heap*,
 export function decrease_rank( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node* ): void {
     let new_rank: rank_record* = node.rank.dec;
-    let target_rank: uint32_t = node.rank.rank - 1;
+    let target_rank: uint32 = node.rank.rank - 1;
     if( new_rank.rank !== target_rank )
         new_rank = create_rank_record( queue, target_rank, node.rank );
 
@@ -699,7 +699,7 @@ export function decrease_loss( queue: strict_fibonacci_heap*,
  */
 export function switch_node_rank( queue: strict_fibonacci_heap*,
     node: strict_fibonacci_node*, new_rank: rank_record* ): void {
-    int type = ( node.type === STRICT_TYPE_ROOT ) ? STRICT_FIX_ROOT :
+    int16 type = ( node.type === STRICT_TYPE_ROOT ) ? STRICT_FIX_ROOT :
         STRICT_FIX_LOSS;
 
     let fix: fix_node* = node.fix;
@@ -725,7 +725,7 @@ export function switch_node_rank( queue: strict_fibonacci_heap*,
  * @param type  Which list to alter
  */
 export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
-    type: int ): void {
+    type: int16 ): void {
     let rank: rank_record* = fix.rank;
 
     if( rank.head[type] == null )
@@ -771,7 +771,7 @@ export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
  * @param type  Which list to alter
  */
 export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
-    type: int ): void {
+    type: int16 ): void {
     let rank: rank_record* = fix.rank;
 
     if( queue.fix_list[type] === fix )
@@ -813,11 +813,11 @@ export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
  * @param type  Which list to alter
  */
 export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
-    type: int ): void {
+    type: int16 ): void {
     if( rank.head[type] == null )
         return;
 
-    int status = ( rank.head[type] !== rank.tail[type] ||
+    int16 status = ( rank.head[type] !== rank.tail[type] ||
         rank.head[type].node.loss > 1 );
 
     if( rank.transformable[type] && !status )
@@ -835,7 +835,7 @@ export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
  * @param direction STRICT_DIR_PROMOTE or STRICT_DIR_DEMOTE
  */
 export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
-    type: int, direction: int ): void {
+    type: int16, direction: int16 ): void {
     let head: fix_node* = rank.head[type];
     let tail: fix_node* = rank.tail[type];
     let pred: fix_node* = head.left;
@@ -1025,7 +1025,7 @@ export function convert_to_passive( queue: strict_fibonacci_heap*,
  *
  * @param queue Queue in which to operate
  */
-export function reduce_active_roots( queue: strict_fibonacci_heap* ): int {
+export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 {
     let head: fix_node* = queue.fix_list[STRICT_FIX_ROOT];
     if( head == null )
         return 0;
@@ -1054,7 +1054,7 @@ export function reduce_active_roots( queue: strict_fibonacci_heap* ): int {
  *
  * @param queue Queue in which to operate
  */
-export function reduce_root_degree( queue: strict_fibonacci_heap* ): int {
+export function reduce_root_degree( queue: strict_fibonacci_heap* ): int16 {
     if( queue.root == null || queue.root.left_child == null )
         return 0;
 
@@ -1091,8 +1091,8 @@ export function reduce_root_degree( queue: strict_fibonacci_heap* ): int {
  *
  * @param queue Queue in which to operate
  */
-export function reduce_loss( queue: strict_fibonacci_heap* ): int {
-    let reduction: int = 2;
+export function reduce_loss( queue: strict_fibonacci_heap* ): int16 {
+    let reduction: int16 = 2;
     let head: fix_node* = queue.fix_list[STRICT_FIX_LOSS];
     if( head == null )
         return 0;
@@ -1160,8 +1160,8 @@ export function reduce_loss( queue: strict_fibonacci_heap* ): int {
  * @param queue Queue in which to operate
  */
 export function post_meld_reduction( queue: strict_fibonacci_heap* ): void {
-    let count_root: int = 0;
-    let count_degree: int = 0;
+    let count_root: int16 = 0;
+    let count_degree: int16 = 0;
 
     reduce_loss( queue );
 
@@ -1202,8 +1202,8 @@ export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void
  * @param queue Queue in which to operate
  */
 export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void {
-    let count_root: int = 0;
-    let count_degree: int = 0;
+    let count_root: int16 = 0;
+    let count_degree: int16 = 0;
 
     reduce_loss( queue );
 
@@ -1231,7 +1231,7 @@ export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): vo
  * @param succ  Next greatest rank in the list
  */
 export function create_rank_record( queue: strict_fibonacci_heap*,
-    rank: uint32_t, succ: rank_record* ): rank_record* {
+    rank: uint32, succ: rank_record* ): rank_record* {
     let pred: rank_record*;
     let new_rank: rank_record* = pq_alloc_node( queue.map, STRICT_NODE_RANK );
     new_rank.rank = rank;
@@ -1314,7 +1314,7 @@ export function release_rank_record( queue: strict_fibonacci_heap*,
  */
 export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
     garbage_queue: strict_fibonacci_heap* ): void {
-    let i: int;
+    let i: int16;
     let tail: fix_node*, head, g_tail, g_head;
 
     for( i = 0; i < 2; i++ )

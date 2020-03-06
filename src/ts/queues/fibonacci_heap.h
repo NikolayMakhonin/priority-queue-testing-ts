@@ -25,7 +25,7 @@ export interface fibonacci_node_t {
     struct prev_sibling: fibonacci_node_t*;
 
     //! The "height" of a node, i.e. bound on log of subtree size
-    let rank: uint32_t;
+    let rank: uint32;
     //! Denotes if a non-root node has lost a child or not
     let marked: boolean;
     //! Pointer to a piece of client data
@@ -50,13 +50,13 @@ export interface fibonacci_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: fibonacci_node*;
     //! An array of roots of the queue, indexed by rank
     let roots: fibonacci_node*[MAXRANK];
     //! Current largest rank in queue
-    let largest_rank: uint32_t;
+    let largest_rank: uint32;
 };
 
 export type fibonacci_heap = fibonacci_heap_t;
@@ -112,7 +112,7 @@ export function pq_get_item( queue: fibonacci_heap*, node: fibonacci_node* ): it
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: fibonacci_heap* ): uint32_t ;
+export function pq_get_size( queue: fibonacci_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

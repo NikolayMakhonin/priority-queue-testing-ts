@@ -16,8 +16,8 @@
 #include <fcntl.h>
 
 /* statistical variables */
-let n_scans: long = 0;
-let n_impr: long = 0;
+let n_scans: int32 = 0;
+let n_impr: int32 = 0;
 
 /* definitions of types: node & arc */
 
@@ -37,16 +37,16 @@ import {} from 'timer.c'
 import {} from 'dikh.c'
 
 
-export function main(argc: int, argv: string*): int {
+export function main(argc: int16, argv: string*): int16 {
 
 let t: float;
 let arp: arc*;
 let ndp: node*, source, k;
-let n: long, m, nmin;
+let n: int32, m, nmin;
 let name: char[21];
-let sum_d: uint64_t = 0;
+let sum_d: uint64 = 0;
 
-let trace_file: int = open( argv[1], O_RDWR | O_CREAT | O_TRUNC, S_IRWXU );
+let trace_file: int16 = open( argv[1], O_RDWR | O_CREAT | O_TRUNC, S_IRWXU );
 
  parse( &n, &m, &ndp, &arp, &source, &nmin, name );
 /*
@@ -72,10 +72,10 @@ t = timer() - t;
 
 for ( k= ndp; k< ndp + n; k++ )
   if ( k . parent !== (node*) null )
-   sum_d += (uint64_t) (k . dist);
+   sum_d += (uint64) (k . dist);
 
  
-#define nd(ptr) (int)(ptr-ndp+nmin)
+#define nd(ptr) (int16)(ptr-ndp+nmin)
 
 close( trace_file );
 

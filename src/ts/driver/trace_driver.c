@@ -39,7 +39,7 @@ export const CHUNK_SIZE = 1000000;
     #define pq_empty(q)             dummy = 0
     typedef void pq_type;
     typedef void pq_node_type;
-    static dummy: uint32_t;
+    static dummy: uint32;
 #else
     #ifdef USE_BINOMIAL
         import {} from '../queues/binomial_queue.h'
@@ -79,15 +79,15 @@ export const CHUNK_SIZE = 1000000;
 #endif
 
 #ifdef USE_STRICT_FIBONACCI
-    static mem_types: uint32_t = 4;
-    static mem_sizes: uint32_t[4] =
+    static mem_types: uint32 = 4;
+    static mem_sizes: uint32[4] =
     {
         sizeof( strict_fibonacci_node ),
         sizeof( fix_node ),
         sizeof( active_record ),
         sizeof( rank_record )
     };
-    static mem_capacities: uint32_t[4] =
+    static mem_capacities: uint32[4] =
     {
         0,
         100000,
@@ -95,19 +95,19 @@ export const CHUNK_SIZE = 1000000;
         1000
     };
 #else
-    static mem_types: uint32_t = 1;
-    static mem_sizes: uint32_t[1] =
+    static mem_types: uint32 = 1;
+    static mem_sizes: uint32[1] =
     {
         sizeof( pq_node_type )
     };
-    static mem_capacities: uint32_t[1] =
+    static mem_capacities: uint32[1] =
     {
         0
     };
 #endif
 
-export function main( argc: int, argv: string* ): int {
-    let i: uint64_t;
+export function main( argc: int16, argv: string* ): int16 {
+    let i: uint64;
 
     // pointers for casting
     let op_create: pq_op_create*;
@@ -131,7 +131,7 @@ export function main( argc: int, argv: string* ): int {
     if( argc < 2 )
         exit( -1 );
 
-    let trace_file: int = open( argv[1], O_RDONLY );
+    let trace_file: int16 = open( argv[1], O_RDONLY );
     if( trace_file < 0 )
     {
         fprintf( stderr, "Could not open file.\n" );
@@ -166,11 +166,11 @@ export function main( argc: int, argv: string* ): int {
     let map: mem_map* = mm_create( mem_types, mem_sizes );
 #endif
 
-    let op_remaining: uint64_t, op_chunk;
-    let status: int;
+    let op_remaining: uint64, op_chunk;
+    let status: int16;
     struct timeval t0, t1;
-    let iterations: uint32_t = 0;
-    let total_time: uint32_t = 0;
+    let iterations: uint32 = 0;
+    let total_time: uint32 = 0;
     let k: key_type;
     //min: pq_node_type*;
 

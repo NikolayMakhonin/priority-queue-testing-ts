@@ -86,19 +86,19 @@ import {} from 'heap.c'
 /************************************* global variables **************/
 /* operation counts */
 
-/* timeStamp: int; */
-let newMinCut: int;
+/* timeStamp: int16; */
+let newMinCut: int16;
 
-let numPhases: long, numScans;
-let numPRC: long;
+let numPhases: int32, numScans;
+let numPRC: int32;
 
 let aStack: arc*[];             /* set of arcs to contract */
 let aTOS: arc*[];               /* top of stack pointer */
 
-let minCap: int64_t;            /* minimum cut capacity seen */
+let minCap: int64;            /* minimum cut capacity seen */
 heap   h;
 
-let input_n: long,            /* original number of nodes */
+let input_n: int32,            /* original number of nodes */
        currentN,          /* current number of nodes */
        input_m;            /* number of arcs */
 
@@ -117,7 +117,7 @@ let lastA: arc*;
 
 arc   d_arc;                 /* dummy arc - for technical reasons */
 
-let trace_file: int;
+let trace_file: int16;
 let header: pq_trace_header;
 let op_create: pq_op_create;
 let op_destroy: pq_op_destroy;
@@ -179,8 +179,8 @@ printf("contracting %d %d\n", nNode(e.head), nNode(Reverse(e).head));
 
 
 
-export function computeCap( v: node*): int64_t {
-  let ans: int64_t;
+export function computeCap( v: node*): int64 {
+  let ans: int64;
   let a: arc*;
 
   ans = 0;
@@ -217,7 +217,7 @@ export function saveTCut( ): void {
   let w: node*;
 
   ForAllNodes ( w )
-    if ( (int64_t) (findLeader ( w ) . key & MASK_PRIO) === (int64_t) InTree )
+    if ( (int64) (findLeader ( w ) . key & MASK_PRIO) === (int64) InTree )
       w . status = 1;
     else
       w . status = 0;
@@ -280,12 +280,12 @@ void componentSizes ()
 
 {
   let v: node*;
-  let bigSize: long;
+  let bigSize: int32;
 
   bigSize = 2 * input_n / currentN;
 
   ForAllNodes ( v )
-    v . leader . key += (int64_t) 1 << 32;
+    v . leader . key += (int64) 1 << 32;
 
   ForAllNodes ( v )
     if ( v . key >> 32 >= bigSize )
@@ -324,10 +324,10 @@ void compact ()
 export function phase( v: node* ): void* {
   let a: arc*;
   let w: node*, v1;
-  let newKey: int64_t;
-  let alphaP: int64_t = 0;
-  let phaseScans: long = 0;
-  let phaseContracts: long = 0;
+  let newKey: int64;
+  let alphaP: int64 = 0;
+  let phaseScans: int32 = 0;
+  let phaseContracts: int32 = 0;
 
   numPhases++;
 
@@ -367,17 +367,17 @@ export function phase( v: node* ): void* {
 /**CH5 commented out       dt = timer () - t;*/
     }
 
-    v1 . key = (int64_t) InTree | (int64_t) (v1 - nodes);
+    v1 . key = (int64) InTree | (int64) (v1 - nodes);
     ForAllArcs ( v1, a ) {
       w = a . head;
-      if ( (int64_t) (w . key & MASK_PRIO) > (int64_t) InTree ) {
+      if ( (int64) (w . key & MASK_PRIO) > (int64) InTree ) {
 	lastA = a;
 	newKey = (w . key>>32) + a . cap;
 	if (( newKey >= minCap ) && ( minCap > (w . key>>32) )) {
 	  APush ( a );
 	}
-	if ( (int64_t)(w . key & MASK_PRIO) === 0 ) {
-	  w . key = (int64_t)(newKey << 32) | (int64_t)(w - nodes);
+	if ( (int64)(w . key & MASK_PRIO) === 0 ) {
+	  w . key = (int64)(newKey << 32) | (int64)(w - nodes);
 	  hInsert ( h, w );
 /***CH5***/
     op_insert.node_id = w - nodes;
@@ -389,7 +389,7 @@ export function phase( v: node* ): void* {
 	  
 	}
 	else {
-	  w . key = (int64_t)(newKey<<32) | (int64_t)(w-nodes);
+	  w . key = (int64)(newKey<<32) | (int64)(w-nodes);
 	  increaseKey ( h, w, w.key );
 /***CH5***/
     op_decrease_key.node_id = w - nodes;
@@ -443,7 +443,7 @@ export function phase( v: node* ): void* {
 void mainInit ()
 
 {
-  let cutCap: int64_t;
+  let cutCap: int64;
   let v: node*;
 
   newMinCut = 0;
@@ -477,7 +477,7 @@ void cutCapInit ()
 
 {
   let v: node*;
-  let bestTrivial: int64_t;
+  let bestTrivial: int64;
   let bestv: node*;
 
   bestTrivial = minCap;
@@ -578,13 +578,13 @@ printGraph();
   v . last = w . last;
 }
 
-int PRTest12 ()
+int16 PRTest12 ()
 
 {
   let v: node*, w;
   let a: arc*;
-  let vCap: int64_t;
-  let PRContracts: long=0;
+  let vCap: int64;
+  let PRContracts: int32=0;
 
   ForAllNodes ( v ) {
 /*    timeStamp ++; */
@@ -653,15 +653,15 @@ int PRTest12 ()
 
 /* PR tests as implemented by Nagamochi and Ibaraki in their Hybrid algorithm */
 
-let PR_contracts12: long = 0;
-let PR_contracts34: long = 0;
+let PR_contracts12: int32 = 0;
+let PR_contracts34: int32 = 0;
 
 export function PR_Hybrid(x: node*): void {
   let a: arc*, b;
-  let flag: int = 1;
+  let flag: int16 = 1;
   let v: node*;
   let y: node*, z;
-  let bigCap: int64_t;
+  let bigCap: int64;
 
 v  if ( currentN <= 2 )
     return;
@@ -716,12 +716,12 @@ v  if ( currentN <= 2 )
 #ifdef PR_34
 /* to test if an arc satisfies the PR tests 3 & 4 */
 
-export function PR34(a: arc*): int {
+export function PR34(a: arc*): int16 {
   let x: node*, y, z;
-  let cap: int64_t = 0;
-  let cap_xy: int64_t, cap_xz, cap_yz;
+  let cap: int64 = 0;
+  let cap_xy: int64, cap_xz, cap_yz;
   let b: arc*;
-  let flag: int = 0;
+  let flag: int16 = 0;
 
   y = a . head;
   x = Reverse(a) . head;
@@ -768,19 +768,19 @@ export function PR34(a: arc*): int {
 #endif
 #endif
 
-let trace_file: int;
+let trace_file: int16;
 
 main (argc, argv )
 
-let argc: int;
+let argc: int16;
 let argv: string[];
 
 {
 
   let a: arc*;
   let v: node*;
-  let beforen: int;
-  let first_iteration: int = 1;
+  let beforen: int16;
+  let first_iteration: int16 = 1;
 
   header.op_count = 0;
   header.pq_ids = 1;

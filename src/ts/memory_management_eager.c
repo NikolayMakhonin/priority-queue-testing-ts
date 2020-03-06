@@ -5,15 +5,15 @@ import {} from 'memory_management_eager.h'
 // PUBLIC METHODS
 //==============================================================================
 
-export function mm_create( types: uint32_t, sizes: uint32_t*, capacities: uint32_t* ): mem_map* {
-    let i: int;
+export function mm_create( types: uint32, sizes: uint32[], capacities: uint32[] ): mem_map* {
+    let i: int16;
 
     let map: mem_map* = malloc( sizeof( mem_map ) );
     map.types = types;
-    map.sizes = malloc( types * sizeof( uint32_t ) );
-    map.capacities = malloc( types * sizeof( uint32_t ) );
-    map.data = malloc( types * sizeof( uint8_t* ) );
-    map.free = malloc( types * sizeof( uint8_t*[] ) );
+    map.sizes = malloc( types * sizeof( uint32 ) );
+    map.capacities = malloc( types * sizeof( uint32 ) );
+    map.data = malloc( types * sizeof( uint8[] ) );
+    map.free = malloc( types * sizeof( uint8[][] ) );
     map.index_data = new Array(types);
     map.index_free = new Array(types);
 
@@ -27,14 +27,14 @@ export function mm_create( types: uint32_t, sizes: uint32_t*, capacities: uint32
         map.free[i] = new Array(PQ_MEM_WIDTH);
 
         map.data[i] = malloc( map.sizes[i] * map.capacities[i] );
-        map.free[i] = malloc( sizeof( uint8_t* ) * map.capacities[i] );
+        map.free[i] = malloc( sizeof( uint8[] ) * map.capacities[i] );
     }
 
     return map;
 }
 
 export function mm_destroy( map: mem_map* ): void {
-    let i: int;
+    let i: int16;
     for( i = 0; i < map.types; i++ )
     {
         free( map.data[i] );
@@ -50,7 +50,7 @@ export function mm_destroy( map: mem_map* ): void {
 }
 
 export function mm_clear( map: mem_map* ): void {
-    let i: int;
+    let i: int16;
     for( i = 0; i < map.types; i++ )
     {
         map.index_data[i] = 0;
@@ -58,7 +58,7 @@ export function mm_clear( map: mem_map* ): void {
     }
 }
 
-export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
+export function pq_alloc_node( map: mem_map*, type: uint32 ): void* {
     let node: void*;
     if ( map.index_free[type] === 0 )
         node = ( map.data[type] + ( map.sizes[type] *
@@ -71,6 +71,6 @@ export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
     return node;
 }
 
-export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void {
+export function pq_free_node( map: mem_map*, type: uint32, node: void* ): void {
     map.free[type][(map.index_free[type])++] = node;
 }

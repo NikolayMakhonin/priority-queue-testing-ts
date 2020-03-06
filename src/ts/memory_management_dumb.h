@@ -18,9 +18,9 @@ export const PQ_MEM_WIDTH = 32;
 
 export interface mem_map {
     //! number of different node types
-    let types: uint32_t;
+    let types: uint32;
     //! sizes of single nodes
-    let sizes: uint32_t*;
+    let sizes: uint32[];
 }
 
 //==============================================================================
@@ -35,7 +35,7 @@ export interface mem_map {
  * @param capacities    The number of nodes of each type to allocate
  * @return              Pointer to the new memory map
  */
-export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* ;
+export function mm_create( types: uint32, sizes: uint32[] ): mem_map* ;
 
 /**
  * Releases all allocated memory associated with the map.
@@ -60,7 +60,7 @@ export function mm_clear( map: mem_map* ): void ;
  * @param type  Type of node to allocate
  * @return      Pointer to allocated node
  */
-export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* ;
+export function pq_alloc_node( map: mem_map*, type: uint32 ): void* ;
 
 /**
  * Takes a previously allocated node and adds it to the free list to be
@@ -70,6 +70,6 @@ export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* ;
  * @param type  Type of node to free
  * @param node  Node to free
  */
-export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void ;
+export function pq_free_node( map: mem_map*, type: uint32, node: void* ): void ;
 
 #endif

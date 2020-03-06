@@ -1,4 +1,4 @@
 void SetRandom();
-long Random();
+int32 Random();
 double DblUnitRandom();
 void RandomPermute();

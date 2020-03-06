@@ -45,7 +45,7 @@ export function pq_get_item( queue: fibonacci_heap*, node: fibonacci_node* ): it
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: fibonacci_heap* ): uint32_t {
+export function pq_get_size( queue: fibonacci_heap* ): uint32 {
     return queue.size;
 }
 
@@ -156,7 +156,7 @@ export function merge_and_fix_roots( queue: fibonacci_heap*, a: fibonacci_node*,
     b: fibonacci_node* ): void {
     let start: fibonacci_node* = append_lists( queue, a, b );
     let current: fibonacci_node*, next;
-    let i: int32_t, rank;
+    let i: int32, rank;
 
     if ( start == null )
         return;
@@ -334,7 +334,7 @@ export function append_lists( queue: fibonacci_heap*, a: fibonacci_node*,
  * @return      True if inserted, false if not
  */
 export function attempt_insert( queue: fibonacci_heap*, node: fibonacci_node* ): boolean {
-    let rank: uint32_t = node.rank;
+    let rank: uint32 = node.rank;
     let occupant: fibonacci_node* = queue.roots[rank];
     if ( ( occupant != null ) && ( occupant !== node ) )
         return FALSE;

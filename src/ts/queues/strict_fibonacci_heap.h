@@ -40,9 +40,9 @@ export type strict_item = strict_item_t;
  */
 export interface active_record_t {
     //! 1 if active, 0 otherwise
-    let flag: uint32_t;
+    let flag: uint32;
     //! Number of nodes currently pointing to it.  If 0, free record.
-    let ref_count: uint32_t;
+    let ref_count: uint32;
 };
 
 export type active_record = active_record_t;
@@ -52,18 +52,18 @@ export type active_record = active_record_t;
  * restructuring.
  */
 export interface rank_record_t {
-    let rank: uint32_t;
+    let rank: uint32;
     //! rank one higher if exists
     struct inc: rank_record_t*;
     //! rank one lower if exists
     struct dec: rank_record_t*;
     //! flags of last known transformability status
-    let transformable: int[2];
+    let transformable: int16[2];
     //! pointers to fix nodes of the current rank
     struct head: fix_node_t*[2];
     struct tail: fix_node_t*[2];
     //! number of nodes pointing to it, free record if 0
-    let ref_count: uint32_t;
+    let ref_count: uint32;
 };
 
 export type rank_record = rank_record_t;
@@ -103,11 +103,11 @@ export interface strict_fibonacci_node_t {
     struct q_prev: strict_fibonacci_node_t*;
     struct q_next: strict_fibonacci_node_t*;
 
-    let type: uint32_t;
+    let type: uint32;
     let active: active_record*;
     let rank: rank_record*;
     let fix: fix_node*;
-    let loss: uint32_t;
+    let loss: uint32;
 };
 
 export type strict_fibonacci_node = strict_fibonacci_node_t;
@@ -119,7 +119,7 @@ export type pq_node_type = strict_fibonacci_node;
  */
 export interface strict_fibonacci_heap_t {
     let map: mem_map*;
-    let size: uint32_t;
+    let size: uint32;
 
     let root: strict_fibonacci_node*;
     let q_head: strict_fibonacci_node*;
@@ -186,7 +186,7 @@ export function pq_get_item( queue: strict_fibonacci_heap*,
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: strict_fibonacci_heap* ): uint32_t ;
+export function pq_get_size( queue: strict_fibonacci_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

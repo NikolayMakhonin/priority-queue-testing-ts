@@ -38,7 +38,7 @@ export const CHUNK_SIZE = 1000000;
     #define pq_empty(q)             dummy = 0
     typedef void pq_type;
     typedef void pq_node_type;
-    static dummy: uint32_t;
+    static dummy: uint32;
 #else
     #ifdef USE_BINOMIAL
         import {} from '../queues/binomial_queue.h'
@@ -76,15 +76,15 @@ export const CHUNK_SIZE = 1000000;
 #endif
 
 #ifdef USE_STRICT_FIBONACCI
-    static mem_types: uint32_t = 4;
-    static mem_sizes: uint32_t[4] =
+    static mem_types: uint32 = 4;
+    static mem_sizes: uint32[4] =
     {
         sizeof( strict_fibonacci_node ),
         sizeof( fix_node ),
         sizeof( active_record ),
         sizeof( rank_record )
     };
-    static mem_capacities: uint32_t[4] =
+    static mem_capacities: uint32[4] =
     {
         0,
         1000,
@@ -92,38 +92,38 @@ export const CHUNK_SIZE = 1000000;
         1000
     };
 #else
-    static mem_types: uint32_t = 1;
-    static mem_sizes: uint32_t[1] =
+    static mem_types: uint32 = 1;
+    static mem_sizes: uint32[1] =
     {
         sizeof( pq_node_type )
     };
-    static mem_capacities: uint32_t[1] =
+    static mem_capacities: uint32[1] =
     {
         0
     };
 #endif
 
-export function main( argc: int, argv: string* ): int {
-    let i: uint64_t;
+export function main( argc: int16, argv: string* ): int16 {
+    let i: uint64;
 
     // counters for collecting operation stats
-    let count_create: uint64_t = 0;
-    let count_destroy: uint64_t = 0;
-    let count_clear: uint64_t = 0;
-    let count_get_key: uint64_t = 0;
-    let count_get_item: uint64_t = 0;
-    let count_get_size: uint64_t = 0;
-    let count_insert: uint64_t = 0;
-    let count_find_min: uint64_t = 0;
-    let count_delete: uint64_t = 0;
-    let count_delete_min: uint64_t = 0;
-    let count_decrease_key: uint64_t = 0;
-    let count_empty: uint64_t = 0;
+    let count_create: uint64 = 0;
+    let count_destroy: uint64 = 0;
+    let count_clear: uint64 = 0;
+    let count_get_key: uint64 = 0;
+    let count_get_item: uint64 = 0;
+    let count_get_size: uint64 = 0;
+    let count_insert: uint64 = 0;
+    let count_find_min: uint64 = 0;
+    let count_delete: uint64 = 0;
+    let count_delete_min: uint64 = 0;
+    let count_decrease_key: uint64 = 0;
+    let count_empty: uint64 = 0;
 
     if( argc < 2 )
         exit( -1 );
 
-    let trace_file: int = open( argv[1], O_RDONLY );
+    let trace_file: int16 = open( argv[1], O_RDONLY );
     if( trace_file < 0 )
     {
         fprintf( stderr, "Could not open file.\n" );
@@ -156,12 +156,12 @@ export function main( argc: int, argv: string* ): int {
     let map: mem_map* = mm_create( mem_types, mem_sizes );
 #endif
 
-    let op_remaining: uint64_t = header.op_count;
-    let op_chunk: uint64_t;
-    let status: int;
-    let queue_size: uint32_t = 0;
-    let sum_size: uint64_t = 0;
-    let max_size: uint32_t = 0;
+    let op_remaining: uint64 = header.op_count;
+    let op_chunk: uint64;
+    let status: int16;
+    let queue_size: uint32 = 0;
+    let sum_size: uint64 = 0;
+    let max_size: uint32 = 0;
 
     mm_clear( map );
 

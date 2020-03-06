@@ -18,7 +18,7 @@ export const RANGE = 100;
 #define DASH '-'
 #define CAPACITY(i,j) (( color[i] === color[j] ) ? \
 Random(L,U) : Random(l,u))
-export function error(error_no: int): void {
+export function error(error_no: int16): void {
   switch ( error_no ) {
 
   case 1: {
@@ -32,7 +32,7 @@ export function error(error_no: int): void {
   }
 
   case 2: {
-    fprintf ( stderr, "\nError: number_of_nodes must be int > 1\n");
+    fprintf ( stderr, "\nError: number_of_nodes must be int16 > 1\n");
     break;
   }
 
@@ -53,20 +53,20 @@ export function error(error_no: int): void {
 
 main ( argc, argv )
 
-let argc: int;
+let argc: int16;
 let argv: string[];
 
 {
 
   let args: char[30];
-  let n: long, m;
-  let t: long;
-  let i: long, j;
-  let seed: long;
-  let P: long, k;
+  let n: int32, m;
+  let t: int32;
+  let i: int32, j;
+  let seed: int32;
+  let P: int32, k;
   let d: double;
   let color: [];
-  let u: long, l, U, L;
+  let u: int32, l, U, L;
 
   if (( argc < 5 ) || ( argc > 6 )) error (1);
 
@@ -77,7 +77,7 @@ let argv: string[];
 
   /* second parameter - density */
   d = atof ( argv[2] );
-  m = (long) ((double) n * ((double) n - 1.0 ) * d / 200.0);
+  m = (int32) ((double) n * ((double) n - 1.0 ) * d / 200.0);
   if (( m <= n ) || ( m > ( n * ( n - 1 ) / 2 )))
     error (3);
 
@@ -106,7 +106,7 @@ let argv: string[];
   SetRandom(seed);
 
   /* set colors */
-  color = (long *) new Array(n+1);
+  color = (int32 *) new Array(n+1);
   for ( i = 1; i <= n; i++ )
     color[i] = Random ( 1, k );
 

@@ -10,9 +10,9 @@ cmd2type cmd2table[5]={"NUL","ins","dcr","fmn","dmn"};
 /*************** cmd_lookup() *****************
 * look up init,reps,with,seed,comm commands  */  
 
-export function cmd_lookup(cmdtype cmd): int {
-  let i: int;
-  let go: int;
+export function cmd_lookup(cmdtype cmd): int16 {
+  let i: int16;
+  let go: int16;
   strncpy (cmdtable[0],cmd,4); /*sentinel*/
   go=1;
   for (i=6;go;i--) 
@@ -21,9 +21,9 @@ export function cmd_lookup(cmdtype cmd): int {
 }
 /*************** cmd_lookup2 () ****************/
 /* look up 'with' commands                  */
-export function cmd_lookup2(cmd2type cmd): int {
-  let i: int;
-  let go: int;
+export function cmd_lookup2(cmd2type cmd): int16 {
+  let i: int16;
+  let go: int16;
   strncpy (cmd2table[0],cmd,3); /*sentinel*/
   go=1;
   for (i=4;go;i--) 

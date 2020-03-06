@@ -15,7 +15,7 @@ export const MASK_NAME = 0x00000000FFFFFFFF;
 // STATIC DECLARATIONS
 //==============================================================================
 
-static const pq_op_lengths: size_t[13] =
+static const pq_op_lengths: uint32[13] =
 {
     sizeof( pq_op_create ),
     sizeof( pq_op_destroy ),
@@ -32,62 +32,62 @@ static const pq_op_lengths: size_t[13] =
     sizeof( pq_op_empty )
 };
 
-static pq_op_buffer_pos: size_t = 0;
-static pq_op_buffer: uint8_t[PQ_OP_BUFFER_LEN];
+static pq_op_buffer_pos: uint32 = 0;
+static pq_op_buffer: uint8[PQ_OP_BUFFER_LEN];
 
-export function buffered_write( file: int, data: uint8_t*, length: size_t ): int ;
+export function buffered_write( file: int16, data: uint8[], length: uint32 ): int16 ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_trace_write_header( file: int, header: pq_trace_header ): int {
-    let flush: int = pq_trace_flush_buffer( file );
+export function pq_trace_write_header( file: int16, header: pq_trace_header ): int16 {
+    let flush: int16 = pq_trace_flush_buffer( file );
     if( flush === -1 )
         return -1;
     lseek( file, 0, SEEK_SET );
-    let bytes: ssize_t = write( file, &header, sizeof( pq_trace_header) );
+    let bytes: int32 = write( file, &header, sizeof( pq_trace_header) );
     if( bytes !== sizeof( pq_trace_header ) )
         return -1;
 
     return 0;
 }
 
-export function pq_trace_read_header( file: int, header: pq_trace_header* ): int {
-    let bytes: ssize_t = read( file, header, sizeof( pq_trace_header ) );
+export function pq_trace_read_header( file: int16, header: pq_trace_header* ): int16 {
+    let bytes: int32 = read( file, header, sizeof( pq_trace_header ) );
     if( bytes !== sizeof( pq_trace_header ) )
         return -1;
 
     return 0;
 }
 
-export function pq_trace_write_op( file: int, op: void* ): int {
-    let code: uint32_t = *((uint32_t*) op);
-    let length: ssize_t = pq_op_lengths[code];
-    let bytes: ssize_t = buffered_write( file, op, length );
+export function pq_trace_write_op( file: int16, op: void* ): int16 {
+    let code: uint32 = *((uint32[]) op);
+    let length: int32 = pq_op_lengths[code];
+    let bytes: int32 = buffered_write( file, op, length );
     if( bytes !== length )
         return -1;
 
     return 0;
 }
 
-export function pq_trace_read_op( file: int, op: void* ): int {
-    let bytes: size_t = read( file, op, sizeof( uint32_t ) );
-    if( bytes !== sizeof( uint32_t ) )
+export function pq_trace_read_op( file: int16, op: void* ): int16 {
+    let bytes: uint32 = read( file, op, sizeof( uint32 ) );
+    if( bytes !== sizeof( uint32 ) )
         return -1;
 
-    let code: uint32_t = *((uint32_t*) op);
-    let length: size_t = pq_op_lengths[code] - sizeof( uint32_t );
-    bytes = read( file, op + sizeof( uint32_t ), length );
+    let code: uint32 = *((uint32[]) op);
+    let length: uint32 = pq_op_lengths[code] - sizeof( uint32 );
+    bytes = read( file, op + sizeof( uint32 ), length );
     if( bytes !== length )
         return -1;
 
     return 0;
 }
 
-export function pq_trace_flush_buffer( file: int ): int {
-    let to_write: size_t = pq_op_buffer_pos;
-    let bytes: int = write( file, pq_op_buffer, to_write );
+export function pq_trace_flush_buffer( file: int16 ): int16 {
+    let to_write: uint32 = pq_op_buffer_pos;
+    let bytes: int16 = write( file, pq_op_buffer, to_write );
     if( bytes !== to_write )
         return -1;
 
@@ -100,8 +100,8 @@ export function pq_trace_flush_buffer( file: int ): int {
 // STATIC METHODS
 //==============================================================================
 
-export function buffered_write( file: int, data: uint8_t*, length: size_t ): int {
-    let status: int;
+export function buffered_write( file: int16, data: uint8[], length: uint32 ): int16 {
+    let status: int16;
 
     if( PQ_OP_BUFFER_LEN - pq_op_buffer_pos - 1 < length )
     {

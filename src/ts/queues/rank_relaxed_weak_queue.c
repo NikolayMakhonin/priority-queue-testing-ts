@@ -4,9 +4,9 @@ import {} from 'rank_relaxed_weak_queue.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-static inline void register_node( queue: rank_relaxed_weak_queue*, type: int,
+static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
     let node: rank_relaxed_weak_node* );
-static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int,
+static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16,
     let node: rank_relaxed_weak_node* );
 
 export function insert_root( queue: rank_relaxed_weak_queue*,
@@ -83,7 +83,7 @@ export function pq_get_item( queue: rank_relaxed_weak_queue*,
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32_t {
+export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32 {
     return queue.size;
 }
 
@@ -111,7 +111,7 @@ export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type {
     let old_min: rank_relaxed_weak_node* = queue.minimum;
     let min_key: key_type = old_min.key;
 
-    let replacement_rank: uint32_t;
+    let replacement_rank: uint32;
     let replacement: rank_relaxed_weak_node* = old_min;
     if( old_min.parent != null )
     {
@@ -181,7 +181,7 @@ export function pq_empty( queue: rank_relaxed_weak_queue* ): boolean {
  * @param type  ROOTS or MARKS specifies which registry alter
  * @param node  Node to insert
  */
-static inline void register_node( queue: rank_relaxed_weak_queue*, type: int,
+static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
     node: rank_relaxed_weak_node* )
 {
     if( !OCCUPIED( queue.registry[type], node.rank ) )
@@ -199,7 +199,7 @@ static inline void register_node( queue: rank_relaxed_weak_queue*, type: int,
  * @param type  ROOTS or MARKS specifies which registry alter
  * @param node  Node to remove
  */
-static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int,
+static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16,
     node: rank_relaxed_weak_node* )
 {
     if( queue.nodes[type][node.rank] === node )
@@ -220,7 +220,7 @@ static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int,
 export function insert_root( queue: rank_relaxed_weak_queue*,
     new_root: rank_relaxed_weak_node* ): void {
     let tree: rank_relaxed_weak_node* = new_root;
-    let rank: uint32_t = tree.rank;
+    let rank: uint32 = tree.rank;
     while( OCCUPIED( queue.registry[ROOTS], rank ) )
     {
         tree = join( queue, tree, queue.nodes[ROOTS][rank] );
@@ -543,8 +543,8 @@ export function swap_disconnected( queue: rank_relaxed_weak_queue*,
  */
 export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
     a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void {
-    int a_unrooted = ( queue.nodes[ROOTS][a.rank] === a );
-    int b_unrooted = ( queue.nodes[ROOTS][b.rank] === b );
+    int16 a_unrooted = ( queue.nodes[ROOTS][a.rank] === a );
+    int16 b_unrooted = ( queue.nodes[ROOTS][b.rank] === b );
 
     if( a_unrooted )
         unregister_node( queue, ROOTS, a );
@@ -555,7 +555,7 @@ export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
     if( b.marked )
         unregister_node( queue, MARKS, b );
 
-    let temp_rank: uint32_t = a.rank;
+    let temp_rank: uint32 = a.rank;
     a.rank = b.rank;
     b.rank = temp_rank;
 
@@ -693,12 +693,12 @@ export function replace_node( queue: rank_relaxed_weak_queue*,
  * @param queue     Queue in which to operate
  */
 export function fix_min( queue: rank_relaxed_weak_queue* ): void {
-    let i: int;
-    let rank: uint32_t;
+    let i: int16;
+    let rank: uint32;
     let current: rank_relaxed_weak_node*;
     let min: rank_relaxed_weak_node* = null;
 
-    let search_registry: uint64_t;
+    let search_registry: uint64;
     let search_list: rank_relaxed_weak_node*[];
     for( i = 0; i < 2; i++ )
     {

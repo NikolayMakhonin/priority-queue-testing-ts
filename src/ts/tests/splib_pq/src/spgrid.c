@@ -36,24 +36,24 @@ graph_type: string[] =
 
 main ( argc, argv )
 
-let argc: int;
+let argc: int16;
 let argv: string[];
 
 {
 
 let args: char[30];
 
-let X: long,   /* horizontal size of grid */
+let X: int32,   /* horizontal size of grid */
        Y;   /* vertical size of grid */
 
-let x: long,
+let x: int32,
        y,
        y1, y2, yp,
        dl, dx, xn, yn, count,
        mess;
 
 let n: double;
-let n0: long,
+let n0: int32,
        source,
        i,
        i0,
@@ -61,7 +61,7 @@ let n0: long,
        dij;
 
 let m: double;
-let m0: long,
+let m0: int32,
        mc,
        k;
 
@@ -70,11 +70,11 @@ let p: [],
        l,
        lx;
 
-let seed: long,
+let seed: int32,
        seed1,
        seed2;
 
-let ext: int=0;
+let ext: int16=0;
 
 let fout: FILE*;
 
@@ -83,25 +83,25 @@ let fout: FILE*;
 /* variables for generating one layer */
 
 /* variables for generating spanning graph */
-int    c_f = 0, cw_f = 0, cm_f = 0, cl_f = 0;
+int16    c_f = 0, cw_f = 0, cm_f = 0, cl_f = 0;
 
-let cw: int = DOUBLE_CYCLE;  /* type of spanning graph */
-long   cm = 0,             /* lower bound of the interval */
+let cw: int16 = DOUBLE_CYCLE;  /* type of spanning graph */
+int32   cm = 0,             /* lower bound of the interval */
        cl = 100;           /* upper bound of the interval */
 
 /* variables for generating additional arcs */
-int    a_f = 0, ax_f = 0, am_f = 0, al_f = 0;
+int16    a_f = 0, ax_f = 0, am_f = 0, al_f = 0;
 
-long   ax = 0,             /* number of additional arcs */
+int32   ax = 0,             /* number of additional arcs */
        am = 0,             /* lower bound of the interval */
        al = 100;           /* upper bound of the interval */
        
 /* variables for inter-layer arcs */
-int    i_f = 0, ip_f = 0, ix_f = 0, ih_f = 0,
+int16    i_f = 0, ip_f = 0, ix_f = 0, ih_f = 0,
        im_f = 0, il_f = 0, in_f = 0, is_f = 0;
 
-let ip: int = NO;       /* to mess or not to mess */
-long   ix = 1,        /* number of interlayered arcs in a NODE */
+let ip: int16 = NO;       /* to mess or not to mess */
+int32   ix = 1,        /* number of interlayered arcs in a NODE */
        ih = 1,        /* step between two layeres */
        il = 10000,    /* upper bound of the interval */
        im = 1000;     /* lower bound of the interval */
@@ -109,20 +109,20 @@ double in = 1,        /* l *=  in * |x1-x2| */
        is = 0;        /* l *=  is * |x1-x2|^2 */
 
 /* variables for artifical source */
-int    s_f = 0, sl_f = 0, sm_f = 0;
-let sl: long   = VERY_FAR, /* upper bound of artifical arc */
+int16    s_f = 0, sl_f = 0, sm_f = 0;
+let sl: int32   = VERY_FAR, /* upper bound of artifical arc */
        sm,              /* lower bound of artifical arc */
        s;  
 
 /* variables for potentials */
-int    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0;
+int16    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0;
 
-let pl: long,            /* upper bound of the interval */
+let pl: int32,            /* upper bound of the interval */
        pm;            /* lower bound of the interval */
 double pn = 0,        /* p +=  ln * (x+1) */ 
        ps = 0;        /* p +=  ls * (x+1)^2 */
 
-let np: int;               /* number of parameter parsing now */
+let np: int16;               /* number of parameter parsing now */
 
 
   /* parsing  parameters */
@@ -167,11 +167,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound of the interval */
 	    cl_f = 1;
-	    cl  =  (long) atof ( &args[3] );
+	    cl  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* lower bound */
 	    cm_f = 1;
-	    cm  = (long ) atof ( &args[3] );
+	    cm  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'c': /* type - cycle */
 	    cw_f = 1;
@@ -197,15 +197,15 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound of the interval */
 	    al_f = 1;
-	    al  =  (long) atof ( &args[3] );
+	    al  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* lower bound */
 	    am_f = 1;
-	    am  = (long ) atof ( &args[3] );
+	    am  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'x': /* number of additional arcs */
 	    ax_f = 1;
-	    ax   = (long ) atof ( &args[3] );
+	    ax   = (int32 ) atof ( &args[3] );
 	    if ( ax < 0 ) goto usage;
 	    break;
 
@@ -222,11 +222,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound */
 	    il_f = 1;
-	    il  =  (long) atof ( &args[3] );
+	    il  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* lower bound */
 	    im_f = 1;
-	    im  = (long ) atof ( &args[3] );
+	    im  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'n': /* additional length: l *= in*|i1-i2| */
 	    in_f = 1;
@@ -263,11 +263,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound of art. arc */
 	    sl_f = 1;
-	    sl  =  (long) atof ( &args[3] );
+	    sl  =  (int32) atof ( &args[3] );
             break;
 	  case 'm': /* lower bound of art. arc */
 	    sm_f = 1;
-	    sm  =  (long) atof ( &args[3] );
+	    sm  =  (int32) atof ( &args[3] );
             break;
 	  default:  /* unknown switch  value */
 	    goto usage;
@@ -283,11 +283,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound */
 	    pl_f = 1;
-	    pl  =  (long) atof ( &args[3] );
+	    pl  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* lower bound */
 	    pm_f = 1;
-	    pm  = (long ) atof ( &args[3] );
+	    pm  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'n': /* additional: p *= pn*(x+1) */
 	    pn_f = 1;
@@ -370,11 +370,11 @@ if ( n >= (double)MAXLONG || m >= (double)MAXLONG )
 }
  else
 {
-  n0 = (long)n; m0 = (long)m;
+  n0 = (int32)n; m0 = (int32)m;
 }
 
 if ( ip_f )
-   mess = new Array<long>(Y);
+   mess = new Array<int32>(Y);
 
 /* printing title */
 printf ("c grid network for shortest paths problem\n");
@@ -422,7 +422,7 @@ source = ( s_f ) ? n0-1 : n0;
 
 if ( p_f ) /* generating potentials */
   {
-    p = new Array<long>(n0+1);
+    p = new Array<int32>(n0+1);
     seed1 = 2*seed + 1;
     init_rand ( seed1);
     pl = pl - pm + 1;
@@ -431,8 +431,8 @@ if ( p_f ) /* generating potentials */
       for ( y = 0; y < Y; y ++ )
       {
 	p_t = pm + nrand ( pl );
-	if ( pn_f ) p_t *= (long) ( (1 + x) * pn );
-	if ( ps_f ) p_t *= (long) ( (1 + x) * ( (1 + x) * ps ));
+	if ( pn_f ) p_t *= (int32) ( (1 + x) * pn );
+	if ( ps_f ) p_t *= (int32) ( (1 + x) * ( (1 + x) * ps ));
 
         p[ NODE ( x, y ) ] = p_t;
       }
@@ -551,9 +551,9 @@ for ( x = 0; x < X-1; x ++ )
 	  j = NODE ( xn, yn );
 	  l = im + nrand ( il );
 	  if ( in !== 0 )
-            l *= (long) ( in * dx );
+            l *= (int32) ( in * dx );
           if ( is_f )
-            l *= (long) ( ( is * dx ) * dx );
+            l *= (int32) ( ( is * dx ) * dx );
           PRINT_ARC ( i, j, l )
 	}
     }

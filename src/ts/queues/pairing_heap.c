@@ -38,7 +38,7 @@ export function pq_get_item( queue: pairing_heap*, node: pairing_node* ): item_t
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: pairing_heap* ): uint32_t {
+export function pq_get_size( queue: pairing_heap* ): uint32 {
     return queue.size;
 }
 

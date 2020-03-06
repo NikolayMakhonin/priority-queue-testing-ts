@@ -1,9 +1,9 @@
 export interface heap {
-   let size: long;          /* the number of the last heap element */
+   let size: int32;          /* the number of the last heap element */
    let node: node*[];         /* heap of the pointers to nodes       */
 }
 
-let h_current_pos: long,
+let h_current_pos: int32,
      h_new_pos,
      h_pos,
      h_last_pos;

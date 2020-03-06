@@ -26,9 +26,9 @@ export interface rank_relaxed_weak_node_t {
     struct right: rank_relaxed_weak_node_t*;
 
     //! A proxy for tree size
-    let rank: uint32_t;
+    let rank: uint32;
     //! Mark status
-    let marked: uint32_t;
+    let marked: uint32;
 
     //! Pointer to a piece of client data
     let item: item_type;
@@ -50,13 +50,13 @@ export interface rank_relaxed_weak_queue_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: rank_relaxed_weak_node*;
     //! Arrays of roots and marked nodes in the queue, indexed by rank
     let nodes: rank_relaxed_weak_node*[2][MAXRANK];
     //! Bit vectors indicating which pointers
-    let registry: uint64_t[2];
+    let registry: uint64[2];
 };
 
 export type rank_relaxed_weak_queue = rank_relaxed_weak_queue_t;
@@ -114,7 +114,7 @@ export function pq_get_item( queue: rank_relaxed_weak_queue*,
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32_t ;
+export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

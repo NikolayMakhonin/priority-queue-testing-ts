@@ -26,7 +26,7 @@ export function sqrt(double): double ;  /* you can't define math fn. prototypes 
 export function ceil(double): double ;  /* I've found this out through hard experience */
 
 #define ARCLEN(k)   /* arclen between nodes i and j if (i-j) = k */ \
-      ( (long)(ceil(2.0 * k * sqrt((double)(k)))) )
+      ( (int32)(ceil(2.0 * k * sqrt((double)(k)))) )
 
 #define PRINT_ARC( i, j, length )\
 {\
@@ -39,7 +39,7 @@ export function ceil(double): double ;  /* I've found this out through hard expe
 
 main ( argc, argv )
 
-let argc: int;
+let argc: int16;
 let argv: string[];
 
 
@@ -47,22 +47,22 @@ let argv: string[];
 
   let args: char[30];
 
-  let n: long,
+  let n: int32,
          source,
          i,
          j,
          np,
          dij;
 
-  let m: long,
+  let m: int32,
          d,
          k;
 
-  let lx: long, h, ch;
+  let lx: int32, h, ch;
 
   let head: [];
 
-  let seed: long;
+  let seed: int32;
 
 
   /* parsing  parameters */
@@ -93,9 +93,9 @@ let argv: string[];
     strcpy ( args, argv[np] );
     if (args[0] !== DASH) goto usage;
     if (args[1] === 'l')
-      lx  = (long ) atof ( &args[2] );
+      lx  = (int32 ) atof ( &args[2] );
     else if (args[1] === 's') {
-      seed  = (long ) atof ( &args[2] );
+      seed  = (int32 ) atof ( &args[2] );
      }
     else
       goto usage;
@@ -107,7 +107,7 @@ let argv: string[];
   m = n*d;
 
   /* allocate space */
-  head = (long *) new Array(n+1);
+  head = (int32 *) new Array(n+1);
   
 
   /* start output */

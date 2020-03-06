@@ -15,8 +15,8 @@ export function heapify_down( queue: explicit_heap*, node: explicit_node* ): voi
 export function heapify_up( queue: explicit_heap*, node: explicit_node* ): void ;
 export function find_last_node( queue: explicit_heap* ): explicit_node* ;
 export function find_insertion_point( queue: explicit_heap* ): explicit_node* ;
-export function find_node( queue: explicit_heap*, n: uint32_t ): explicit_node* ;
-export function int_log2( n: uint32_t ): uint32_t ;
+export function find_node( queue: explicit_heap*, n: uint32 ): explicit_node* ;
+export function int_log2( n: uint32 ): uint32 ;
 export function is_leaf( queue: explicit_heap*, node: explicit_node* ): boolean ;
 
 //==============================================================================
@@ -49,12 +49,12 @@ export function pq_get_item( queue: explicit_heap*, node: explicit_node* ): item
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: explicit_heap* ): uint32_t {
+export function pq_get_size( queue: explicit_heap* ): uint32 {
     return queue.size;
 }
 
 export function pq_insert( queue: explicit_heap*, item: item_type, key: key_type ): explicit_node* {
-    let i: int;
+    let i: int16;
     let parent: explicit_node*;
     let node: explicit_node* = pq_alloc_node( queue.map, 0 );
     node.item = item;
@@ -95,7 +95,7 @@ export function pq_delete_min( queue: explicit_heap* ): key_type {
 }
 
 export function pq_delete( queue: explicit_heap*, node: explicit_node* ): key_type {
-    let i: int;
+    let i: int16;
     let key: key_type = node.key;
     let last_node: explicit_node* = find_last_node( queue );
     swap( queue, node, last_node);
@@ -176,7 +176,7 @@ export function swap_connected( queue: explicit_heap*, parent: explicit_node*,
     child.parent = parent.parent;
     parent.parent = child;
 
-    let i: int;
+    let i: int16;
     for( i = 0; i < BRANCHING_FACTOR; i++ )
     {
         if( parent.children[i] === child )
@@ -229,7 +229,7 @@ export function swap_disconnected( queue: explicit_heap*, a: explicit_node*,
  */
 export function fill_back_pointers( queue: explicit_heap*, a: explicit_node*,
     b: explicit_node* ): void {
-    let i: int;
+    let i: int16;
 
     if ( a.parent != null )
     {
@@ -277,7 +277,7 @@ export function heapify_down( queue: explicit_heap*, node: explicit_node* ): voi
 
     // repeatedly swap with smallest child if node violates queue order
     let smallest_child: explicit_node*;
-    let k: int, min_k;
+    let k: int16, min_k;
     while ( !is_leaf( queue, node ) )
     {
         min_k = 0;
@@ -348,18 +348,18 @@ export function find_insertion_point( queue: explicit_heap* ): explicit_node* {
  * @param n     Index of node to find
  * @return      Located node
  */
-export function find_node( queue: explicit_heap*, n: uint32_t ): explicit_node* {
-    let log: uint32_t, path, i;
-    let mask: uint32_t = BRANCHING_FACTOR - 1;
+export function find_node( queue: explicit_heap*, n: uint32 ): explicit_node* {
+    let log: uint32, path, i;
+    let mask: uint32 = BRANCHING_FACTOR - 1;
     let current: explicit_node*, next;
-    let location: uint32_t = ( n - 1 );
+    let location: uint32 = ( n - 1 );
 
     if( n === 0 )
         return queue.root;
 
     log = int_log2(n-1) / BRANCHING_POWER;
     current = queue.root;
-    // i < log is used instead of i >= 0 because i is uint32_t
+    // i < log is used instead of i >= 0 because i is uint32
     // it will loop around to MAX_INT after it passes 0
     for ( i = log; i <= log; i-- )
     {
@@ -377,14 +377,14 @@ export function find_node( queue: explicit_heap*, n: uint32_t ): explicit_node* 
 }
 
 /**
- * Finds the floor of the base-2 logarithm of a uint32_t integer using GCC's
+ * Finds the floor of the base-2 logarithm of a uint32 integer using GCC's
  * built-in method for counting leading zeros.  Should be supported quickly by
  * most x86* machines.
  *
  * @param n Integer to find log of
  * @return  Log of n
  */
-export function int_log2( n: uint32_t ): uint32_t {
+export function int_log2( n: uint32 ): uint32 {
     if ( n === 0 )
         return 0;
     return ( 31 - __builtin_clz( n ) );

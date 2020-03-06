@@ -5,7 +5,7 @@ import {} from 'memory_management_lazy.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-static const mm_sizes: uint32_t[PQ_MEM_WIDTH] =
+static const mm_sizes: uint32[PQ_MEM_WIDTH] =
 {
     0x00000001, 0x00000002, 0x00000004, 0x00000008,
     0x00000010, 0x00000020, 0x00000040, 0x00000080,
@@ -17,21 +17,21 @@ static const mm_sizes: uint32_t[PQ_MEM_WIDTH] =
     0x10000000, 0x20000000, 0x40000000, 0x80000000
 };
 
-export function mm_grow_data( map: mem_map*, type: uint32_t ): void ;
-export function mm_grow_free( map: mem_map*, type: uint32_t ): void ;
+export function mm_grow_data( map: mem_map*, type: uint32 ): void ;
+export function mm_grow_free( map: mem_map*, type: uint32 ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* {
-    let i: int;
+export function mm_create( types: uint32, sizes: uint32[] ): mem_map* {
+    let i: int16;
 
     let map: mem_map* = malloc( sizeof( mem_map ) );
     map.types = types;
-    map.sizes = malloc( types * sizeof( uint32_t ) );
-    map.data = malloc( types * sizeof( uint8_t* ) );
-    map.free = malloc( types * sizeof( uint8_t*[] ) );
+    map.sizes = malloc( types * sizeof( uint32 ) );
+    map.data = malloc( types * sizeof( uint8[] ) );
+    map.free = malloc( types * sizeof( uint8[][] ) );
     map.chunk_data = new Array(types);
     map.chunk_free = new Array(types);
     map.index_data = new Array(types);
@@ -46,14 +46,14 @@ export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* {
         map.free[i] = new Array(PQ_MEM_WIDTH);
 
         map.data[i][0] = malloc( map.sizes[i] );
-        map.free[i][0] = malloc( sizeof( uint8_t* ) );
+        map.free[i][0] = malloc( sizeof( uint8[] ) );
     }
 
     return map;
 }
 
 export function mm_destroy( map: mem_map* ): void {
-    let i: int, j;
+    let i: int16, j;
     for( i = 0; i < map.types; i++ )
     {
         for( j = 0; j < PQ_MEM_WIDTH; j++ )
@@ -80,7 +80,7 @@ export function mm_destroy( map: mem_map* ): void {
 }
 
 export function mm_clear( map: mem_map* ): void {
-    let i: int;
+    let i: int16;
     for( i = 0; i < map.types; i++ )
     {
         map.chunk_data[i] = 0;
@@ -90,7 +90,7 @@ export function mm_clear( map: mem_map* ): void {
     }
 }
 
-export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
+export function pq_alloc_node( map: mem_map*, type: uint32 ): void* {
     let node: void*;
     if ( map.chunk_free[type] === 0 && map.index_free[type] === 0 )
     {
@@ -114,7 +114,7 @@ export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
     return node;
 }
 
-export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void {
+export function pq_free_node( map: mem_map*, type: uint32, node: void* ): void {
     if( map.index_free[type] === mm_sizes[map.chunk_free[type]] )
         mm_grow_free( map, type );
 
@@ -125,16 +125,16 @@ export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void
 // STATIC METHODS
 //==============================================================================
 
-export function mm_grow_data( map: mem_map*, type: uint32_t ): void {
-    let chunk: uint32_t = ++(map.chunk_data[type]);
+export function mm_grow_data( map: mem_map*, type: uint32 ): void {
+    let chunk: uint32 = ++(map.chunk_data[type]);
     map.index_data[type] = 0;
 
     if( map.data[type][chunk] == null )
         map.data[type][chunk] = malloc( map.sizes[type] * mm_sizes[chunk] );
 }
 
-export function mm_grow_free( map: mem_map*, type: uint32_t ): void {
-    let chunk: uint32_t = ++(map.chunk_free[type]);
+export function mm_grow_free( map: mem_map*, type: uint32 ): void {
+    let chunk: uint32 = ++(map.chunk_free[type]);
     map.index_free[type] = 0;
 
     if( map.free[type][chunk] == null )

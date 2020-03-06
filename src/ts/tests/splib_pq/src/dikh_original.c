@@ -1,6 +1,6 @@
 void dikh ( n, nodes, source )
 
-let n: long;                          /* number of nodes */
+let n: int32;                          /* number of nodes */
 let nodes: node*,                    /* pointer to the first node */
      *source;                   /* pointer to the source     */
 
@@ -12,12 +12,12 @@ let nodes: node*,                    /* pointer to the first node */
 
 typedef /* heap */
    export interface heap_st {
-   let size: long;          /* the number of the last heap element */
+   let size: int32;          /* the number of the last heap element */
    let node: node*[];         /* heap of the pointers to nodes       */
 } 
    heap;
 
-let h_current_pos: long,
+let h_current_pos: int32,
      h_new_pos,
      h_pos,
      h_last_pos;
@@ -25,7 +25,7 @@ let h_current_pos: long,
 let node_j: node*,
      node_k;
 
-let dist_k: long,
+let dist_k: int32,
      dist_min;
 
 
@@ -123,7 +123,7 @@ if ( h.size > 0 )\
 
 export const VERY_FAR = 1073741823;
 
-let dist_new: long,
+let dist_new: int32,
      dist_from;
 
 let node_from: node*,
@@ -134,7 +134,7 @@ let node_from: node*,
 let arc_ij: arc*,
      arc_last;
 
-let num_scans: long = 0;
+let num_scans: int32 = 0;
 heap d_heap;
 
 /* initialization */

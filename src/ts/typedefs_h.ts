@@ -1,9 +1,13 @@
-#ifndef PQ_TYPE_DEFS
-#define PQ_TYPE_DEFS
+export type key_type = uint64;
+export type item_type = uint32;
 
-#include <stdint.h>
-
-export type key_type = uint64_t;
-export type item_type = uint32_t;
-
-#endif
+export type int8 = number
+export type int16 = number
+export type int32 = number
+export type int64 = number
+export type uint8 = number
+export type uint16 = number
+export type uint32 = number
+export type uint64 = number
+export type float = number
+export type double = number

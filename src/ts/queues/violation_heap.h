@@ -24,7 +24,7 @@ export interface violation_node_t {
     struct prev: violation_node_t*;
 
     //! The number of children this node has
-    let rank: int32_t;
+    let rank: int32;
 
     //! Pointer to a piece of client data
     let item: item_type;
@@ -44,13 +44,13 @@ export interface violation_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: violation_node*;
     //! An array of roots of the queue, indexed by rank
     let roots: violation_node*[MAXRANK][2];
     //! Current largest rank in queue
-    let largest_rank: uint32_t;
+    let largest_rank: uint32;
 };
 
 export type violation_heap = violation_heap_t;
@@ -106,7 +106,7 @@ export function pq_get_item( queue: violation_heap*, node: violation_node* ): it
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: violation_heap* ): uint32_t ;
+export function pq_get_size( queue: violation_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new

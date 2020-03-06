@@ -24,13 +24,13 @@ float timer()
 /*                                                                   */
 /*  Initialisation:                                                  */
 /*            void init_rand ( seed );                               */
-/*                 long seed     - any positive number               */
+/*                 int32 seed     - any positive number               */
 /*                                 if seed<=0 init_rand takes time   */
 /*                                 from timer instead of seed        */
 /*                                                                   */
 /*  Whole number uniformly distributed on [0,n):                     */
-/*            long nrand (n);                                        */
-/*                 long n                                            */
+/*            int32 nrand (n);                                        */
+/*                 int32 n                                            */
 /*                                                                   */
 /*  Real number uniformly distributed on [0,1]                       */
 /*            double rand01();                                       */
@@ -43,15 +43,15 @@ float timer()
 /*                                                                   */
 /*********************************************************************/
 
-let internal_seed: unsigned long;
+let internal_seed: uint32;
 
 void init_rand ( init_seed )
 
-let init_seed: long;
+let init_seed: int32;
 
 { internal_seed = ( init_seed > 0 )
-                 ? (unsigned long) init_seed
-                 : (unsigned long) timer(); 
+                 ? (uint32) init_seed
+                 : (uint32) timer();
                 
 
   /* only odd numbers are acceptable */
@@ -63,10 +63,10 @@ let init_seed: long;
 /* Internal function  irand  may depend on OS and compiler           */
 /*                                                                   */
 /* irand assumption:                                                 */
-/* i: unsigned long,j;                                                */
-/*   if i*j > max(unsigned long)                                     */
+/* i: uint32,j;                                                */
+/*   if i*j > max(uint32)                                     */
 /*           1. No overflow interruption                             */
-/*           2. i*j = i*j mod max(unsigned long)                     */
+/*           2. i*j = i*j mod max(uint32)                     */
 /*                                                                   */
 /* This assumption is true for a lot of computers.                   */
 /* If your computer fails:                                           */
@@ -78,10 +78,10 @@ export const A = 1220703125;
 export const B = 2147483647;
 export const BF = 2147483647.;
 
-static long irand ()
+static int32 irand ()
 
 { internal_seed = ( internal_seed * A ) & B;
-  return (long) internal_seed ;
+  return (int32) internal_seed ;
 }
 
 /*********************************************************************/
@@ -96,15 +96,15 @@ export const T16 = 65536;
 export const A1 = 37252;
 export const A2 = 29589;
 
-static long xrand()
+static int32 xrand()
 
-{ is1: unsigned long, is2;
+{ is1: uint32, is2;
 
   is1 = internal_seed / T15;
   is2 = internal_seed % T15;
 
   internal_seed = ( (((is2 * A1) + (is1 * A2))% T16 )* T15 + (is2 * A2) ) & B;
-  return (long) ( internal_seed ) ;
+  return (int32) ( internal_seed ) ;
 }
 
 
@@ -122,7 +122,7 @@ export const NK = 12;
 
 double randg01()
 
-{ i: int;
+{ i: int16;
   let sum: double = 0;
 
   for ( i = 0; i < NK; i++ ) sum += rand01();
@@ -136,11 +136,11 @@ double randg01()
   
 /*********************************************************************/
 
-long nrand ( n )
+int32 nrand ( n )
 
-let n: long;
+let n: int32;
 
-{ return (long) ( rand01() * (double) n );
+{ return (int32) ( rand01() * (double) n );
 }
 
 /*********************************************************************/

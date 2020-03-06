@@ -10,8 +10,8 @@
 #include <stdlib.h>
 
 /* statistical variables */
-let n_scans: long = 0;
-let n_impr: long = 0;
+let n_scans: int32 = 0;
+let n_impr: int32 = 0;
 
 /* definitions of types: node & arc */
 
@@ -38,7 +38,7 @@ main ()
 let t: float;
 let arp: arc*, ta;
 let ndp: node*, source, k;
-let n: long, m, nmin, i;
+let n: int32, m, nmin, i;
 let name: char[21];
 let sum_d: double = 0;
 
@@ -76,7 +76,7 @@ Sum of distances: %.0f\n\n\
 Running time of SP computation: %.2f\n\n",
          name, n, m, n_scans, n_impr, sum_d, t ); 
  
-#define nd(ptr) (int)(ptr-ndp+nmin)
+#define nd(ptr) (int16)(ptr-ndp+nmin)
 
 /*
 for ( k=ndp; k< ndp+n; k++ )

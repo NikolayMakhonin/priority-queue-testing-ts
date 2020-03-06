@@ -44,15 +44,15 @@ void initInit ()
 
 }
 
-export function parse( ): int {
+export function parse( ): int16 {
 
-let n: long,                      /* internal number of nodes */
+let n: int32,                      /* internal number of nodes */
         node_min,               /* minimal no of node  */
         node_max,               /* maximal no of nodes */
         head, tail, i;
 
 let acap: double;                   /* input arc capacity */
-let m: long,                      /* internal number of arcs */
+let m: int32,                      /* internal number of arcs */
         /* temporary variables carrying no of arcs */
         last, arc_num, arc_new_num;
 
@@ -67,7 +67,7 @@ let parcs: arc*,
         arc_new,
         arc_tmp;
 
-long    no_lines=0,             /* no of current input line */
+int32    no_lines=0,             /* no of current input line */
         no_plines=0,            /* no of problem-lines */
         no_tlines=0,            /* no of title(problem name)-lines */
         no_nlines=0,            /* no of node lines */
@@ -76,8 +76,8 @@ long    no_lines=0,             /* no of current input line */
 let in_line: char[MAXLINE],       /* for reading input line */
         pr_type[3];             /* for reading type of the problem */
 
-let k: long;                      /* temporary */
-let err_no: int;                 /* no of detected error */
+let k: int32;                      /* temporary */
+let err_no: int16;                 /* no of detected error */
 
 /* -------------- error numbers & error messages ---------------- */
 export const EN1 = 0;

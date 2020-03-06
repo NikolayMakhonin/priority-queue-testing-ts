@@ -13,14 +13,14 @@ export const VERY_FAR = 100000000;
 
 main ( argc, argv )
 
-let argc: int;
+let argc: int16;
 let argv: string[];
 
 {
 
 let args: char[30];
 
-let n: long,
+let n: int32,
        n0,
        source,
        i,
@@ -28,7 +28,7 @@ let n: long,
        j,
        dij;
 
-let m: long,
+let m: int32,
        m0,
        mc,
        k;
@@ -38,45 +38,45 @@ let p: [],
        l,
        lx;
 
-let seed: long,
+let seed: int32,
        seed1,
        seed2;
 
-let ext: int=0;
+let ext: int16=0;
 
 let fout: FILE*;
 
 /* variables for lengths generating */
 /* initialized by default values */
-int    l_f = 0, ll_f = 0, lm_f = 0, ln_f = 0, ls_f = 0;
-long   ll = 10000,    /* length of the interval */
+int16    l_f = 0, ll_f = 0, lm_f = 0, ln_f = 0, ls_f = 0;
+int32   ll = 10000,    /* length of the interval */
        lm = 0;        /* minimal bound of the interval */
 double ln = 0,        /* l += ln * |i-j| */ 
        ls = 0;        /* l += ls * |i-j|^2 */
 
 /* variables for connecting cycle(s) */
-int    c_f = 0, cl_f = 0, ch_f = 0, c_random = 1;
-let cl: long = 1;        /* length of cycle arc */
-let ch: long;            /* number of arcs in the cycle
+int16    c_f = 0, cl_f = 0, ch_f = 0, c_random = 1;
+let cl: int32 = 1;        /* length of cycle arc */
+let ch: int32;            /* number of arcs in the cycle
                          n - by default */
 
 /* variables for artifical source */
-int    s_f = 0, sl_f = 0, sm_f = 0;
-let sl: long   = VERY_FAR, /* upper bound of artifical arc */
+int16    s_f = 0, sl_f = 0, sm_f = 0;
+let sl: int32   = VERY_FAR, /* upper bound of artifical arc */
        sm,              /* lower bound of artifical arc */
        s;  
 
 /* variables for potentials */
-int    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0,
+int16    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0,
        pa_f = 0, pap_f = 0, pac_f = 0;
-let pl: long,            /* length of the interval */
+let pl: int32,            /* length of the interval */
        pm;            /* minimal bound of the interval */
 double pn = 0,        /* l += ln * |i-j| */ 
        ps = 0,        /* l += ls * |i-j|^2 */
        pap = 0,       /* part of nodes with alternative dustribution */
        pac = -1;      /* multiplier for alternative distribution */
 
-let np: int;               /* number of parameter parsing now */
+let np: int16;               /* number of parameter parsing now */
 
 #define PRINT_ARC( i, j, length )\
 {\
@@ -127,11 +127,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* length of the interval */
 	    ll_f = 1;
-	    ll  =  (long) atof ( &args[3] );
+	    ll  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* minimal bound */
 	    lm_f = 1;
-	    lm  = (long ) atof ( &args[3] );
+	    lm  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'n': /* additional length: l*|i-j| */
 	    ln_f = 1;
@@ -153,12 +153,12 @@ for ( np = 4; np < argc; np ++ )
 	  case 'l':
             c_random = 0;
 	    cl_f = 1;
-	    cl  =  (long) atof ( &args[3] );
+	    cl  =  (int32) atof ( &args[3] );
             if ( cl < 0 ) goto usage;
 	    break;
 	  case 'h':
 	    ch_f = 1;
-	    ch  =  (long) atof ( &args[3] );
+	    ch  =  (int32) atof ( &args[3] );
             if ( ch < 2 || ch > n ) goto usage;
 	    break;
 	  default:  /* unknown switch  value */
@@ -174,11 +174,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* upper bound of art. arc */
 	    sl_f = 1;
-	    sl  =  (long) atof ( &args[3] );
+	    sl  =  (int32) atof ( &args[3] );
             break;
 	  case 'm': /* lower bound of art. arc */
 	    sm_f = 1;
-	    sm  =  (long) atof ( &args[3] );
+	    sm  =  (int32) atof ( &args[3] );
             break;
 	  default:  /* unknown switch  value */
 	    goto usage;
@@ -194,11 +194,11 @@ for ( np = 4; np < argc; np ++ )
 	  { 
 	  case 'l': /* length of the interval */
 	    pl_f = 1;
-	    pl  =  (long) atof ( &args[3] );
+	    pl  =  (int32) atof ( &args[3] );
 	    break;
 	  case 'm': /* minimal bound */
 	    pm_f = 1;
-	    pm  = (long ) atof ( &args[3] );
+	    pm  = (int32 ) atof ( &args[3] );
 	    break;
 	  case 'n': /* additional length: l*|i-j| */
 	    pn_f = 1;
@@ -320,7 +320,7 @@ printf ("n %8ld\nc\n", source );
 
 if ( p_f ) /* generating potentials */
   {
-    p = new Array<long>(n+2);
+    p = new Array<int32>(n+2);
     seed1 = 2*seed + 1;
     init_rand ( seed1);
     pl = pl - pm + 1;
@@ -328,11 +328,11 @@ if ( p_f ) /* generating potentials */
     for ( i = 0; i <= n; i ++ )
       {
 	p_t = pm + nrand ( pl );
-	if ( pn_f ) p_t += (long) ( i * pn );
-	if ( ps_f ) p_t += (long) ( i * ( i * ps ));
+	if ( pn_f ) p_t += (int32) ( i * pn );
+	if ( ps_f ) p_t += (int32) ( i * ( i * ps ));
 	if ( pap_f )
 	    if ( rand01() < pap )
-		p_t = (long) ( p_t * pac );
+		p_t = (int32) ( p_t * pac );
         p[i] = p_t;
       }
     p[n+1] = 0;
@@ -393,8 +393,8 @@ for ( k = 1; k <= m - mc; k ++ )
 
     dij = ( i > j ) ? ( i - j ) : ( j - i );
     l = lm + nrand ( ll );
-    if ( ln_f ) l += (long) ( dij * ln );
-    if ( ls_f ) l += (long) ( dij * ( dij * ls ) );
+    if ( ln_f ) l += (int32) ( dij * ln );
+    if ( ls_f ) l += (int32) ( dij * ( dij * ls ) );
     PRINT_ARC ( i, j, l );
   }
 

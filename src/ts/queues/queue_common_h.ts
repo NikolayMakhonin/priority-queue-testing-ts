@@ -32,16 +32,16 @@ import {} from '../typedefs_h'
 #endif
 
 #ifndef __cplusplus
-export type boolean = uint32_t;
+export type boolean = uint32;
 #endif
 
 #define ITEM_ASSIGN(a,b) ( a = b )
 
 export const MAX_KEY = 0xFFFFFFFFFFFFFFFF;
 
-#define OCCUPIED(a,b)       ( a & ( ( (uint64_t) 1 ) << b ) )
-#define REGISTRY_SET(a,b)   ( a |= ( ( (uint64_t) 1 ) << b ) )
-#define REGISTRY_UNSET(a,b) ( a &= ~( ( (uint64_t) 1 ) << b ) )
-#define REGISTRY_LEADER(a)  ( (uint32_t) __builtin_ctzll( a ) )
+#define OCCUPIED(a,b)       ( a & ( ( (uint64) 1 ) << b ) )
+#define REGISTRY_SET(a,b)   ( a |= ( ( (uint64) 1 ) << b ) )
+#define REGISTRY_UNSET(a,b) ( a &= ~( ( (uint64) 1 ) << b ) )
+#define REGISTRY_LEADER(a)  ( (uint32) __builtin_ctzll( a ) )
 
 #endif

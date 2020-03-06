@@ -23,7 +23,7 @@ export interface rank_pairing_node_t {
     struct right: rank_pairing_node_t*;
 
     //! A proxy for tree size
-    let rank: uint32_t;
+    let rank: uint32;
 
     //! Pointer to a piece of client data
     let item: item_type;
@@ -43,13 +43,13 @@ export interface rank_pairing_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: rank_pairing_node*;
     //! An array of roots of the queue, indexed by rank
     let roots: rank_pairing_node*[MAXRANK];
     //! Current largest rank in queue
-    let largest_rank: uint32_t;
+    let largest_rank: uint32;
 };
 
 export type rank_pairing_heap = rank_pairing_heap_t;
@@ -105,7 +105,7 @@ export function pq_get_item( queue: rank_pairing_heap*, node: rank_pairing_node*
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: rank_pairing_heap* ): uint32_t ;
+export function pq_get_size( queue: rank_pairing_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new

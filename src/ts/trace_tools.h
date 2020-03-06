@@ -32,50 +32,50 @@ export const PQ_OP_EMPTY = 12;
  * range, since IDs are used to index into arrays.
  */
 export interface pq_trace_header {
-    let op_count: uint64_t;
-    let pq_ids: uint32_t;
-    let node_ids: uint32_t;
+    let op_count: uint64;
+    let pq_ids: uint32;
+    let node_ids: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_create {
-    let code: uint32_t;
+    let code: uint32;
     //! specified destination for created pointer
-    let pq_id: uint32_t;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_destroy {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_clear {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_get_key {
-    let code: uint32_t;
-    let pq_id: uint32_t;
-    let node_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
+    let node_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_get_item {
-    let code: uint32_t;
-    let pq_id: uint32_t;
-    let node_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
+    let node_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_get_size {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_insert {
-    let code: uint32_t;
+    let code: uint32;
     //! queue into which to insert
-    let pq_id: uint32_t;
+    let pq_id: uint32;
     //! specified destination for created pointer
-    let node_id: uint32_t;
+    let node_id: uint32;
     //! unique key; ex. actual key in high 32 bits, node_id in low 32 bits
     let key: key_type;
     //! typically the same as node_id
@@ -83,39 +83,39 @@ export interface pq_op_insert {
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_find_min {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_delete {
-    let code: uint32_t;
-    let pq_id: uint32_t;
-    let node_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
+    let node_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_delete_min {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_decrease_key {
-    let code: uint32_t;
-    let pq_id: uint32_t;
-    let node_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
+    let node_id: uint32;
     let key: key_type;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_meld {
-    let code: uint32_t;
-    let pq_src1_id: uint32_t;
-    let pq_src2_id: uint32_t;
+    let code: uint32;
+    let pq_src1_id: uint32;
+    let pq_src2_id: uint32;
     //! id to use for the newly generated heap, i.e. where to store the pointer
-    let pq_dst_id: uint32_t;
+    let pq_dst_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export interface pq_op_empty {
-    let code: uint32_t;
-    let pq_id: uint32_t;
+    let code: uint32;
+    let pq_id: uint32;
 } __attribute__ ((packed, aligned(4)));
 
 export type pq_trace_header = pq_trace_header;
@@ -154,7 +154,7 @@ export type pq_op_blank = pq_op_insert;
  * @param header    Header to write
  * @return          0 on success, -1 on error
  */
-export function pq_trace_write_header( file: int, header: pq_trace_header ): int ;
+export function pq_trace_write_header( file: int16, header: pq_trace_header ): int16 ;
 
 /**
  * Reads header from the specified file and writes to passed struct.  Assumes
@@ -164,7 +164,7 @@ export function pq_trace_write_header( file: int, header: pq_trace_header ): int
  * @param header    Address of struct to write header info to
  * @return          0 on success, -1 on error
  */
-export function pq_trace_read_header( file: int, header: pq_trace_header* ): int ;
+export function pq_trace_read_header( file: int16, header: pq_trace_header* ): int16 ;
 
 /**
  * Takes any priority queue operation struct and writes to the current position
@@ -174,18 +174,18 @@ export function pq_trace_read_header( file: int, header: pq_trace_header* ): int
  * @param op    Operation to write out
  * @return      0 on success, -1 on error
  */
-export function pq_trace_write_op( file: int, op: void* ): int ;
+export function pq_trace_write_op( file: int16, op: void* ): int16 ;
 
 /**
  * Reads an operation from the input file.  Writes to address specified by op.
- * For memory safety, it must be at least as long as the longest operation
+ * For memory safety, it must be at least as int32 as the longest operation
  * struct.  For any practical key and item types, this will be pq_op_insert.
  *
  * @param file  File to read from
  * @param op    Operation to write out
  * @return      0 on success, -1 on error
  */
-export function pq_trace_read_op( file: int, op: void* ): int ;
+export function pq_trace_read_op( file: int16, op: void* ): int16 ;
 
 /**
  * Flushes any outstanding writes to the trace file.  Must be called before
@@ -193,6 +193,6 @@ export function pq_trace_read_op( file: int, op: void* ): int ;
  *
  * @param file  File to write to
  */
-export function pq_trace_flush_buffer( file: int ): int ;
+export function pq_trace_flush_buffer( file: int16 ): int16 ;
 
 #endif

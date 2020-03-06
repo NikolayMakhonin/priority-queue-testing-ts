@@ -52,7 +52,7 @@ export interface explicit_heap_t {
     //! The root of the d-ary tree representing the queue
     let root: explicit_node*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
 };
 
 export type explicit_heap = explicit_heap_t;
@@ -108,7 +108,7 @@ export function pq_get_item( queue: explicit_heap*, node: explicit_node* ): item
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: explicit_heap* ): uint32_t ;
+export function pq_get_size( queue: explicit_heap* ): uint32 ;
 
 /**
  * Takes a item-key pair to insert into the queue and creates a new

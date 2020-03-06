@@ -54,7 +54,7 @@ export function pq_get_item( queue: rank_pairing_heap*, node: rank_pairing_node*
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: rank_pairing_heap* ): uint32_t {
+export function pq_get_size( queue: rank_pairing_heap* ): uint32 {
     return queue.size;
 }
 
@@ -272,7 +272,7 @@ export function fix_roots( queue: rank_pairing_heap* ): void {
     let output_head: rank_pairing_node* = null;
     let output_tail: rank_pairing_node* = null;
     let current: rank_pairing_node*, next, joined;
-    let i: uint32_t, rank;
+    let i: uint32, rank;
 
     if ( queue.minimum == null )
         return;
@@ -327,7 +327,7 @@ export function fix_roots( queue: rank_pairing_heap* ): void {
  * @return      True if inserted, false if not
  */
 export function attempt_insert( queue: rank_pairing_heap*, node: rank_pairing_node* ): boolean {
-    let rank: uint32_t = node.rank;
+    let rank: uint32 = node.rank;
     if ( ( queue.roots[rank] != null ) && ( queue.roots[rank] !== node ) )
         return FALSE;
     queue.roots[rank] = node;
@@ -367,9 +367,9 @@ export function fix_min( queue: rank_pairing_heap* ): void {
  */
 export function propagate_ranks_t1( queue: rank_pairing_heap*,
     node: rank_pairing_node* ): void {
-    let k: int32_t = 0;
-    let u: int32_t = -1;
-    let v: int32_t = -1;
+    let k: int32 = 0;
+    let u: int32 = -1;
+    let v: int32 = -1;
 
     if ( node == null )
         return;
@@ -407,9 +407,9 @@ export function propagate_ranks_t1( queue: rank_pairing_heap*,
  */
 export function propagate_ranks_t2( queue: rank_pairing_heap*,
     node: rank_pairing_node* ): void {
-    let k: int32_t = 0;
-    let u: int32_t = -1;
-    let v: int32_t = -1;
+    let k: int32 = 0;
+    let u: int32 = -1;
+    let v: int32 = -1;
 
     if ( node == null )
         return;

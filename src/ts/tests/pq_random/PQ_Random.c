@@ -8,8 +8,8 @@
  * dimacs_input.c - functions for reading in commands
  *
  * queue items:
- * name - uint32_t : unique,persistent name for each item.
- * prio - uint64_t: high 32 bits is random priority in [1,MAXPRIO]
+ * name - uint32 : unique,persistent name for each item.
+ * prio - uint64: high 32 bits is random priority in [1,MAXPRIO]
  *                  low 32 bits is a copy of the name to ensure unique priorities
  *
  * Benjamin Chang (bcchang@unix.amherst.edu) 8/96
@@ -37,15 +37,15 @@ export const false = 0;
 /* Q is the priority queue */
 let Q: pq_ptr;
 
-let trace_file: int;
+let trace_file: int16;
 
 /* newname is an increasing value - each new item gets a unique name */
-let newname: uint64_t=1;
+let newname: uint64=1;
 
-let seed: long int=0;  /* seed value */
-let Maxprio: uint64_t = 0x00000000FFFFFFFF;  /* Max priority */
-let init: uint64_t;    /* number of initial inserts */
-let reps: uint64_t;    /* number of repetitions of main loop */
+let seed: int32=0;  /* seed value */
+let Maxprio: uint64 = 0x00000000FFFFFFFF;  /* Max priority */
+let init: uint64;    /* number of initial inserts */
+let reps: uint64;    /* number of repetitions of main loop */
 
 let header: pq_trace_header;
 let op_create: pq_op_create;
@@ -56,27 +56,27 @@ let op_find_min: pq_op_find_min;
 let op_delete_min: pq_op_delete_min;
 
 /* with[]: flags to determine whether to perform each op. in main loop */
-with: int[6]={false,false,false,false,false,false};
+with: int16[6]={false,false,false,false,false,false};
 cmd2type cmdstable[5]={"NUL","ins","dcr","fmn","dmn"};
 
 /****************** my_rand () ***************************************/
 /* return integers in [0,range-1] */
-export function my_rand(range: uint64_t): uint64_t {
+export function my_rand(range: uint64): uint64 {
   let foo: double;
   foo=((double) drand48() * (double)range);
-  return (uint64_t) foo;
+  return (uint64) foo;
 }
 
 /**************** dcr_amnt () *********************************************/
 /* return a new random priority in [min,prio]
    where min is the current minimum priority and prio is the current prio */
-export function dcr_amnt(prio: pr_type): uint64_t {
+export function dcr_amnt(prio: pr_type): uint64 {
  let minitem: it_type=HeapFindMin(Q);
- let minprio: uint64_t = ( prioval(Q,minitem) & MASK_PRIO ) >> 32;
- let realprio: uint64_t = ( prio & MASK_PRIO ) >> 32;
- let name: uint64_t = prio & MASK_NAME;
+ let minprio: uint64 = ( prioval(Q,minitem) & MASK_PRIO ) >> 32;
+ let realprio: uint64 = ( prio & MASK_PRIO ) >> 32;
+ let name: uint64 = prio & MASK_NAME;
 
- let new: uint64_t=my_rand(realprio-minprio)+minprio;
+ let new: uint64=my_rand(realprio-minprio)+minprio;
 
  return ( new << 32 ) | name;
 }
@@ -84,12 +84,12 @@ export function dcr_amnt(prio: pr_type): uint64_t {
 /**************** dcr_amnt () *********************************************/
 /* return a new random priority in [min,prio]
    where min is the current minimum priority and prio is the current prio */
-export function dcr_min_amnt(prio: pr_type): uint64_t {
+export function dcr_min_amnt(prio: pr_type): uint64 {
  let minitem: it_type=HeapFindMin(Q);
- let minprio: uint64_t = ( prioval(Q,minitem) & MASK_PRIO ) >> 32;
- let name: uint64_t = prio & MASK_NAME;
+ let minprio: uint64 = ( prioval(Q,minitem) & MASK_PRIO ) >> 32;
+ let name: uint64 = prio & MASK_NAME;
 
- let new: uint64_t=minprio;
+ let new: uint64=minprio;
  if( new > 0 )
   new--;
 
@@ -113,7 +113,7 @@ void DoInsert ()
    HeapInsert (Q,info,prio);
 
     op_insert.node_id = newname;
-    op_insert.item = (uint32_t) info;
+    op_insert.item = (uint32) info;
     op_insert.key = prio;
     pq_trace_write_op( trace_file, &op_insert );
 
@@ -136,7 +136,7 @@ void DoDecrease ()
     newprio=dcr_amnt (oldprio);
     HeapDecreaseKey (Q,item,newprio);
 
-    op_decrease_key.node_id = (uint32_t)(oldprio & MASK_NAME);
+    op_decrease_key.node_id = (uint32)(oldprio & MASK_NAME);
     op_decrease_key.key = newprio;
     pq_trace_write_op( trace_file, &op_decrease_key );
 
@@ -158,7 +158,7 @@ void DoDecreaseMin ()
     newprio=dcr_min_amnt (oldprio);
     HeapDecreaseKey (Q,item,newprio);
 
-    op_decrease_key.node_id = (uint32_t)(oldprio & MASK_NAME);
+    op_decrease_key.node_id = (uint32)(oldprio & MASK_NAME);
     op_decrease_key.key = newprio;
     pq_trace_write_op( trace_file, &op_decrease_key );
 
@@ -185,7 +185,7 @@ void DoDeleteMin ()
     header.op_count++;
 }
 
-export function main( argc: int, argv: string* ): int {
+export function main( argc: int16, argv: string* ): int16 {
   header.op_count = 0;
   header.pq_ids = 1;
   header.node_ids = 1;
@@ -203,9 +203,9 @@ export function main( argc: int, argv: string* ): int {
   op_decrease_key.code = PQ_OP_DECREASE_KEY;
 
 
-  let i: int, j;
+  let i: int16, j;
 
-  let totins: int, totsize;
+  let totins: int16, totsize;
   let heap: heap_type;
   Q=&heap;
   HeapConstruct (Q);
@@ -229,8 +229,8 @@ export function main( argc: int, argv: string* ): int {
 
 
     seed = atoi( argv[2] );
-    init = (uint64_t) atoi( argv[3] );
-    reps = (uint64_t) atoi( argv[4] );
+    init = (uint64) atoi( argv[3] );
+    reps = (uint64) atoi( argv[4] );
     with[ins_cmd] = atoi( argv[ins_cmd+4] );
     with[dcr_cmd] = atoi( argv[dcr_cmd+4] );
     with[dcr_min_cmd] = atoi( argv[dcr_min_cmd+4] );
@@ -254,7 +254,7 @@ export function main( argc: int, argv: string* ): int {
     pq_trace_write_op( trace_file, &op_create );
     header.op_count++;
 
-  //seed = (int) time(0);
+  //seed = (int16) time(0);
   srand48(seed);
 
   for (i=0;i<init;++i)

@@ -41,9 +41,9 @@ export interface implicit_simple_heap_t {
     //! The array of node pointers encoding the tree structure
     let nodes: implicit_simple_node*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Current capacity of the heap
-    let capacity: uint32_t;
+    let capacity: uint32;
 };
 
 export type implicit_simple_heap = implicit_simple_heap_t;
@@ -99,7 +99,7 @@ export function pq_get_item( queue: implicit_simple_heap*, node: implicit_simple
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: implicit_simple_heap* ): uint32_t ;
+export function pq_get_size( queue: implicit_simple_heap* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new

@@ -22,7 +22,7 @@ export interface binomial_node_t {
     struct right: binomial_node_t*;
 
     //! Rank of binomial tree
-    let rank: uint32_t;
+    let rank: uint32;
 
     //! Pointer to a piece of client data
     let item: item_type;
@@ -41,11 +41,11 @@ export interface binomial_queue_t {
     //! Memory map to use for node allocation
     let map: mem_map*;
     //! The number of items held in the queue
-    let size: uint32_t;
+    let size: uint32;
     //! Pointer to the minimum node in the queue
     let minimum: binomial_node*;
     //! A registry to keep track of non-null roots
-    let registry: uint64_t;
+    let registry: uint64;
     //! An array of roots of the queue, indexed by rank
     let roots: binomial_node*[MAXRANK];
 };
@@ -103,7 +103,7 @@ export function pq_get_item( queue: binomial_queue*, node: binomial_node* ): ite
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: binomial_queue* ): uint32_t ;
+export function pq_get_size( queue: binomial_queue* ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -171,6 +171,6 @@ export function pq_decrease_key( queue: binomial_queue*, node: binomial_node*,
  */
 export function pq_empty( queue: binomial_queue* ): boolean ;
 
-//void verify_queue( queue: binomial_queue*, node_count: uint32_t );
+//void verify_queue( queue: binomial_queue*, node_count: uint32 );
 #endif
 

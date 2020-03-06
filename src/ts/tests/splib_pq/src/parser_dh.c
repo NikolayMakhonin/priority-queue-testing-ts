@@ -17,7 +17,7 @@ import {} from 'types_dh.h'
 
 /* ----------------------------------------------------------------- */
 
-int parse( n_ad, m_ad, nodes_ad, arcs_ad, 
+int16 parse( n_ad, m_ad, nodes_ad, arcs_ad,
            source_ad, node_min_ad, problem_name )
 
 /* all parameters are output */
@@ -38,7 +38,7 @@ export const P_FIELDS = 3;       /* no of fields in problem line */
 #define DEFAULT_NAME "unknown"  /* default name of the problem */
 
 
-n: long,                      /* internal number of nodes */
+n: int32,                      /* internal number of nodes */
         node_min,               /* minimal no of node  */
         node_max,               /* maximal no of nodes */
        *arc_first,              /* internal array for holding
@@ -49,7 +49,7 @@ n: long,                      /* internal number of nodes */
         /* temporary variables carrying no of nodes */
         head, tail, i;
 
-let m: long,                      /* internal number of arcs */
+let m: int32,                      /* internal number of arcs */
         /* temporary variable carrying no of arcs */
         last, arc_num, arc_new_num;
 
@@ -60,9 +60,9 @@ let arcs: arc*,                  /* pointer to the arc structure */
         *arc_current,
         arc_new;
 
-let length: long;                 /* length of the current arc */
+let length: int32;                 /* length of the current arc */
 
-long    no_lines=0,             /* no of current input line */
+int32    no_lines=0,             /* no of current input line */
         no_plines=0,            /* no of problem-lines */
         no_tlines=0,            /* no of title(problem name)-lines */
         no_nlines=0,            /* no of node(source)-lines */
@@ -71,7 +71,7 @@ long    no_lines=0,             /* no of current input line */
 let in_line: char[MAXLINE],       /* for reading input line */
         pr_type[3];             /* for reading type of the problem */
 
-let k: int,                      /* temporary */
+let k: int16,                      /* temporary */
         err_no;                 /* no of detected error */
 
 /* -------------- error numbers & error messages ---------------- */
@@ -169,8 +169,8 @@ while ( gets ( in_line ) != null )
         /* allocating memory for  'nodes', 'arcs'  and internal arrays */
                 nodes    = new Array<node>(n+2);
 		arcs     = new Array<arc>(m+1);
-	        arc_tail = new Array<long>(m);
-		arc_first= new Array<long>(n+2);
+	        arc_tail = new Array<int32>(m);
+		arc_first= new Array<int32>(n+2);
                 /* arc_first [ 0 .. n+1 ] = 0 - initialized by calloc */
 
                 if ( nodes == null || arcs == null ||
@@ -387,7 +387,7 @@ return (0);
  error:  /* error found reading input */
 
 printf ( "\nPrs%d: line %d of input - %s\n", 
-         err_no, (int) no_lines, err_message[err_no] );
+         err_no, (int16) no_lines, err_message[err_no] );
 
 exit (1);
 

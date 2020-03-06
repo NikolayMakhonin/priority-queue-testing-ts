@@ -46,7 +46,7 @@ export function pq_get_item( queue: binomial_queue*, node: binomial_node* ): ite
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: binomial_queue* ): uint32_t {
+export function pq_get_size( queue: binomial_queue* ): uint32 {
     return queue.size;
 }
 
@@ -152,9 +152,9 @@ export function make_root( queue: binomial_queue*, node: binomial_node* ): void 
  * @param queue Queue from which to select the minimum
  */
 export function cherry_pick_min( queue: binomial_queue* ): void {
-    let rank: uint32_t;
-    let registry: uint64_t = queue.registry;
-    let min: uint32_t = REGISTRY_LEADER( registry );
+    let rank: uint32;
+    let registry: uint64 = queue.registry;
+    let min: uint32 = REGISTRY_LEADER( registry );
     if( min >= MAXRANK )
         return;
 
@@ -217,7 +217,7 @@ export function join( queue: binomial_queue*, a: binomial_node*,
  */
 export function attempt_insert( queue: binomial_queue*,
     node: binomial_node* ): binomial_node* {
-    let rank: uint32_t = node.rank;
+    let rank: uint32 = node.rank;
     let result: binomial_node* = null;
 
     if( OCCUPIED( queue.registry, rank ) )
@@ -271,7 +271,7 @@ export function swap_with_parent( queue: binomial_queue*, node: binomial_node*,
     let d: binomial_node* = parent.right;
 
     // fix ranks
-    let temp: uint32_t = node.rank;
+    let temp: uint32 = node.rank;
     node.rank = parent.rank;
     parent.rank = temp;
 
@@ -320,12 +320,12 @@ export function swap_with_parent( queue: binomial_queue*, node: binomial_node*,
     }
 }
 
-export function verify_subtree( node: binomial_node*, seen: uint8_t*, depth: int, max_depth: int ): void ;
-export function verify_queue( queue: binomial_queue*, node_count: uint32_t ): void {
-    let rank: uint32_t;
-    let registry: uint64_t = queue.registry;
+export function verify_subtree( node: binomial_node*, seen: uint8[], depth: int16, max_depth: int16 ): void ;
+export function verify_queue( queue: binomial_queue*, node_count: uint32 ): void {
+    let rank: uint32;
+    let registry: uint64 = queue.registry;
     let current: binomial_node*;
-    let seen: uint8_t* = new Array(node_count);
+    let seen: uint8[] = new Array(node_count);
 
     if( queue.minimum != null )
         printf("Now verifying tree with min %u...\n",queue.minimum.item);
@@ -340,11 +340,11 @@ export function verify_queue( queue: binomial_queue*, node_count: uint32_t ): vo
     free( seen );
 }
 
-export function verify_subtree( node: binomial_node*, seen: uint8_t*, depth: int, max_depth: int ): void {
+export function verify_subtree( node: binomial_node*, seen: uint8[], depth: int16, max_depth: int16 ): void {
     if( node == null )
         return;
 
-    for( i: int = 0; i < depth; i++ )
+    for( i: int16 = 0; i < depth; i++ )
         printf("\t");
     printf("%u (%u)\n",node.item, node.rank);
 
