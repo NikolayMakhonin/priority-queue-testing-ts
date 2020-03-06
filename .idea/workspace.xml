@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/pairing_heap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,7 +84,7 @@
     <property name="js.buildTools.grunt.grunt-cli.package" value="$USER_HOME$/AppData/Roaming/npm/node_modules/grunt-cli" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="$USER_HOME$/AppData/Roaming/npm/node_modules/gulp" />
     <property name="jsx.switch.disabled" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/node_modules/eslint" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.stylelint" value="true" />
@@ -93,8 +93,8 @@
     <property name="node.js.path.for.package.standard" value="node" />
     <property name="node.js.path.for.package.stylelint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/../nodejs-templates/node_modules/eslint" />
-    <property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/node_modules/eslint" />
+    <property name="node.js.selected.package.standard" value="$PROJECT_DIR$/../../templates/nodejs-templates/node_modules/eslint" />
     <property name="node.js.selected.package.stylelint" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs.cucumber.cucumber_node_package_dir" value="" />
@@ -105,7 +105,12 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Confirmation" />
-    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\apps\priority-queues\node_modules\typescript\lib" />
+    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\node_modules\typescript\lib" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\main\common" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -269,11 +274,23 @@
       <option name="project" value="LOCAL" />
       <updated>1583504509124</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fix ReadMe">
+      <created>1583505041067</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1583505041067</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+    <option name="additionalRoots">
+      <list>
+        <option value="$PROJECT_DIR$/node_modules" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ORDER">
@@ -331,7 +348,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v0.0.18" />
     <MESSAGE value="User edit dialog in process..." />
     <MESSAGE value="Dialogs in process..." />
     <MESSAGE value="Devices in process..." />
@@ -356,6 +372,7 @@
     <MESSAGE value="Added logger" />
     <MESSAGE value="Deleting webapp specific code: Fix env" />
     <MESSAGE value="Node.js module completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Node.js module completed" />
+    <MESSAGE value="Fix ReadMe" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ReadMe" />
   </component>
 </project>
