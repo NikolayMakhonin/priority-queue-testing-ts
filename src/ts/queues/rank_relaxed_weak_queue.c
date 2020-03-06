@@ -186,7 +186,7 @@ static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
 {
     if( !OCCUPIED( queue.registry[type], node.rank ) )
     {
-        REGISTRY_SET( queue.registry[type], node.rank );
+        queue.registry[type] |= REGISTRY_SET( node.rank );
         queue.nodes[type][node.rank] = node;
     }
 }
@@ -204,7 +204,7 @@ static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16
 {
     if( queue.nodes[type][node.rank] === node )
     {
-        REGISTRY_UNSET( queue.registry[type], node.rank );
+        queue.registry[type] &= ~REGISTRY_SET( node.rank );
         queue.nodes[type][node.rank] = null;
     }
 }
@@ -711,7 +711,7 @@ export function fix_min( queue: rank_relaxed_weak_queue* ): void {
             current = search_list[rank];
             if( min == null || current.key <= min.key )
                 min = current;
-            REGISTRY_UNSET( search_registry, rank );
+            search_registry &= ~REGISTRY_SET( rank );
         }
     }
 

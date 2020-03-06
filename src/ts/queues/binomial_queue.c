@@ -73,7 +73,7 @@ export function pq_delete_min( queue: binomial_queue* ): key_type {
 
     //printf("Deleting minimum: %u\n",old_min.item);
 
-    REGISTRY_UNSET( queue.registry, old_min.rank );
+    queue.registry &= ~REGISTRY_SET( old_min.rank );
     queue.roots[old_min.rank] = null;
     queue.minimum = null;
 
@@ -158,11 +158,11 @@ export function cherry_pick_min( queue: binomial_queue* ): void {
     if( min >= MAXRANK )
         return;
 
-    REGISTRY_UNSET( registry, min );
+    registry &= ~REGISTRY_SET( min );
     while( registry )
     {
         rank = REGISTRY_LEADER( registry );
-        REGISTRY_UNSET( registry, rank );
+        registry &= ~REGISTRY_SET( rank );
         if( queue.roots[rank].key < queue.roots[min].key )
             min = rank;
     }
@@ -224,12 +224,12 @@ export function attempt_insert( queue: binomial_queue*,
     {
         result = join( queue, queue.roots[rank], node );
         queue.roots[rank] = null;
-        REGISTRY_UNSET( queue.registry, rank );
+        queue.registry &= ~REGISTRY_SET( rank );
     }
     else
     {
         queue.roots[rank] = node;
-        REGISTRY_SET( queue.registry, rank );
+        queue.registry |= REGISTRY_SET( rank );
     }
 
     return result;
@@ -332,7 +332,7 @@ export function verify_queue( queue: binomial_queue*, node_count: uint32 ): void
     while( registry )
     {
         rank = REGISTRY_LEADER( registry );
-        REGISTRY_UNSET( registry, rank );
+        registry &= ~REGISTRY_SET( rank );
         current = queue.roots[rank];
         verify_subtree( current, seen, 0, rank );
     }

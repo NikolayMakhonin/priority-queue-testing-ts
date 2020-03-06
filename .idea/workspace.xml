@@ -3,13 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/c_to_js_regexps.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/c_to_js_regexps.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_dumb.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_eager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_lazy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy_h.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap_h.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/queue_common_h.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/queue_common_h.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/typedefs.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/typedefs.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -167,7 +166,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583476911297</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Convert C to TS">
+      <created>1583478963813</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1583478963813</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
