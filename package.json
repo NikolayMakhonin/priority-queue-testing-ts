@@ -1,11 +1,11 @@
 {
-  "name": "app-template",
+  "name": "priority-queues",
   "version": "0.0.1",
-  "description": "App Template",
-  "author": "App Template",
-  "homepage": "",
+  "description": "Priority Queues",
+  "author": "Nikolay Makhonin",
+  "homepage": "https://github.com/NikolayMakhonin/priority-queues-ts",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/NikolayMakhonin/priority-queues-ts/issues"
   },
   "license": "CC0-1.0",
   "keywords": [],
