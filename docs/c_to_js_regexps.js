@@ -40,6 +40,12 @@ addRule(
 	`new Array<$2>($1);`,
 )
 
+// malloc -> new object
+addRule(
+	`\\bmalloc\\s*\\(\\s*sizeof\\s*\\(\\s*([^\\);]+?)\\s*\\)\\s*\\)\\s*;`,
+	`new $1\\(\\)`,
+)
+
 // malloc -> new Array
 // addRule(
 // 	`\\bmalloc\\s*\\(\\s*([^;\\*]+?)\\s* +\\* +[^;,]+;`,

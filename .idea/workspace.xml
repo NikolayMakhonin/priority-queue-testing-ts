@@ -1,42 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="WebStorm settings">
+    <list default="true" id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/c_to_js_regexps.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/c_to_js_regexps.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/driver/trace_driver.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/driver/trace_driver.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/driver/trace_stats.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/driver/trace_stats.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_dumb.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_dumb.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_eager.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_eager.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_lazy.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_lazy_h.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/binomial_queue.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/binomial_queue.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/explicit_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/explicit_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/explicit_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/explicit_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap_h.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_heap_h.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/knheap.C" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/knheap.C" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/knheap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/knheap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/pairing_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/pairing_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/pairing_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/pairing_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/quake_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/quake_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/quake_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/quake_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/violation_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/violation_heap.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/violation_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/violation_heap.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/typedefs_h.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/typedefs.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_dumb.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_dumb.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_eager.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_eager.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/memory_management_lazy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/memory_management_lazy_h.d.ts" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -187,7 +160,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583474755573</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Convert C to TS">
+      <created>1583476911297</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1583476911297</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,8 +197,8 @@
     <MESSAGE value="WebStorm settings" />
     <MESSAGE value="C to TS conversion rules" />
     <MESSAGE value="Added asm.js version" />
-    <MESSAGE value="Convert C to TS" />
     <MESSAGE value="Convert primitive types" />
-    <option name="LAST_COMMIT_MESSAGE" value="Convert primitive types" />
+    <MESSAGE value="Convert C to TS" />
+    <option name="LAST_COMMIT_MESSAGE" value="Convert C to TS" />
   </component>
 </project>

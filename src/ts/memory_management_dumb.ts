@@ -1,11 +1,11 @@
-import {uint32, uint8} from './typedefs'
+import {mem_map} from './memory_management_dumb'
+import {uint32} from './typedefs'
 
 export const PQ_MEM_WIDTH = 32;
 
 /**
- * Basic memory pool to use for node allocation.  Memory maps can be shared
- * between multiple queues for the purpose of melding.  The size of the pool is
- * doubled when the current capacity is exceeded.
+ * Dummy API for node allocation.  Just makes simple calls to associated system
+ * functions.
  */
 
 export interface mem_map {
@@ -13,19 +13,7 @@ export interface mem_map {
     types: uint32;
     //! sizes of single nodes
     sizes: uint32[];
-    //! number of each type of node
-    capacities: uint32[];
-
-    data: uint8[][];
-    free: uint8[][][];
-
-    index_data: uint32[];
-    index_free: uint32[];
 }
-
-//==============================================================================
-// PUBLIC DECLARATIONS
-//==============================================================================
 
 /**
  * Creates a new memory map for the specified node sizes
@@ -35,21 +23,30 @@ export interface mem_map {
  * @param capacities    The number of nodes of each type to allocate
  * @return              Pointer to the new memory map
  */
-export function mm_create( types: uint32, sizes: uint32[], capacities: uint32[] ): mem_map ;
+export function mm_create(types: uint32, sizes: uint32[] ): mem_map {
+    return {
+        types: types,
+        sizes: new Array<uint32>(types),
+    };
+}
 
 /**
  * Releases all allocated memory associated with the map.
  *
  * @param map   Map to deallocate
  */
-export function mm_destroy( map: mem_map ): void ;
+export function mm_destroy( map: mem_map ): void {
+    // TODO remove this method
+}
 
 /**
  * Resets map to initial state.  Does not deallocate memory.
  *
  * @param map   Map to reset
  */
-export function mm_clear( map: mem_map ): void ;
+export function mm_clear( map: mem_map ): void {
+    return;
+}
 
 /**
  * Allocates a single node from the memory pool.  First attempts to recycle old
@@ -60,7 +57,13 @@ export function mm_clear( map: mem_map ): void ;
  * @param type  Type of node to allocate
  * @return      Pointer to allocated node
  */
-export function pq_alloc_node( map: mem_map, type: uint32 ): any ;
+export function pq_alloc_node( map: mem_map, type: uint32 ): any {
+    // TODO
+
+    let node: any = new Array(1);
+
+    return node;
+}
 
 /**
  * Takes a previously allocated node and adds it to the free list to be
@@ -70,4 +73,6 @@ export function pq_alloc_node( map: mem_map, type: uint32 ): any ;
  * @param type  Type of node to free
  * @param node  Node to free
  */
-export function pq_free_node( map: mem_map, type: uint32, node: any ): void ;
+export function pq_free_node( map: mem_map, type: uint32, node: any ): void {
+
+}
