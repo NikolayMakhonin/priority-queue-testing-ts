@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="Added logger">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/app-template.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/configs/base.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -61,8 +56,8 @@
     <option name="generatedRoots">
       <set>
         <option value="L:\Work\_GIT\GitHub\NodeJs\apps\priority-queues\.idea" />
-        <option value="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues\.idea" />
         <option value="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\.idea" />
+        <option value="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues\.idea" />
       </set>
     </option>
   </component>
@@ -267,6 +262,14 @@
       <option name="presentableId" value="Default" />
       <updated>1583055712588</updated>
     </task>
+    <task id="LOCAL-00001" summary="Node.js module completed">
+      <created>1583504509123</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1583504509124</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,7 +331,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Users dialogs in process..." />
     <MESSAGE value="v0.0.18" />
     <MESSAGE value="User edit dialog in process..." />
     <MESSAGE value="Dialogs in process..." />
@@ -353,6 +355,7 @@
     <MESSAGE value="Removed unnecessary cmd files" />
     <MESSAGE value="Added logger" />
     <MESSAGE value="Deleting webapp specific code: Fix env" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleting webapp specific code: Fix env" />
+    <MESSAGE value="Node.js module completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Node.js module completed" />
   </component>
 </project>

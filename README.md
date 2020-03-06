@@ -19,10 +19,10 @@
 [npm-url]: https://npmjs.org/package/priority-queues
 [node-version-image]: https://img.shields.io/node/v/priority-queues.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://travis-ci.org/NikolayMakhonin/priority-queues.svg?branch=master
-[travis-url]: https://travis-ci.org/NikolayMakhonin/priority-queues?branch=master
-[coveralls-image]: https://coveralls.io/repos/github/NikolayMakhonin/priority-queues/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/NikolayMakhonin/priority-queues?branch=master
+[travis-image]: https://travis-ci.org/NikolayMakhonin/priority-queues-ts.svg?branch=master
+[travis-url]: https://travis-ci.org/NikolayMakhonin/priority-queues-ts?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/NikolayMakhonin/priority-queues-ts/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/NikolayMakhonin/priority-queues-ts?branch=master
 [downloads-image]: https://img.shields.io/npm/dm/priority-queues.svg
 [downloads-url]: https://npmjs.org/package/priority-queues
 [npm-url]: https://npmjs.org/package/priority-queues
