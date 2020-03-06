@@ -8,113 +8,113 @@ import {} from 'strict_fibonacci_heap.h'
 // BASIC NODE FUNCTIONS
 //--------------------------------------
 
-static inline int16 is_active( queue: strict_fibonacci_heap*,
-    let node: strict_fibonacci_node* );
-static inline void choose_order_pair( a: strict_fibonacci_node*,
-    b: strict_fibonacci_node*, parent: strict_fibonacci_node*[],
-    let child: strict_fibonacci_node*[] );
-static inline void choose_order_triple( a: strict_fibonacci_node*,
-    b: strict_fibonacci_node*, c: strict_fibonacci_node*,
-    grand: strict_fibonacci_node*[], parent: strict_fibonacci_node*[],
-    let child: strict_fibonacci_node*[] );
-static inline void remove_from_siblings( queue: strict_fibonacci_heap*,
-    let node: strict_fibonacci_node* );
-export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_node*,
-    child: strict_fibonacci_node* ): void ;
-export function select_new_root( queue: strict_fibonacci_heap* ): strict_fibonacci_node* ;
+static inline int16 is_active( queue: strict_fibonacci_heap,
+    let node: strict_fibonacci_node );
+static inline void choose_order_pair( a: strict_fibonacci_node,
+    b: strict_fibonacci_node, parent: strict_fibonacci_node[],
+    let child: strict_fibonacci_node[] );
+static inline void choose_order_triple( a: strict_fibonacci_node,
+    b: strict_fibonacci_node, c: strict_fibonacci_node,
+    grand: strict_fibonacci_node[], parent: strict_fibonacci_node[],
+    let child: strict_fibonacci_node[] );
+static inline void remove_from_siblings( queue: strict_fibonacci_heap,
+    let node: strict_fibonacci_node );
+export function link( queue: strict_fibonacci_heap, parent: strict_fibonacci_node,
+    child: strict_fibonacci_node ): void ;
+export function select_new_root( queue: strict_fibonacci_heap ): strict_fibonacci_node ;
 
 //--------------------------------------
 // QUEUE MANAGEMENT
 //--------------------------------------
 
-export function enqueue_node( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function dequeue_node( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_node* ;
+export function enqueue_node( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function dequeue_node( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function consume_node( queue: strict_fibonacci_heap ): strict_fibonacci_node ;
 
 //--------------------------------------
 // ACTIVE NODE MANAGEMENT
 //--------------------------------------
 
-export function increase_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function decrease_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function increase_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function decrease_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function switch_node_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node*, new_rank: rank_record* ): void ;
-export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+export function increase_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function decrease_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function increase_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function decrease_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function switch_node_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node, new_rank: rank_record* ): void ;
+export function insert_fix_node( queue: strict_fibonacci_heap, fix: fix_node,
     type: int16 ): void ;
-export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+export function remove_fix_node( queue: strict_fibonacci_heap, fix: fix_node,
     type: int16 ): void ;
-export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+export function check_rank( queue: strict_fibonacci_heap, rank: rank_record*,
     type: int16 ): void ;
-export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+export function move_rank( queue: strict_fibonacci_heap, rank: rank_record*,
     type: int16, direction: int16 ): void ;
 
 //--------------------------------------
 // NODE TYPE CONVERSIONS
 //--------------------------------------
 
-export function convert_active_to_root( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function convert_active_to_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function convert_root_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function convert_loss_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function convert_passive_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function convert_to_passive( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
+export function convert_active_to_root( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function convert_active_to_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function convert_root_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function convert_loss_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function convert_passive_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function convert_to_passive( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
 
 //--------------------------------------
 // REDUCTIONS
 //--------------------------------------
 
-export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 ;
-export function reduce_root_degree( queue: strict_fibonacci_heap* ): int16 ;
-export function reduce_loss( queue: strict_fibonacci_heap* ): int16 ;
-export function post_meld_reduction( queue: strict_fibonacci_heap* ): void ;
-export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void ;
-export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void ;
+export function reduce_active_roots( queue: strict_fibonacci_heap ): int16 ;
+export function reduce_root_degree( queue: strict_fibonacci_heap ): int16 ;
+export function reduce_loss( queue: strict_fibonacci_heap ): int16 ;
+export function post_meld_reduction( queue: strict_fibonacci_heap ): void ;
+export function post_delete_min_reduction( queue: strict_fibonacci_heap ): void ;
+export function post_decrease_key_reduction( queue: strict_fibonacci_heap ): void ;
 
 //--------------------------------------
 // GARBAGE COLLECTION & ALLOCATION
 //--------------------------------------
 
-export function create_rank_record( queue: strict_fibonacci_heap*,
+export function create_rank_record( queue: strict_fibonacci_heap,
     rank: uint32, pred: rank_record* ): rank_record* ;
-export function release_active_record( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function release_rank_record( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void ;
-export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
-    garbage_queue: strict_fibonacci_heap* ): void ;
-export function garbage_collection( queue: strict_fibonacci_heap* ): void ;
+export function release_active_record( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function release_rank_record( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void ;
+export function release_to_garbage_collector( queue: strict_fibonacci_heap,
+    garbage_queue: strict_fibonacci_heap ): void ;
+export function garbage_collection( queue: strict_fibonacci_heap ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): strict_fibonacci_heap* {
-    let queue: strict_fibonacci_heap* = new Array<strict_fibonacci_heap>(1);
+export function pq_create( map: mem_map ): strict_fibonacci_heap {
+    let queue: strict_fibonacci_heap = new Array<strict_fibonacci_heap>(1);
     queue.map = map;
 
     return queue;
 }
 
-export function pq_destroy( queue: strict_fibonacci_heap* ): void {
+export function pq_destroy( queue: strict_fibonacci_heap ): void {
     pq_clear( queue );
     free( queue );
 }
 
-export function pq_clear( queue: strict_fibonacci_heap* ): void {
+export function pq_clear( queue: strict_fibonacci_heap ): void {
     mm_clear( queue.map );
     queue.size = 0;
 
@@ -127,22 +127,22 @@ export function pq_clear( queue: strict_fibonacci_heap* ): void {
     queue.fix_list[1] = null;
 }
 
-export function pq_get_key( queue: strict_fibonacci_heap*, node: strict_fibonacci_node* ): key_type {
+export function pq_get_key( queue: strict_fibonacci_heap, node: strict_fibonacci_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): item_type* {
+export function pq_get_item( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: strict_fibonacci_heap* ): uint32 {
+export function pq_get_size( queue: strict_fibonacci_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: strict_fibonacci_heap*, item: item_type,
-    key: key_type ): strict_fibonacci_node* {
-    let wrapper: strict_fibonacci_node* = pq_alloc_node( queue.map,
+export function pq_insert( queue: strict_fibonacci_heap, item: item_type,
+    key: key_type ): strict_fibonacci_node {
+    let wrapper: strict_fibonacci_node = pq_alloc_node( queue.map,
         STRICT_NODE_FIB );
     wrapper.item = item;
     wrapper.key = key;
@@ -151,7 +151,7 @@ export function pq_insert( queue: strict_fibonacci_heap*, item: item_type,
     wrapper.q_next = wrapper;
     wrapper.q_prev = wrapper;
 
-    let parent: strict_fibonacci_node*, child;
+    let parent: strict_fibonacci_node, child;
     if( queue.root == null )
         queue.root = wrapper;
     else
@@ -170,18 +170,18 @@ export function pq_insert( queue: strict_fibonacci_heap*, item: item_type,
     return wrapper;
 }
 
-export function pq_find_min( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
+export function pq_find_min( queue: strict_fibonacci_heap ): strict_fibonacci_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.root;
 }
 
-export function pq_delete_min( queue: strict_fibonacci_heap* ): key_type {
+export function pq_delete_min( queue: strict_fibonacci_heap ): key_type {
     if( pq_empty( queue ) )
         return 0;
 
     let key: key_type = queue.root.key;
-    let current: strict_fibonacci_node*, new_root, old_root;
+    let current: strict_fibonacci_node, new_root, old_root;
     let i: int16, j;
 
     old_root = queue.root;
@@ -235,7 +235,7 @@ export function pq_delete_min( queue: strict_fibonacci_heap* ): key_type {
     return key;
 }
 
-export function pq_delete( queue: strict_fibonacci_heap*, node: strict_fibonacci_node* ): key_type {
+export function pq_delete( queue: strict_fibonacci_heap, node: strict_fibonacci_node ): key_type {
     let key: key_type = node.key;
 
     pq_decrease_key( queue, node, 0 );
@@ -244,16 +244,16 @@ export function pq_delete( queue: strict_fibonacci_heap*, node: strict_fibonacci
     return key;
 }
 
-export function pq_decrease_key( queue: strict_fibonacci_heap*, node: strict_fibonacci_node*,
+export function pq_decrease_key( queue: strict_fibonacci_heap, node: strict_fibonacci_node,
     new_key: key_type ): void {
-    let old_parent: strict_fibonacci_node* = node.parent;
+    let old_parent: strict_fibonacci_node = node.parent;
 
     node.key = new_key;
 
     if( old_parent == null || node.key > old_parent.key)
         return;
 
-    let parent: strict_fibonacci_node*, child;
+    let parent: strict_fibonacci_node, child;
     choose_order_pair( node, queue.root, &parent, &child );
 
     link( queue, parent, child );
@@ -280,13 +280,13 @@ export function pq_decrease_key( queue: strict_fibonacci_heap*, node: strict_fib
     garbage_collection( queue );
 }
 
-export function pq_meld( a: strict_fibonacci_heap*,
-    b: strict_fibonacci_heap* ): strict_fibonacci_heap* {
-    let new_heap: strict_fibonacci_heap* = pq_create( a.map );
-    let big: strict_fibonacci_heap*, small;
+export function pq_meld( a: strict_fibonacci_heap,
+    b: strict_fibonacci_heap ): strict_fibonacci_heap {
+    let new_heap: strict_fibonacci_heap = pq_create( a.map );
+    let big: strict_fibonacci_heap, small;
 
-    let big_head: strict_fibonacci_node*, big_tail, small_head, small_tail;
-    let parent: strict_fibonacci_node*, child;
+    let big_head: strict_fibonacci_node, big_tail, small_head, small_tail;
+    let parent: strict_fibonacci_node, child;
 
     // pick which heap to preserve
     if( a.size < b.size )
@@ -337,7 +337,7 @@ export function pq_meld( a: strict_fibonacci_heap*,
     return new_heap;
 }
 
-export function pq_empty( queue: strict_fibonacci_heap* ): boolean {
+export function pq_empty( queue: strict_fibonacci_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -357,8 +357,8 @@ export function pq_empty( queue: strict_fibonacci_heap* ): boolean {
  * @param node  Node to check
  * @return      1 if active, 0 otherwise
  */
-static inline int16 is_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* )
+static inline int16 is_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node )
 {
     if( node.active == null )
         return 0;
@@ -386,9 +386,9 @@ static inline int16 is_active( queue: strict_fibonacci_heap*,
  * @param parent    Destination pointer for the node of lesser key
  * @param child     Destination pointer for the node of greater key
  */
-static inline void choose_order_pair( a: strict_fibonacci_node*,
-    b: strict_fibonacci_node*, parent: strict_fibonacci_node*[],
-    child: strict_fibonacci_node*[] )
+static inline void choose_order_pair( a: strict_fibonacci_node,
+    b: strict_fibonacci_node, parent: strict_fibonacci_node[],
+    child: strict_fibonacci_node[] )
 {
     if( a.key <= b.key )
     {
@@ -413,10 +413,10 @@ static inline void choose_order_pair( a: strict_fibonacci_node*,
  * @param parent    Destination pointer for the node of middle key
  * @param child     Destination pointer for the node of greatest key
  */
-static inline void choose_order_triple( a: strict_fibonacci_node*,
-    b: strict_fibonacci_node*, c: strict_fibonacci_node*,
-    grand: strict_fibonacci_node*[], parent: strict_fibonacci_node*[],
-    child: strict_fibonacci_node*[] )
+static inline void choose_order_triple( a: strict_fibonacci_node,
+    b: strict_fibonacci_node, c: strict_fibonacci_node,
+    grand: strict_fibonacci_node[], parent: strict_fibonacci_node[],
+    child: strict_fibonacci_node[] )
 {
     if( a.key < b.key )
     {
@@ -468,14 +468,14 @@ static inline void choose_order_triple( a: strict_fibonacci_node*,
  * @param queue Queue in which to operate
  * @param node  Node to remove
  */
-static inline void remove_from_siblings( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* )
+static inline void remove_from_siblings( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node )
 {
     if( node.parent == null )
         return;
 
-    let next: strict_fibonacci_node* = node.right;
-    let prev: strict_fibonacci_node*;
+    let next: strict_fibonacci_node = node.right;
+    let prev: strict_fibonacci_node;
 
     if( next === node )
     {
@@ -503,8 +503,8 @@ static inline void remove_from_siblings( queue: strict_fibonacci_heap*,
  * @param parent    Parent node
  * @param child     New child node
  */
-export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_node*,
-    child: strict_fibonacci_node* ): void {
+export function link( queue: strict_fibonacci_heap, parent: strict_fibonacci_node,
+    child: strict_fibonacci_node ): void {
     if( parent === child.parent )
         return;
 
@@ -513,8 +513,8 @@ export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_no
     else
         remove_from_siblings( queue, child );
 
-    let next: strict_fibonacci_node* = parent.left_child;
-    let prev: strict_fibonacci_node*;
+    let next: strict_fibonacci_node = parent.left_child;
+    let prev: strict_fibonacci_node;
 
     if( parent.left_child == null )
         parent.left_child = child;
@@ -539,11 +539,11 @@ export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_no
  * @param queue Queue in which to operate
  * @return      Pointer to the new root of the heap
  */
-export function select_new_root( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
-    let old_root: strict_fibonacci_node* = queue.root;
-    let new_root: strict_fibonacci_node* = old_root.left_child;
+export function select_new_root( queue: strict_fibonacci_heap ): strict_fibonacci_node {
+    let old_root: strict_fibonacci_node = queue.root;
+    let new_root: strict_fibonacci_node = old_root.left_child;
 
-    let current: strict_fibonacci_node* = new_root.right;
+    let current: strict_fibonacci_node = new_root.right;
     while( current !== old_root.left_child )
     {
         if( current.key < new_root.key )
@@ -564,9 +564,9 @@ export function select_new_root( queue: strict_fibonacci_heap* ): strict_fibonac
  * @param queue Queue in which to operate
  * @param node  Node to enqueue
  */
-export function enqueue_node( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
-    let next: strict_fibonacci_node*, prev;
+export function enqueue_node( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
+    let next: strict_fibonacci_node, prev;
 
     if( queue.q_head != null )
     {
@@ -588,10 +588,10 @@ export function enqueue_node( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to dequeue
  */
-export function dequeue_node( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
-    let prev: strict_fibonacci_node*;
-    let next: strict_fibonacci_node* = node.q_next;
+export function dequeue_node( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
+    let prev: strict_fibonacci_node;
+    let next: strict_fibonacci_node = node.q_next;
     if( next === node )
         queue.q_head = null;
     else
@@ -614,11 +614,11 @@ export function dequeue_node( queue: strict_fibonacci_heap*,
  *
  * @param queue Queue in which to operate
  */
-export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
+export function consume_node( queue: strict_fibonacci_heap ): strict_fibonacci_node {
     if( queue.q_head == null )
         return null;
 
-    let target: strict_fibonacci_node* = queue.q_head;
+    let target: strict_fibonacci_node = queue.q_head;
     queue.q_head = target.q_next;
 
     return target;
@@ -635,8 +635,8 @@ export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-export function increase_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function increase_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     let new_rank: rank_record* = node.rank.inc;
     let target_rank: uint32 = node.rank.rank + 1;
     if( new_rank.rank !== target_rank )
@@ -652,8 +652,8 @@ export function increase_rank( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-export function decrease_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function decrease_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     let new_rank: rank_record* = node.rank.dec;
     let target_rank: uint32 = node.rank.rank - 1;
     if( new_rank.rank !== target_rank )
@@ -669,8 +669,8 @@ export function decrease_rank( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-export function increase_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function increase_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     node.loss++;
     if( node.loss === 1 )
         convert_active_to_loss( queue, node );
@@ -683,8 +683,8 @@ export function increase_loss( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-export function decrease_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function decrease_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     node.loss = 0;
     convert_loss_to_active( queue, node );
 }
@@ -697,12 +697,12 @@ export function decrease_loss( queue: strict_fibonacci_heap*,
  * @param node      Node to alter
  * @param new_rank  New rank for the node
  */
-export function switch_node_rank( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node*, new_rank: rank_record* ): void {
+export function switch_node_rank( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node, new_rank: rank_record* ): void {
     int16 type = ( node.type === STRICT_TYPE_ROOT ) ? STRICT_FIX_ROOT :
         STRICT_FIX_LOSS;
 
-    let fix: fix_node* = node.fix;
+    let fix: fix_node = node.fix;
     if( fix != null )
         remove_fix_node( queue, fix, type );
 
@@ -724,7 +724,7 @@ export function switch_node_rank( queue: strict_fibonacci_heap*,
  * @param fix   Fix node to insert
  * @param type  Which list to alter
  */
-export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+export function insert_fix_node( queue: strict_fibonacci_heap, fix: fix_node,
     type: int16 ): void {
     let rank: rank_record* = fix.rank;
 
@@ -770,7 +770,7 @@ export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
  * @param fix   Fix node to remove
  * @param type  Which list to alter
  */
-export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+export function remove_fix_node( queue: strict_fibonacci_heap, fix: fix_node,
     type: int16 ): void {
     let rank: rank_record* = fix.rank;
 
@@ -795,8 +795,8 @@ export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
     else if( rank.tail[type] === fix )
         rank.tail[type] = fix.left;
 
-    let next: fix_node* = fix.right;
-    let prev: fix_node* = fix.left;
+    let next: fix_node = fix.right;
+    let prev: fix_node = fix.left;
 
     next.left = prev;
     prev.right = next;
@@ -812,7 +812,7 @@ export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
  * @param rank  Rank to check
  * @param type  Which list to alter
  */
-export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+export function check_rank( queue: strict_fibonacci_heap, rank: rank_record*,
     type: int16 ): void {
     if( rank.head[type] == null )
         return;
@@ -834,12 +834,12 @@ export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
  * @param type      Which list to alter
  * @param direction STRICT_DIR_PROMOTE or STRICT_DIR_DEMOTE
  */
-export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+export function move_rank( queue: strict_fibonacci_heap, rank: rank_record*,
     type: int16, direction: int16 ): void {
-    let head: fix_node* = rank.head[type];
-    let tail: fix_node* = rank.tail[type];
-    let pred: fix_node* = head.left;
-    let succ: fix_node* = tail.right;
+    let head: fix_node = rank.head[type];
+    let tail: fix_node = rank.tail[type];
+    let pred: fix_node = head.left;
+    let succ: fix_node = tail.right;
 
     rank.transformable[type] = direction;
 
@@ -887,12 +887,12 @@ export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_active_to_root( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function convert_active_to_root( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     if( is_active( queue, node ) && node.type === STRICT_TYPE_LOSS )
         convert_loss_to_active( queue, node );
 
-    let fix: fix_node* = pq_alloc_node( queue.map, STRICT_NODE_FIX );
+    let fix: fix_node = pq_alloc_node( queue.map, STRICT_NODE_FIX );
     fix.node = node;
     fix.rank = node.rank;
     node.fix = fix;
@@ -908,9 +908,9 @@ export function convert_active_to_root( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_active_to_loss( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
-    let fix: fix_node* = pq_alloc_node( queue.map, STRICT_NODE_FIX );
+export function convert_active_to_loss( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
+    let fix: fix_node = pq_alloc_node( queue.map, STRICT_NODE_FIX );
     fix.node = node;
     fix.rank = node.rank;
     node.fix = fix;
@@ -926,8 +926,8 @@ export function convert_active_to_loss( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_root_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function convert_root_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     remove_fix_node( queue, node.fix, STRICT_FIX_ROOT );
     pq_free_node( queue.map, STRICT_NODE_FIX, node.fix );
     node.fix = null;
@@ -941,8 +941,8 @@ export function convert_root_to_active( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_loss_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function convert_loss_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     remove_fix_node( queue, node.fix, STRICT_FIX_LOSS );
     pq_free_node( queue.map, STRICT_NODE_FIX, node.fix );
     node.fix = null;
@@ -956,8 +956,8 @@ export function convert_loss_to_active( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_passive_to_active( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function convert_passive_to_active( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     if( queue.active == null )
     {
         queue.active = pq_alloc_node( queue.map, STRICT_NODE_ACTIVE );
@@ -983,8 +983,8 @@ export function convert_passive_to_active( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-export function convert_to_passive( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function convert_to_passive( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     if( node.fix != null )
     {
         remove_fix_node( queue, node.fix, ( node.type === STRICT_TYPE_ROOT ) ?
@@ -1003,7 +1003,7 @@ export function convert_to_passive( queue: strict_fibonacci_heap*,
     if( node.left_child == null )
         return;
 
-    let current: strict_fibonacci_node* = node.left_child;
+    let current: strict_fibonacci_node = node.left_child;
     if( is_active( queue, current ) && current.type === STRICT_TYPE_ACTIVE )
         convert_active_to_root( queue, current );
     current = current.right;
@@ -1025,8 +1025,8 @@ export function convert_to_passive( queue: strict_fibonacci_heap*,
  *
  * @param queue Queue in which to operate
  */
-export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 {
-    let head: fix_node* = queue.fix_list[STRICT_FIX_ROOT];
+export function reduce_active_roots( queue: strict_fibonacci_heap ): int16 {
+    let head: fix_node = queue.fix_list[STRICT_FIX_ROOT];
     if( head == null )
         return 0;
 
@@ -1034,15 +1034,15 @@ export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 {
     if( head === rank.tail[STRICT_FIX_ROOT] )
         return 0;
 
-    let next: fix_node* = head.right;
-    let parent: strict_fibonacci_node*, child;
+    let next: fix_node = head.right;
+    let parent: strict_fibonacci_node, child;
     choose_order_pair( head.node, next.node, &parent, &child );
 
     link( queue, parent, child );
     convert_root_to_active( queue, child );
     increase_rank( queue, parent );
 
-    let extra: strict_fibonacci_node* = parent.left_child.left;
+    let extra: strict_fibonacci_node = parent.left_child.left;
     if( !is_active( queue, extra ) )
         link( queue, queue.root, extra );
 
@@ -1054,23 +1054,23 @@ export function reduce_active_roots( queue: strict_fibonacci_heap* ): int16 {
  *
  * @param queue Queue in which to operate
  */
-export function reduce_root_degree( queue: strict_fibonacci_heap* ): int16 {
+export function reduce_root_degree( queue: strict_fibonacci_heap ): int16 {
     if( queue.root == null || queue.root.left_child == null )
         return 0;
 
-    let x: strict_fibonacci_node* = queue.root.left_child.left;
+    let x: strict_fibonacci_node = queue.root.left_child.left;
     if( x === queue.root.left_child || is_active( queue, x ) )
         return 0;
 
-    let y: strict_fibonacci_node* = x.left;
+    let y: strict_fibonacci_node = x.left;
     if( y === queue.root.left_child || is_active( queue, y ) )
         return 0;
 
-    let z: strict_fibonacci_node* = y.left;
+    let z: strict_fibonacci_node = y.left;
     if( z === queue.root.left_child || is_active( queue, z ) )
         return 0;
 
-    let grand: strict_fibonacci_node*, parent, child;
+    let grand: strict_fibonacci_node, parent, child;
     choose_order_triple( x, y, z, &grand, &parent, &child );
 
     convert_passive_to_active( queue, parent );
@@ -1091,9 +1091,9 @@ export function reduce_root_degree( queue: strict_fibonacci_heap* ): int16 {
  *
  * @param queue Queue in which to operate
  */
-export function reduce_loss( queue: strict_fibonacci_heap* ): int16 {
+export function reduce_loss( queue: strict_fibonacci_heap ): int16 {
     let reduction: int16 = 2;
-    let head: fix_node* = queue.fix_list[STRICT_FIX_LOSS];
+    let head: fix_node = queue.fix_list[STRICT_FIX_LOSS];
     if( head == null )
         return 0;
 
@@ -1101,9 +1101,9 @@ export function reduce_loss( queue: strict_fibonacci_heap* ): int16 {
     if( head === rank.tail[STRICT_FIX_LOSS] && head.node.loss < 2 )
         return 0;
 
-    let single: fix_node*;
-    let next: fix_node* = head.right;
-    let child: strict_fibonacci_node*, parent, old_parent;
+    let single: fix_node;
+    let next: fix_node = head.right;
+    let child: strict_fibonacci_node, parent, old_parent;
     if( head.node.loss > 1 )
     {
         reduction = 1;
@@ -1159,7 +1159,7 @@ export function reduce_loss( queue: strict_fibonacci_heap* ): int16 {
  *
  * @param queue Queue in which to operate
  */
-export function post_meld_reduction( queue: strict_fibonacci_heap* ): void {
+export function post_meld_reduction( queue: strict_fibonacci_heap ): void {
     let count_root: int16 = 0;
     let count_degree: int16 = 0;
 
@@ -1182,7 +1182,7 @@ export function post_meld_reduction( queue: strict_fibonacci_heap* ): void {
  *
  * @param queue Queue in which to operate
  */
-export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void {
+export function post_delete_min_reduction( queue: strict_fibonacci_heap ): void {
     while( 1 )
     {
         if( reduce_active_roots( queue ) )
@@ -1201,7 +1201,7 @@ export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void
  *
  * @param queue Queue in which to operate
  */
-export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void {
+export function post_decrease_key_reduction( queue: strict_fibonacci_heap ): void {
     let count_root: int16 = 0;
     let count_degree: int16 = 0;
 
@@ -1230,7 +1230,7 @@ export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): vo
  * @param rank  Rank for the new record
  * @param succ  Next greatest rank in the list
  */
-export function create_rank_record( queue: strict_fibonacci_heap*,
+export function create_rank_record( queue: strict_fibonacci_heap,
     rank: uint32, succ: rank_record* ): rank_record* {
     let pred: rank_record*;
     let new_rank: rank_record* = pq_alloc_node( queue.map, STRICT_NODE_RANK );
@@ -1261,8 +1261,8 @@ export function create_rank_record( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node containing active record reference
  */
-export function release_active_record( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function release_active_record( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     node.active.ref_count--;
     if( node.active.ref_count === 0 )
     {
@@ -1280,8 +1280,8 @@ export function release_active_record( queue: strict_fibonacci_heap*,
  * @param queue Queue in which to operate
  * @param node  Node containing rank record reference
  */
-export function release_rank_record( queue: strict_fibonacci_heap*,
-    node: strict_fibonacci_node* ): void {
+export function release_rank_record( queue: strict_fibonacci_heap,
+    node: strict_fibonacci_node ): void {
     let rank: rank_record* = node.rank;
     rank.ref_count--;
     if( rank.ref_count === 0 )
@@ -1312,10 +1312,10 @@ export function release_rank_record( queue: strict_fibonacci_heap*,
  * @param queue         Queue which which will not be deleted
  * @param garbage_queue Queue to release for garbage collection
  */
-export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
-    garbage_queue: strict_fibonacci_heap* ): void {
+export function release_to_garbage_collector( queue: strict_fibonacci_heap,
+    garbage_queue: strict_fibonacci_heap ): void {
     let i: int16;
-    let tail: fix_node*, head, g_tail, g_head;
+    let tail: fix_node, head, g_tail, g_head;
 
     for( i = 0; i < 2; i++ )
     {
@@ -1344,8 +1344,8 @@ export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
  *
  * @param queue Queue in which to operate
  */
-export function garbage_collection( queue: strict_fibonacci_heap* ): void {
-    let fix: fix_node*;
+export function garbage_collection( queue: strict_fibonacci_heap ): void {
+    let fix: fix_node;
 
     if( queue.garbage_fix != null )
     {

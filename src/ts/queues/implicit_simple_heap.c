@@ -4,18 +4,18 @@ import {} from 'implicit_simple_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-export function push( queue: implicit_simple_heap*, src: uint32, dst: uint32 ): void ;
-export function dump( queue: implicit_simple_heap*, node: implicit_simple_node*, dst: uint32 ): void ;
-export function heapify_down( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32 ;
-export function heapify_up( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32 ;
-export function grow_heap( queue: implicit_simple_heap* ): void ;
+export function push( queue: implicit_simple_heap, src: uint32, dst: uint32 ): void ;
+export function dump( queue: implicit_simple_heap, node: implicit_simple_node, dst: uint32 ): void ;
+export function heapify_down( queue: implicit_simple_heap, node: implicit_simple_node ): uint32 ;
+export function heapify_up( queue: implicit_simple_heap, node: implicit_simple_node ): uint32 ;
+export function grow_heap( queue: implicit_simple_heap ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): implicit_simple_heap* {
-    let queue: implicit_simple_heap* = new Array(1);
+export function pq_create( map: mem_map ): implicit_simple_heap {
+    let queue: implicit_simple_heap = new Array(1);
 #ifndef USE_EAGER
     queue.capacity = 1;
     queue.nodes = new Array(1);
@@ -28,35 +28,35 @@ export function pq_create( map: mem_map ): implicit_simple_heap* {
     return queue;
 }
 
-export function pq_destroy( queue: implicit_simple_heap* ): void {
+export function pq_destroy( queue: implicit_simple_heap ): void {
     pq_clear( queue );
     free( queue.nodes );
     free( queue );
 }
 
-export function pq_clear( queue: implicit_simple_heap* ): void {
+export function pq_clear( queue: implicit_simple_heap ): void {
     mm_clear( queue.map );
     queue.size = 0;
 }
 
-export function pq_get_key( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type {
+export function pq_get_key( queue: implicit_simple_heap, node: implicit_simple_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: implicit_simple_heap*, node: implicit_simple_node* ): item_type* {
+export function pq_get_item( queue: implicit_simple_heap, node: implicit_simple_node ): item_type* {
     return node.item;
 }
 
-export function pq_get_size( queue: implicit_simple_heap* ): uint32 {
+export function pq_get_size( queue: implicit_simple_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: implicit_simple_heap*, item: item_type, key: key_type ): implicit_simple_node* {
+export function pq_insert( queue: implicit_simple_heap, item: item_type, key: key_type ): implicit_simple_node {
 #ifndef USE_EAGER
     if( queue.size === queue.capacity )
         grow_heap( queue );
 #endif
-    let node: implicit_simple_node* = &(queue.nodes[queue.size++]);
+    let node: implicit_simple_node = &(queue.nodes[queue.size++]);
     node.key = key;
     node.item = item;
 
@@ -65,13 +65,13 @@ export function pq_insert( queue: implicit_simple_heap*, item: item_type, key: k
     return 0;
 }
 
-export function pq_find_min( queue: implicit_simple_heap* ): implicit_simple_node* {
+export function pq_find_min( queue: implicit_simple_heap ): implicit_simple_node {
     if ( pq_empty( queue ) )
         return null;
     return &(queue.nodes[0]);
 }
 
-export function pq_delete_min( queue: implicit_simple_heap* ): key_type {
+export function pq_delete_min( queue: implicit_simple_heap ): key_type {
     let node: implicit_simple_node = queue.nodes[0];
     let key: key_type = node.key;
 
@@ -83,17 +83,17 @@ export function pq_delete_min( queue: implicit_simple_heap* ): key_type {
     return key;
 }
 
-export function pq_delete( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type {
+export function pq_delete( queue: implicit_simple_heap, node: implicit_simple_node ): key_type {
     return 0;
 }
 
-export function pq_decrease_key( queue: implicit_simple_heap*, node: implicit_simple_node*,
+export function pq_decrease_key( queue: implicit_simple_heap, node: implicit_simple_node,
     new_key: key_type ): void {
     node.key = new_key;
     heapify_up( queue, node );
 }
 
-export function pq_empty( queue: implicit_simple_heap* ): boolean {
+export function pq_empty( queue: implicit_simple_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -112,7 +112,7 @@ export function pq_empty( queue: implicit_simple_heap* ): boolean {
  * @param src   Index of data to be duplicated
  * @param dst   Index of data to overwrite
  */
-export function push( queue: implicit_simple_heap*, src: uint32, dst: uint32 ): void {
+export function push( queue: implicit_simple_heap, src: uint32, dst: uint32 ): void {
     queue.nodes[dst] = queue.nodes[src];
 }
 
@@ -124,7 +124,7 @@ export function push( queue: implicit_simple_heap*, src: uint32, dst: uint32 ): 
  * @param node  Pointer to node to be dumped
  * @param dst   Index of location to dump node
  */
-export function dump( queue: implicit_simple_heap*, node: implicit_simple_node*, dst: uint32 ): void {
+export function dump( queue: implicit_simple_heap, node: implicit_simple_node, dst: uint32 ): void {
     queue.nodes[dst] = *node;
 }
 
@@ -135,7 +135,7 @@ export function dump( queue: implicit_simple_heap*, node: implicit_simple_node*,
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-export function heapify_down( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32 {
+export function heapify_down( queue: implicit_simple_heap, node: implicit_simple_node ): uint32 {
     let saved: implicit_simple_node = *node;
     let sentinel: uint32, i, min;
     let base: uint32 = node - queue.nodes;
@@ -173,7 +173,7 @@ export function heapify_down( queue: implicit_simple_heap*, node: implicit_simpl
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-export function heapify_up( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32 {
+export function heapify_up( queue: implicit_simple_heap, node: implicit_simple_node ): uint32 {
     let saved: implicit_simple_node = *node;
     let i: uint32;
     for( i = node - queue.nodes; i > 0; i = (i-1)/BRANCHING_FACTOR )
@@ -188,10 +188,10 @@ export function heapify_up( queue: implicit_simple_heap*, node: implicit_simple_
     return 0;
 }
 
-export function grow_heap( queue: implicit_simple_heap* ): void {
+export function grow_heap( queue: implicit_simple_heap ): void {
     let new_capacity: uint32 = queue.capacity * 2;
-    let new_array: implicit_simple_node*[] = realloc( queue.nodes, new_capacity *
-        sizeof( implicit_simple_node* ) );
+    let new_array: implicit_simple_node[] = realloc( queue.nodes, new_capacity *
+        sizeof( implicit_simple_node ) );
 
     if( new_array == null )
         exit( -1 );

@@ -43,11 +43,11 @@ export interface binomial_queue_t {
     //! The number of items held in the queue
     let size: uint32;
     //! Pointer to the minimum node in the queue
-    let minimum: binomial_node*;
+    let minimum: binomial_node;
     //! A registry to keep track of non-null roots
     let registry: uint64;
     //! An array of roots of the queue, indexed by rank
-    let roots: binomial_node*[MAXRANK];
+    let roots: binomial_node[MAXRANK];
 };
 
 export type binomial_queue = binomial_queue_t;
@@ -86,7 +86,7 @@ export function pq_clear( queue: binomial_queue* ): void ;
  * @param node  Node to query
  * @return      Node's key
  */
-export function pq_get_key( queue: binomial_queue*, node: binomial_node* ): key_type ;
+export function pq_get_key( queue: binomial_queue*, node: binomial_node ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -95,7 +95,7 @@ export function pq_get_key( queue: binomial_queue*, node: binomial_node* ): key_
  * @param node  Node to query
  * @return      Node's item
  */
-export function pq_get_item( queue: binomial_queue*, node: binomial_node* ): item_type* ;
+export function pq_get_item( queue: binomial_queue*, node: binomial_node ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -115,7 +115,7 @@ export function pq_get_size( queue: binomial_queue* ): uint32 ;
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-export function pq_insert( queue: binomial_queue*, item: item_type, key: key_type ): binomial_node* ;
+export function pq_insert( queue: binomial_queue*, item: item_type, key: key_type ): binomial_node ;
 
 /**
  * Returns the minimum item from the queue.
@@ -123,7 +123,7 @@ export function pq_insert( queue: binomial_queue*, item: item_type, key: key_typ
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-export function pq_find_min( queue: binomial_queue* ): binomial_node* ;
+export function pq_find_min( queue: binomial_queue* ): binomial_node ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -147,7 +147,7 @@ export function pq_delete_min( queue: binomial_queue* ): key_type ;
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-export function pq_delete( queue: binomial_queue*, node: binomial_node* ): key_type ;
+export function pq_delete( queue: binomial_queue*, node: binomial_node ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -160,7 +160,7 @@ export function pq_delete( queue: binomial_queue*, node: binomial_node* ): key_t
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-export function pq_decrease_key( queue: binomial_queue*, node: binomial_node*,
+export function pq_decrease_key( queue: binomial_queue*, node: binomial_node,
     new_key: key_type ): void ;
 
 /**

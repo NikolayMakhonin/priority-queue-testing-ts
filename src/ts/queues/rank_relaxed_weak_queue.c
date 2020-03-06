@@ -5,47 +5,47 @@ import {} from 'rank_relaxed_weak_queue.h'
 //==============================================================================
 
 static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
-    let node: rank_relaxed_weak_node* );
+    let node: rank_relaxed_weak_node );
 static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16,
-    let node: rank_relaxed_weak_node* );
+    let node: rank_relaxed_weak_node );
 
 export function insert_root( queue: rank_relaxed_weak_queue*,
-    new_root: rank_relaxed_weak_node* ): void ;
+    new_root: rank_relaxed_weak_node ): void ;
 export function restore_invariants( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): void ;
+    node: rank_relaxed_weak_node ): void ;
 export function join( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 
 export function swap_parent_with_right_child( queue: rank_relaxed_weak_queue*,
-    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void ;
+    parent: rank_relaxed_weak_node, child: rank_relaxed_weak_node ): void ;
 export function swap_parent_with_left_child( queue: rank_relaxed_weak_queue*,
-    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void ;
+    parent: rank_relaxed_weak_node, child: rank_relaxed_weak_node ): void ;
 export function swap_disconnected( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void ;
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): void ;
 
 export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void ;
-static inline void flip_subtree( node: rank_relaxed_weak_node* );
-static inline void swap_subtrees( a: rank_relaxed_weak_node*,
-    sub_a: rank_relaxed_weak_node*[], b: rank_relaxed_weak_node*,
-    let sub_b: rank_relaxed_weak_node*[] );
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): void ;
+static inline void flip_subtree( node: rank_relaxed_weak_node );
+static inline void swap_subtrees( a: rank_relaxed_weak_node,
+    sub_a: rank_relaxed_weak_node[], b: rank_relaxed_weak_node,
+    let sub_b: rank_relaxed_weak_node[] );
 
 export function sever_spine( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): void ;
+    node: rank_relaxed_weak_node ): void ;
 export function replace_node( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node*, replacement: rank_relaxed_weak_node* ): void ;
+    node: rank_relaxed_weak_node, replacement: rank_relaxed_weak_node ): void ;
 export function fix_min( queue: rank_relaxed_weak_queue* ): void ;
 
 export function transformation_cleaning(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 export function transformation_pair(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 export function transformation_parent(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 export function transformation_sibling(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 export function transformation_zigzag(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node ;
 
 //==============================================================================
 // PUBLIC METHODS
@@ -67,19 +67,19 @@ export function pq_clear( queue: rank_relaxed_weak_queue* ): void {
     mm_clear( queue.map );
     queue.size = 0;
     queue.minimum = null;
-    memset( queue.nodes[ROOTS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
-    memset( queue.nodes[MARKS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
+    memset( queue.nodes[ROOTS], 0, MAXRANK * sizeof( rank_relaxed_weak_node ) );
+    memset( queue.nodes[MARKS], 0, MAXRANK * sizeof( rank_relaxed_weak_node ) );
     queue.registry[ROOTS] = 0;
     queue.registry[MARKS] = 0;
 }
 
 export function pq_get_key( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): key_type {
+    node: rank_relaxed_weak_node ): key_type {
     return node.key;
 }
 
 export function pq_get_item( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): item_type* {
+    node: rank_relaxed_weak_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
@@ -88,8 +88,8 @@ export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32 {
 }
 
 export function pq_insert( queue: rank_relaxed_weak_queue*,
-    item: item_type, key: key_type ): rank_relaxed_weak_node* {
-    let wrapper: rank_relaxed_weak_node* = pq_alloc_node( queue.map, 0 );
+    item: item_type, key: key_type ): rank_relaxed_weak_node {
+    let wrapper: rank_relaxed_weak_node = pq_alloc_node( queue.map, 0 );
     wrapper.item = item;
     wrapper.key = key;
     queue.size++;
@@ -101,18 +101,18 @@ export function pq_insert( queue: rank_relaxed_weak_queue*,
     return wrapper;
 }
 
-export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node* {
+export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.minimum;
 }
 
 export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type {
-    let old_min: rank_relaxed_weak_node* = queue.minimum;
+    let old_min: rank_relaxed_weak_node = queue.minimum;
     let min_key: key_type = old_min.key;
 
     let replacement_rank: uint32;
-    let replacement: rank_relaxed_weak_node* = old_min;
+    let replacement: rank_relaxed_weak_node = old_min;
     if( old_min.parent != null )
     {
         replacement_rank = REGISTRY_LEADER( queue.registry[ROOTS] );
@@ -144,14 +144,14 @@ export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type {
     return min_key;
 }
 
-export function pq_delete( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): key_type {
+export function pq_delete( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): key_type {
     pq_decrease_key( queue, node, 0 );
     let min_key: key_type = pq_delete_min( queue );
 
     return min_key;
 }
 
-export function pq_decrease_key( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node*,
+export function pq_decrease_key( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node,
     new_key: key_type ): void {
     node.key = new_key;
     if( node.parent != null )
@@ -182,7 +182,7 @@ export function pq_empty( queue: rank_relaxed_weak_queue* ): boolean {
  * @param node  Node to insert
  */
 static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
-    node: rank_relaxed_weak_node* )
+    node: rank_relaxed_weak_node )
 {
     if( !OCCUPIED( queue.registry[type], node.rank ) )
     {
@@ -200,7 +200,7 @@ static inline void register_node( queue: rank_relaxed_weak_queue*, type: int16,
  * @param node  Node to remove
  */
 static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16,
-    node: rank_relaxed_weak_node* )
+    node: rank_relaxed_weak_node )
 {
     if( queue.nodes[type][node.rank] === node )
     {
@@ -218,8 +218,8 @@ static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int16
  * @param new_root  New root to insert
  */
 export function insert_root( queue: rank_relaxed_weak_queue*,
-    new_root: rank_relaxed_weak_node* ): void {
-    let tree: rank_relaxed_weak_node* = new_root;
+    new_root: rank_relaxed_weak_node ): void {
+    let tree: rank_relaxed_weak_node = new_root;
     let rank: uint32 = tree.rank;
     while( OCCUPIED( queue.registry[ROOTS], rank ) )
     {
@@ -245,8 +245,8 @@ export function insert_root( queue: rank_relaxed_weak_queue*,
  * @param node  Most recently marked node
  */
 export function restore_invariants( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): void {
-    let new_mark: rank_relaxed_weak_node* = node;
+    node: rank_relaxed_weak_node ): void {
+    let new_mark: rank_relaxed_weak_node = node;
 
     unregister_node( queue, MARKS, node );
     new_mark.marked = 1;
@@ -347,8 +347,8 @@ export function restore_invariants( queue: rank_relaxed_weak_queue*,
  * @return      Pointer to new tree
  */
 export function join( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let parent: rank_relaxed_weak_node*, child;
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let parent: rank_relaxed_weak_node, child;
     if( a.key <= b.key )
     {
         parent = a;
@@ -404,11 +404,11 @@ export function join( queue: rank_relaxed_weak_queue*,
  * @param child     Right child node
  */
 export function swap_parent_with_right_child( queue: rank_relaxed_weak_queue*,
-    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void {
-    let parent_parent: rank_relaxed_weak_node* = parent.parent;
-    let parent_left: rank_relaxed_weak_node* = parent.left;
-    let child_left: rank_relaxed_weak_node* = child.left;
-    let child_right: rank_relaxed_weak_node* = child.right;
+    parent: rank_relaxed_weak_node, child: rank_relaxed_weak_node ): void {
+    let parent_parent: rank_relaxed_weak_node = parent.parent;
+    let parent_left: rank_relaxed_weak_node = parent.left;
+    let child_left: rank_relaxed_weak_node = child.left;
+    let child_right: rank_relaxed_weak_node = child.right;
 
     parent.parent = child;
     child.right = parent;
@@ -445,11 +445,11 @@ export function swap_parent_with_right_child( queue: rank_relaxed_weak_queue*,
  * @param child     Left child node
  */
 export function swap_parent_with_left_child( queue: rank_relaxed_weak_queue*,
-    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void {
-    let parent_parent: rank_relaxed_weak_node* = parent.parent;
-    let parent_right: rank_relaxed_weak_node* = parent.right;
-    let child_left: rank_relaxed_weak_node* = child.left;
-    let child_right: rank_relaxed_weak_node* = child.right;
+    parent: rank_relaxed_weak_node, child: rank_relaxed_weak_node ): void {
+    let parent_parent: rank_relaxed_weak_node = parent.parent;
+    let parent_right: rank_relaxed_weak_node = parent.right;
+    let child_left: rank_relaxed_weak_node = child.left;
+    let child_right: rank_relaxed_weak_node = child.right;
 
     parent.parent = child;
     child.left = parent;
@@ -486,13 +486,13 @@ export function swap_parent_with_left_child( queue: rank_relaxed_weak_queue*,
  * @param b     Second node
  */
 export function swap_disconnected( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void {
-    let a_parent: rank_relaxed_weak_node* = a.parent;
-    let a_left: rank_relaxed_weak_node* = a.left;
-    let a_right: rank_relaxed_weak_node* = a.right;
-    let b_parent: rank_relaxed_weak_node* = b.parent;
-    let b_left: rank_relaxed_weak_node* = b.left;
-    let b_right: rank_relaxed_weak_node* = b.right;
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): void {
+    let a_parent: rank_relaxed_weak_node = a.parent;
+    let a_left: rank_relaxed_weak_node = a.left;
+    let a_right: rank_relaxed_weak_node = a.right;
+    let b_parent: rank_relaxed_weak_node = b.parent;
+    let b_left: rank_relaxed_weak_node = b.left;
+    let b_right: rank_relaxed_weak_node = b.right;
 
     a.parent = b_parent;
     if( b_parent != null )
@@ -542,7 +542,7 @@ export function swap_disconnected( queue: rank_relaxed_weak_queue*,
  * @param child     Right child node
  */
 export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
-    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void {
+    a: rank_relaxed_weak_node, b: rank_relaxed_weak_node ): void {
     int16 a_unrooted = ( queue.nodes[ROOTS][a.rank] === a );
     int16 b_unrooted = ( queue.nodes[ROOTS][b.rank] === b );
 
@@ -570,11 +570,11 @@ export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
  *
  * @param node  Node whose subtree to flip
  */
-static inline void flip_subtree( node: rank_relaxed_weak_node* )
+static inline void flip_subtree( node: rank_relaxed_weak_node )
 {
     if( node.parent == null )
         return;
-    let temp: rank_relaxed_weak_node* = node.left;
+    let temp: rank_relaxed_weak_node = node.left;
     node.left = node.right;
     node.right = temp;
 }
@@ -589,11 +589,11 @@ static inline void flip_subtree( node: rank_relaxed_weak_node* )
  * @param b     Second parent node
  * @param sub_b Pointer to the second subtree
  */
-static inline void swap_subtrees( a: rank_relaxed_weak_node*,
-    sub_a: rank_relaxed_weak_node*[], b: rank_relaxed_weak_node*,
-    sub_b: rank_relaxed_weak_node*[] )
+static inline void swap_subtrees( a: rank_relaxed_weak_node,
+    sub_a: rank_relaxed_weak_node[], b: rank_relaxed_weak_node,
+    sub_b: rank_relaxed_weak_node[] )
 {
-    let temp: rank_relaxed_weak_node* = *sub_a;
+    let temp: rank_relaxed_weak_node = *sub_a;
     *sub_a = *sub_b;
     *sub_b = temp;
 
@@ -612,9 +612,9 @@ static inline void swap_subtrees( a: rank_relaxed_weak_node*,
  * @param node  Top node in the spine
  */
 export function sever_spine( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): void {
-    let next: rank_relaxed_weak_node*;
-    let current: rank_relaxed_weak_node* = node;
+    node: rank_relaxed_weak_node ): void {
+    let next: rank_relaxed_weak_node;
+    let current: rank_relaxed_weak_node = node;
     while( current != null )
     {
         next = current.left;
@@ -646,9 +646,9 @@ export function sever_spine( queue: rank_relaxed_weak_queue*,
  * @param replacement   Replacement node
  */
 export function replace_node( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node*, replacement: rank_relaxed_weak_node* ): void {
-    let current: rank_relaxed_weak_node*, next;
-    let result: rank_relaxed_weak_node* = replacement;
+    node: rank_relaxed_weak_node, replacement: rank_relaxed_weak_node ): void {
+    let current: rank_relaxed_weak_node, next;
+    let result: rank_relaxed_weak_node = replacement;
 
     if( node.right != null )
     {
@@ -695,11 +695,11 @@ export function replace_node( queue: rank_relaxed_weak_queue*,
 export function fix_min( queue: rank_relaxed_weak_queue* ): void {
     let i: int16;
     let rank: uint32;
-    let current: rank_relaxed_weak_node*;
-    let min: rank_relaxed_weak_node* = null;
+    let current: rank_relaxed_weak_node;
+    let min: rank_relaxed_weak_node = null;
 
     let search_registry: uint64;
-    let search_list: rank_relaxed_weak_node*[];
+    let search_list: rank_relaxed_weak_node[];
     for( i = 0; i < 2; i++ )
     {
         search_registry = queue.registry[i];
@@ -727,8 +727,8 @@ export function fix_min( queue: rank_relaxed_weak_queue* ): void {
  * @return      Pointer to marked node
  */
 export function transformation_cleaning(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let sibling: rank_relaxed_weak_node* = node.parent.right;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let sibling: rank_relaxed_weak_node = node.parent.right;
     flip_subtree( node.parent );
     swap_subtrees( node, &(node.left), sibling, &(sibling.left) );
 
@@ -747,19 +747,19 @@ export function transformation_cleaning(
  * @return          Pointer to the still-marked node
  */
 export function transformation_pair(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let primary: rank_relaxed_weak_node* = node;
-    let extra: rank_relaxed_weak_node* = queue.nodes[MARKS][primary.rank];
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let primary: rank_relaxed_weak_node = node;
+    let extra: rank_relaxed_weak_node = queue.nodes[MARKS][primary.rank];
 
-    let tmp: rank_relaxed_weak_node* = primary;
+    let tmp: rank_relaxed_weak_node = primary;
     if( extra.parent.key < primary.parent.key )
     {
         primary = extra;
         extra = tmp;
     }
 
-    let extra_parent: rank_relaxed_weak_node* = extra.parent;
-    let primary_parent: rank_relaxed_weak_node* = primary.parent;
+    let extra_parent: rank_relaxed_weak_node = extra.parent;
+    let primary_parent: rank_relaxed_weak_node = primary.parent;
 
     unregister_node( queue, MARKS, extra );
 
@@ -772,8 +772,8 @@ export function transformation_pair(
         flip_subtree( primary_parent );
     }
 
-    let result: rank_relaxed_weak_node* = primary;
-    let unmarked: rank_relaxed_weak_node* = extra;
+    let result: rank_relaxed_weak_node = primary;
+    let unmarked: rank_relaxed_weak_node = extra;
     if( extra.key < primary.key )
     {
         swap_parent_with_right_child( queue, primary, extra );
@@ -796,10 +796,10 @@ export function transformation_pair(
  * @return      Pointer to remaining marked node, otherwise null
  */
 export function transformation_parent(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let parent: rank_relaxed_weak_node* = node.parent;
-    let result: rank_relaxed_weak_node* = parent;
-    let unmarked: rank_relaxed_weak_node* = node;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let parent: rank_relaxed_weak_node = node.parent;
+    let result: rank_relaxed_weak_node = parent;
+    let unmarked: rank_relaxed_weak_node = node;
 
     if( parent.marked )
         unregister_node( queue, MARKS, parent );
@@ -831,11 +831,11 @@ export function transformation_parent(
  * @return      Pointer to resulting marked parent node
  */
 export function transformation_sibling(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let parent: rank_relaxed_weak_node* = node.parent;
-    let sibling: rank_relaxed_weak_node* = parent.right;
-    let result: rank_relaxed_weak_node* = node;
-    let unmarked: rank_relaxed_weak_node* = sibling;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let parent: rank_relaxed_weak_node = node.parent;
+    let sibling: rank_relaxed_weak_node = parent.right;
+    let result: rank_relaxed_weak_node = node;
+    let unmarked: rank_relaxed_weak_node = sibling;
 
     unregister_node( queue, MARKS, sibling );
 
@@ -866,9 +866,9 @@ export function transformation_sibling(
  * @return      Pointer to lesser-ranked marked node
  */
 export function transformation_zigzag(
-    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
-    let parent: rank_relaxed_weak_node* = node.parent;
-    let grand: rank_relaxed_weak_node* = parent.parent;
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node ): rank_relaxed_weak_node {
+    let parent: rank_relaxed_weak_node = node.parent;
+    let grand: rank_relaxed_weak_node = parent.parent;
 
     if( grand.key < node.key )
         node.marked = 0;

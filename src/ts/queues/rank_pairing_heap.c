@@ -4,63 +4,63 @@ import {} from 'rank_pairing_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-export function merge_roots( queue: rank_pairing_heap*, a: rank_pairing_node*,
-    b: rank_pairing_node* ): void ;
-export function merge_lists( queue: rank_pairing_heap*,
-    a: rank_pairing_node*, b: rank_pairing_node* ): rank_pairing_node* ;
-export function pick_min( queue: rank_pairing_heap*,
-    a: rank_pairing_node*, b: rank_pairing_node* ): rank_pairing_node* ;
-export function join( queue: rank_pairing_heap*, a: rank_pairing_node*,
-    b: rank_pairing_node* ): rank_pairing_node* ;
-export function fix_roots( queue: rank_pairing_heap* ): void ;
-export function attempt_insert( queue: rank_pairing_heap*, node: rank_pairing_node* ): boolean ;
-export function fix_min( queue: rank_pairing_heap* ): void ;
-export function propagate_ranks_t1( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): void ;
-export function propagate_ranks_t2( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): void ;
-export function sever_spine( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): rank_pairing_node* ;
+export function merge_roots( queue: rank_pairing_heap, a: rank_pairing_node,
+    b: rank_pairing_node ): void ;
+export function merge_lists( queue: rank_pairing_heap,
+    a: rank_pairing_node, b: rank_pairing_node ): rank_pairing_node ;
+export function pick_min( queue: rank_pairing_heap,
+    a: rank_pairing_node, b: rank_pairing_node ): rank_pairing_node ;
+export function join( queue: rank_pairing_heap, a: rank_pairing_node,
+    b: rank_pairing_node ): rank_pairing_node ;
+export function fix_roots( queue: rank_pairing_heap ): void ;
+export function attempt_insert( queue: rank_pairing_heap, node: rank_pairing_node ): boolean ;
+export function fix_min( queue: rank_pairing_heap ): void ;
+export function propagate_ranks_t1( queue: rank_pairing_heap,
+    node: rank_pairing_node ): void ;
+export function propagate_ranks_t2( queue: rank_pairing_heap,
+    node: rank_pairing_node ): void ;
+export function sever_spine( queue: rank_pairing_heap,
+    node: rank_pairing_node ): rank_pairing_node ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): rank_pairing_heap* {
-    let queue: rank_pairing_heap* = new Array(1);
+export function pq_create( map: mem_map ): rank_pairing_heap {
+    let queue: rank_pairing_heap = new Array(1);
     queue.map = map;
 
     return queue;
 }
 
-export function pq_destroy( queue: rank_pairing_heap* ): void {
+export function pq_destroy( queue: rank_pairing_heap ): void {
     pq_clear( queue );
     free( queue );
 }
 
-export function pq_clear( queue: rank_pairing_heap* ): void {
+export function pq_clear( queue: rank_pairing_heap ): void {
     mm_clear( queue.map );
     queue.minimum = null;
-    memset( queue.roots, 0, MAXRANK * sizeof( rank_pairing_node* ) );
+    memset( queue.roots, 0, MAXRANK * sizeof( rank_pairing_node ) );
     queue.largest_rank = 0;
     queue.size = 0;
 }
 
-export function pq_get_key( queue: rank_pairing_heap*, node: rank_pairing_node* ): key_type {
+export function pq_get_key( queue: rank_pairing_heap, node: rank_pairing_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: rank_pairing_heap*, node: rank_pairing_node* ): item_type* {
+export function pq_get_item( queue: rank_pairing_heap, node: rank_pairing_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: rank_pairing_heap* ): uint32 {
+export function pq_get_size( queue: rank_pairing_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: rank_pairing_heap*, item: item_type,
-    key: key_type ): rank_pairing_node* {
-    let wrapper: rank_pairing_node* = pq_alloc_node( queue.map, 0 );
+export function pq_insert( queue: rank_pairing_heap, item: item_type,
+    key: key_type ): rank_pairing_node {
+    let wrapper: rank_pairing_node = pq_alloc_node( queue.map, 0 );
     wrapper.item = item;
     wrapper.key = key;
     wrapper.right = wrapper;
@@ -73,18 +73,18 @@ export function pq_insert( queue: rank_pairing_heap*, item: item_type,
     return wrapper;
 }
 
-export function pq_find_min( queue: rank_pairing_heap* ): rank_pairing_node* {
+export function pq_find_min( queue: rank_pairing_heap ): rank_pairing_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.minimum;
 }
 
-export function pq_delete_min( queue: rank_pairing_heap* ): key_type {
+export function pq_delete_min( queue: rank_pairing_heap ): key_type {
     return pq_delete( queue, queue.minimum );
 }
 
-export function pq_delete( queue: rank_pairing_heap*, node: rank_pairing_node* ): key_type {
-    let old_min: rank_pairing_node*, left_list, right_list, full_list, current;
+export function pq_delete( queue: rank_pairing_heap, node: rank_pairing_node ): key_type {
+    let old_min: rank_pairing_node, left_list, right_list, full_list, current;
     let key: key_type = node.key;
 
     if ( node.parent != null )
@@ -125,7 +125,7 @@ export function pq_delete( queue: rank_pairing_heap*, node: rank_pairing_node* )
     return key;
 }
 
-export function pq_decrease_key( queue: rank_pairing_heap*, node: rank_pairing_node*,
+export function pq_decrease_key( queue: rank_pairing_heap, node: rank_pairing_node,
     new_key: key_type ): void {
     node.key = new_key;
     if ( node.parent != null )
@@ -156,7 +156,7 @@ export function pq_decrease_key( queue: rank_pairing_heap*, node: rank_pairing_n
     }
 }
 
-export function pq_empty( queue: rank_pairing_heap* ): boolean {
+export function pq_empty( queue: rank_pairing_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -172,8 +172,8 @@ export function pq_empty( queue: rank_pairing_heap* ): boolean {
  * @param a     First node list
  * @param b     Second node list
  */
-export function merge_roots( queue: rank_pairing_heap*, a: rank_pairing_node*,
-    b: rank_pairing_node* ): void {
+export function merge_roots( queue: rank_pairing_heap, a: rank_pairing_node,
+    b: rank_pairing_node ): void {
     merge_lists( queue, a, b );
     queue.minimum = pick_min( queue, a, b );
 }
@@ -186,9 +186,9 @@ export function merge_roots( queue: rank_pairing_heap*, a: rank_pairing_node*,
  * @param b     Second node list
  * @return      An arbitrary node in the list
  */
-export function merge_lists( queue: rank_pairing_heap*,
-    a: rank_pairing_node*, b: rank_pairing_node* ): rank_pairing_node* {
-    let temp: rank_pairing_node*, list;
+export function merge_lists( queue: rank_pairing_heap,
+    a: rank_pairing_node, b: rank_pairing_node ): rank_pairing_node {
+    let temp: rank_pairing_node, list;
     if ( a == null )
         list = b;
     else if ( b == null )
@@ -214,8 +214,8 @@ export function merge_lists( queue: rank_pairing_heap*,
  * @param b     Second node
  * @return      Minimum of the two nodes
  */
-export function pick_min( queue: rank_pairing_heap*,
-    a: rank_pairing_node*, b: rank_pairing_node* ): rank_pairing_node* {
+export function pick_min( queue: rank_pairing_heap,
+    a: rank_pairing_node, b: rank_pairing_node ): rank_pairing_node {
     if ( a == null )
         return b;
     else if ( b == null )
@@ -239,9 +239,9 @@ export function pick_min( queue: rank_pairing_heap*,
  * @param b     Second node
  * @return      Returns the resulting tree
  */
-export function join( queue: rank_pairing_heap*, a: rank_pairing_node*,
-    b: rank_pairing_node* ): rank_pairing_node* {
-    let parent: rank_pairing_node*, child;
+export function join( queue: rank_pairing_heap, a: rank_pairing_node,
+    b: rank_pairing_node ): rank_pairing_node {
+    let parent: rank_pairing_node, child;
 
     if ( b.key < a.key ) {
         parent = b;
@@ -268,10 +268,10 @@ export function join( queue: rank_pairing_heap*, a: rank_pairing_node*,
  *
  * @param queue Queue whose roots to fix
  */
-export function fix_roots( queue: rank_pairing_heap* ): void {
-    let output_head: rank_pairing_node* = null;
-    let output_tail: rank_pairing_node* = null;
-    let current: rank_pairing_node*, next, joined;
+export function fix_roots( queue: rank_pairing_heap ): void {
+    let output_head: rank_pairing_node = null;
+    let output_tail: rank_pairing_node = null;
+    let current: rank_pairing_node, next, joined;
     let i: uint32, rank;
 
     if ( queue.minimum == null )
@@ -326,7 +326,7 @@ export function fix_roots( queue: rank_pairing_heap* ): void {
  * @param node  Node to insert
  * @return      True if inserted, false if not
  */
-export function attempt_insert( queue: rank_pairing_heap*, node: rank_pairing_node* ): boolean {
+export function attempt_insert( queue: rank_pairing_heap, node: rank_pairing_node ): boolean {
     let rank: uint32 = node.rank;
     if ( ( queue.roots[rank] != null ) && ( queue.roots[rank] !== node ) )
         return FALSE;
@@ -345,11 +345,11 @@ export function attempt_insert( queue: rank_pairing_heap*, node: rank_pairing_no
  *
  * @param queue Queue to fix
  */
-export function fix_min( queue: rank_pairing_heap* ): void {
+export function fix_min( queue: rank_pairing_heap ): void {
     if ( queue.minimum == null )
         return;
-    let start: rank_pairing_node* = queue.minimum;
-    let current: rank_pairing_node* = queue.minimum.right;
+    let start: rank_pairing_node = queue.minimum;
+    let current: rank_pairing_node = queue.minimum.right;
     while ( current !== start )
     {
         if ( current.key < queue.minimum.key )
@@ -365,8 +365,8 @@ export function fix_min( queue: rank_pairing_heap* ): void {
  * @param queue Queue to update
  * @param node  Initial node to begin updating from.
  */
-export function propagate_ranks_t1( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): void {
+export function propagate_ranks_t1( queue: rank_pairing_heap,
+    node: rank_pairing_node ): void {
     let k: int32 = 0;
     let u: int32 = -1;
     let v: int32 = -1;
@@ -405,8 +405,8 @@ export function propagate_ranks_t1( queue: rank_pairing_heap*,
  * @param queue Queue to update
  * @param node  Initial node to begin updating from.
  */
-export function propagate_ranks_t2( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): void {
+export function propagate_ranks_t2( queue: rank_pairing_heap,
+    node: rank_pairing_node ): void {
     let k: int32 = 0;
     let u: int32 = -1;
     let v: int32 = -1;
@@ -445,9 +445,9 @@ export function propagate_ranks_t2( queue: rank_pairing_heap*,
  * @param queue Queue in which the node resides
  * @param node  Root of the spine
  */
-export function sever_spine( queue: rank_pairing_heap*,
-    node: rank_pairing_node* ): rank_pairing_node* {
-    let current: rank_pairing_node* = node;
+export function sever_spine( queue: rank_pairing_heap,
+    node: rank_pairing_node ): rank_pairing_node {
+    let current: rank_pairing_node = node;
     while ( current.right != null )
     {
         current.parent = null;

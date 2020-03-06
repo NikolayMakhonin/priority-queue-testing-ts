@@ -197,7 +197,7 @@ addRule(
 
 // struct as object
 addRule(
-	`\b(implicit_heap|implicit_node|mem_map)\\*`,
+	`\\b(\\w+_(node|heap)|mem_map)\\*`,
 	`$1`,
 )
 

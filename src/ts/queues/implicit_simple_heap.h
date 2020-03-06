@@ -39,7 +39,7 @@ export interface implicit_simple_heap_t {
     //! Memory map to use for node allocation
     let map: mem_map;
     //! The array of node pointers encoding the tree structure
-    let nodes: implicit_simple_node*;
+    let nodes: implicit_simple_node;
     //! The number of items held in the queue
     let size: uint32;
     //! Current capacity of the heap
@@ -59,21 +59,21 @@ export type pq_type = implicit_simple_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map ): implicit_simple_heap* ;
+export function pq_create( map: mem_map ): implicit_simple_heap ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-export function pq_destroy( queue: implicit_simple_heap* ): void ;
+export function pq_destroy( queue: implicit_simple_heap ): void ;
 
 /**
  * Removes all items from the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-export function pq_clear( queue: implicit_simple_heap* ): void ;
+export function pq_clear( queue: implicit_simple_heap ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -82,7 +82,7 @@ export function pq_clear( queue: implicit_simple_heap* ): void ;
  * @param node  Node to query
  * @return      Node's key
  */
-export function pq_get_key( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type ;
+export function pq_get_key( queue: implicit_simple_heap, node: implicit_simple_node ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -91,7 +91,7 @@ export function pq_get_key( queue: implicit_simple_heap*, node: implicit_simple_
  * @param node  Node to query
  * @return      Node's item
  */
-export function pq_get_item( queue: implicit_simple_heap*, node: implicit_simple_node* ): item_type* ;
+export function pq_get_item( queue: implicit_simple_heap, node: implicit_simple_node ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -99,7 +99,7 @@ export function pq_get_item( queue: implicit_simple_heap*, node: implicit_simple
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: implicit_simple_heap* ): uint32 ;
+export function pq_get_size( queue: implicit_simple_heap ): uint32 ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new
@@ -111,7 +111,7 @@ export function pq_get_size( queue: implicit_simple_heap* ): uint32 ;
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-export function pq_insert( queue: implicit_simple_heap*, item: item_type, key: key_type ): implicit_simple_node* ;
+export function pq_insert( queue: implicit_simple_heap, item: item_type, key: key_type ): implicit_simple_node ;
 
 /**
  * Returns the minimum item from the queue without modifying the queue.
@@ -119,7 +119,7 @@ export function pq_insert( queue: implicit_simple_heap*, item: item_type, key: k
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-export function pq_find_min( queue: implicit_simple_heap* ): implicit_simple_node* ;
+export function pq_find_min( queue: implicit_simple_heap ): implicit_simple_node ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -129,7 +129,7 @@ export function pq_find_min( queue: implicit_simple_heap* ): implicit_simple_nod
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-export function pq_delete_min( queue: implicit_simple_heap* ): key_type ;
+export function pq_delete_min( queue: implicit_simple_heap ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue.  Requires that the location
@@ -142,7 +142,7 @@ export function pq_delete_min( queue: implicit_simple_heap* ): key_type ;
  * @param node  Pointer to node corresponding to the target item
  * @return      Key of item removed
  */
-export function pq_delete( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type ;
+export function pq_delete( queue: implicit_simple_heap, node: implicit_simple_node ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way as to decrease the
@@ -153,7 +153,7 @@ export function pq_delete( queue: implicit_simple_heap*, node: implicit_simple_n
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-export function pq_decrease_key( queue: implicit_simple_heap*, node: implicit_simple_node*,
+export function pq_decrease_key( queue: implicit_simple_heap, node: implicit_simple_node,
     new_key: key_type ): void ;
 
 /**
@@ -162,6 +162,6 @@ export function pq_decrease_key( queue: implicit_simple_heap*, node: implicit_si
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-export function pq_empty( queue: implicit_simple_heap* ): boolean ;
+export function pq_empty( queue: implicit_simple_heap ): boolean ;
 
 #endif

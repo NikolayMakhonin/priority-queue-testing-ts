@@ -4,59 +4,59 @@ import {} from 'violation_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-export function merge_into_roots( queue: violation_heap*, list: violation_node* ): void ;
-export function triple_join( queue: violation_heap*, a: violation_node*,
-    b: violation_node*, c: violation_node* ): violation_node* ;
-export function join( queue: violation_heap*, parent: violation_node*,
-    child1: violation_node*, child2: violation_node* ): violation_node* ;
-export function fix_roots( queue: violation_heap* ): void ;
-export function attempt_insert( queue: violation_heap*, node: violation_node* ): boolean ;
-export function set_min( queue: violation_heap* ): void ;
-export function find_prev_root( queue: violation_heap*, node: violation_node* ): violation_node* ;
-export function propagate_ranks( queue: violation_heap*, node: violation_node* ): void ;
-export function strip_list( queue: violation_heap*, node: violation_node* ): void ;
-export function is_active( queue: violation_heap*, node: violation_node* ): boolean ;
-export function get_parent( queue: violation_heap*, node: violation_node* ): violation_node* ;
-export function is_root( queue: violation_heap*, node: violation_node* ): int16 ;
+export function merge_into_roots( queue: violation_heap, list: violation_node ): void ;
+export function triple_join( queue: violation_heap, a: violation_node,
+    b: violation_node, c: violation_node ): violation_node ;
+export function join( queue: violation_heap, parent: violation_node,
+    child1: violation_node, child2: violation_node ): violation_node ;
+export function fix_roots( queue: violation_heap ): void ;
+export function attempt_insert( queue: violation_heap, node: violation_node ): boolean ;
+export function set_min( queue: violation_heap ): void ;
+export function find_prev_root( queue: violation_heap, node: violation_node ): violation_node ;
+export function propagate_ranks( queue: violation_heap, node: violation_node ): void ;
+export function strip_list( queue: violation_heap, node: violation_node ): void ;
+export function is_active( queue: violation_heap, node: violation_node ): boolean ;
+export function get_parent( queue: violation_heap, node: violation_node ): violation_node ;
+export function is_root( queue: violation_heap, node: violation_node ): int16 ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): violation_heap* {
-    let queue: violation_heap* = new Array(1);
+export function pq_create( map: mem_map ): violation_heap {
+    let queue: violation_heap = new Array(1);
     queue.map = map;
 
     return queue;
 }
 
-export function pq_destroy( queue: violation_heap* ): void {
+export function pq_destroy( queue: violation_heap ): void {
     pq_clear( queue );
     free( queue );
 }
 
-export function pq_clear( queue: violation_heap* ): void {
+export function pq_clear( queue: violation_heap ): void {
     mm_clear( queue.map );
     queue.minimum = null;
-    memset( queue.roots, 0, 2 * MAXRANK * sizeof( violation_node* ) );
+    memset( queue.roots, 0, 2 * MAXRANK * sizeof( violation_node ) );
     queue.largest_rank = 0;
     queue.size = 0;
 }
 
-export function pq_get_key( queue: violation_heap*, node: violation_node* ): key_type {
+export function pq_get_key( queue: violation_heap, node: violation_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: violation_heap*, node: violation_node* ): item_type* {
+export function pq_get_item( queue: violation_heap, node: violation_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: violation_heap* ): uint32 {
+export function pq_get_size( queue: violation_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: violation_heap*, item: item_type, key: key_type ): violation_node* {
-    let wrapper: violation_node* = pq_alloc_node( queue.map, 0 );
+export function pq_insert( queue: violation_heap, item: item_type, key: key_type ): violation_node {
+    let wrapper: violation_node = pq_alloc_node( queue.map, 0 );
     wrapper.item = item;
     wrapper.key = key;
     wrapper.next = wrapper;
@@ -70,19 +70,19 @@ export function pq_insert( queue: violation_heap*, item: item_type, key: key_typ
     return wrapper;
 }
 
-export function pq_find_min( queue: violation_heap* ): violation_node* {
+export function pq_find_min( queue: violation_heap ): violation_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.minimum;
 }
 
-export function pq_delete_min( queue: violation_heap* ): key_type {
+export function pq_delete_min( queue: violation_heap ): key_type {
     return pq_delete( queue, queue.minimum );
 }
 
-export function pq_delete( queue: violation_heap*, node: violation_node* ): key_type {
+export function pq_delete( queue: violation_heap, node: violation_node ): key_type {
     let key: key_type = node.key;
-    let prev: violation_node*;
+    let prev: violation_node;
 
     if ( is_root( queue, node ) )
     {
@@ -121,11 +121,11 @@ export function pq_delete( queue: violation_heap*, node: violation_node* ): key_
     return key;
 }
 
-export function pq_decrease_key( queue: violation_heap*, node: violation_node*,
+export function pq_decrease_key( queue: violation_heap, node: violation_node,
     new_key: key_type ): void {
     node.key = new_key;
-    let parent: violation_node* = null;
-    let first_child: violation_node*, second_child, replacement;
+    let parent: violation_node = null;
+    let first_child: violation_node, second_child, replacement;
 
     if( is_root( queue, node ) )
     {
@@ -205,7 +205,7 @@ export function pq_decrease_key( queue: violation_heap*, node: violation_node*,
     }
 }
 
-export function pq_empty( queue: violation_heap* ): boolean {
+export function pq_empty( queue: violation_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -219,8 +219,8 @@ export function pq_empty( queue: violation_heap* ): boolean {
  * @param queue Queue to merge list into
  * @param list  List to merge
  */
-export function merge_into_roots( queue: violation_heap*, list: violation_node* ): void {
-    let temp: violation_node*;
+export function merge_into_roots( queue: violation_heap, list: violation_node ): void {
+    let temp: violation_node;
     if ( queue.minimum == null )
         queue.minimum = list;
     else if ( ( list != null ) && ( queue.minimum !== list ) )
@@ -243,9 +243,9 @@ export function merge_into_roots( queue: violation_heap*, list: violation_node* 
  * @param c     Third node
  * @return      Returns the resulting tree
  */
-export function triple_join( queue: violation_heap*, a: violation_node*,
-    b: violation_node*, c: violation_node* ): violation_node* {
-    let parent: violation_node*, child1, child2;
+export function triple_join( queue: violation_heap, a: violation_node,
+    b: violation_node, c: violation_node ): violation_node {
+    let parent: violation_node, child1, child2;
 
     if ( a.key < b.key )
     {
@@ -290,9 +290,9 @@ export function triple_join( queue: violation_heap*, a: violation_node*,
  * @param child2    Child of lesser rank
  * @return          Root of new tree
  */
-export function join( queue: violation_heap*, parent: violation_node*,
-    child1: violation_node*, child2: violation_node* ): violation_node* {
-    let active1: violation_node*, active2;
+export function join( queue: violation_heap, parent: violation_node,
+    child1: violation_node, child2: violation_node ): violation_node {
+    let active1: violation_node, active2;
     let rank1: uint32, rank2;
 
     if ( parent.child != null )
@@ -336,8 +336,8 @@ export function join( queue: violation_heap*, parent: violation_node*,
  *
  * @param queue Queue whose roots to fix
  */
-export function fix_roots( queue: violation_heap* ): void {
-    let current: violation_node*, next, head, tail;
+export function fix_roots( queue: violation_heap ): void {
+    let current: violation_node, next, head, tail;
     let i: int16;
     let rank: int32;
 
@@ -407,7 +407,7 @@ export function fix_roots( queue: violation_heap* ): void {
  * @param node  Node to insert
  * @return      True if inserted, false if not
  */
-export function attempt_insert( queue: violation_heap*, node: violation_node* ): boolean {
+export function attempt_insert( queue: violation_heap, node: violation_node ): boolean {
     let rank: int32 = node.rank;
     if ( ( queue.roots[rank][0] != null ) && ( queue.roots[rank][0] !== node ) )
     {
@@ -432,7 +432,7 @@ export function attempt_insert( queue: violation_heap*, node: violation_node* ):
  *
  * @param queue Queue to fix
  */
-export function set_min( queue: violation_heap* ): void {
+export function set_min( queue: violation_heap ): void {
     let i: int16;
     queue.minimum = null;
     for ( i = 0; i <= queue.largest_rank; i++ )
@@ -462,9 +462,9 @@ export function set_min( queue: violation_heap* ): void {
  * @param node  The specified node to start from
  * @return      The node prior to the start
  */
-export function find_prev_root( queue: violation_heap*,
-    node: violation_node* ): violation_node* {
-    let prev: violation_node* = node.next;
+export function find_prev_root( queue: violation_heap,
+    node: violation_node ): violation_node {
+    let prev: violation_node = node.next;
     while ( prev.next !== node )
         prev = prev.next;
 
@@ -477,12 +477,12 @@ export function find_prev_root( queue: violation_heap*,
  * @param queue Queue in which node resides
  * @param node  Initial node to begin updating from.
  */
-export function propagate_ranks( queue: violation_heap*, node: violation_node* ): void {
+export function propagate_ranks( queue: violation_heap, node: violation_node ): void {
     let rank1: int32 = -1;
     let rank2: int32 = -1;
     let new_rank: int32, total;
     let updated: boolean;
-    let parent: violation_node*;
+    let parent: violation_node;
 
     if ( node.child != null )
     {
@@ -515,9 +515,9 @@ export function propagate_ranks( queue: violation_heap*, node: violation_node* )
  * @param queue Queue in which node resides
  * @param node  Last node in the list
  */
-export function strip_list( queue: violation_heap*, node: violation_node* ): void {
-    let current: violation_node* = node;
-    let prev: violation_node*;
+export function strip_list( queue: violation_heap, node: violation_node ): void {
+    let current: violation_node = node;
+    let prev: violation_node;
     while ( current.prev != null )
     {
         prev = current.prev;
@@ -535,7 +535,7 @@ export function strip_list( queue: violation_heap*, node: violation_node* ): voi
  * @param node  Node to query
  * @return      True if active, false if not
  */
-export function is_active( queue: violation_heap*, node: violation_node* ): boolean {
+export function is_active( queue: violation_heap, node: violation_node ): boolean {
     if ( is_root( queue, node ) )
         return TRUE;
     else
@@ -559,7 +559,7 @@ export function is_active( queue: violation_heap*, node: violation_node* ): bool
  * @param node  Node to query
  * @return      Parent of the queried node, null if root
  */
-export function get_parent( queue: violation_heap*, node: violation_node* ): violation_node* {
+export function get_parent( queue: violation_heap, node: violation_node ): violation_node {
     if ( node.next.child === node )
         return node.next;
     else if ( ( node.prev == null ) && ( node.next.prev == null ) )
@@ -575,7 +575,7 @@ export function get_parent( queue: violation_heap*, node: violation_node* ): vio
  * @param node  Node to query
  * @return      TRUE if a root, FALSE otherwise
  */
-export function is_root( queue: violation_heap*, node: violation_node* ): int16 {
+export function is_root( queue: violation_heap, node: violation_node ): int16 {
     return ( ( node.prev == null ) && ( node.next.prev == null ) &&
         ( node.next.child !== node ) );
 }

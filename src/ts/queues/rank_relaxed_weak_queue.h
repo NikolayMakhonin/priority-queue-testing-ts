@@ -52,9 +52,9 @@ export interface rank_relaxed_weak_queue_t {
     //! The number of items held in the queue
     let size: uint32;
     //! Pointer to the minimum node in the queue
-    let minimum: rank_relaxed_weak_node*;
+    let minimum: rank_relaxed_weak_node;
     //! Arrays of roots and marked nodes in the queue, indexed by rank
-    let nodes: rank_relaxed_weak_node*[2][MAXRANK];
+    let nodes: rank_relaxed_weak_node[2][MAXRANK];
     //! Bit vectors indicating which pointers
     let registry: uint64[2];
 };
@@ -96,7 +96,7 @@ export function pq_clear( queue: rank_relaxed_weak_queue* ): void ;
  * @return      Node's key
  */
 export function pq_get_key( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): key_type ;
+    node: rank_relaxed_weak_node ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -106,7 +106,7 @@ export function pq_get_key( queue: rank_relaxed_weak_queue*,
  * @return      Node's item
  */
 export function pq_get_item( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): item_type* ;
+    node: rank_relaxed_weak_node ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -127,7 +127,7 @@ export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32 ;
  * @return      Pointer to corresponding node
  */
 export function pq_insert( queue: rank_relaxed_weak_queue*,
-    item: item_type, key: key_type ): rank_relaxed_weak_node* ;
+    item: item_type, key: key_type ): rank_relaxed_weak_node ;
 
 /**
  * Returns the minimum item from the queue.
@@ -135,7 +135,7 @@ export function pq_insert( queue: rank_relaxed_weak_queue*,
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node* ;
+export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node ;
 
 /**
  * Removes the minimum item from the queue and modifies queue structure to
@@ -162,7 +162,7 @@ export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type ;
  * @return      Key of item removed
  */
 export function pq_delete( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node* ): key_type ;
+    node: rank_relaxed_weak_node ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -174,7 +174,7 @@ export function pq_delete( queue: rank_relaxed_weak_queue*,
  * @param new_key   New key to use for the given node
  */
 export function pq_decrease_key( queue: rank_relaxed_weak_queue*,
-    node: rank_relaxed_weak_node*, new_key: key_type ): void ;
+    node: rank_relaxed_weak_node, new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.

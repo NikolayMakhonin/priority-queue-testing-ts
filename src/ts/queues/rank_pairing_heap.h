@@ -45,9 +45,9 @@ export interface rank_pairing_heap_t {
     //! The number of items held in the queue
     let size: uint32;
     //! Pointer to the minimum node in the queue
-    let minimum: rank_pairing_node*;
+    let minimum: rank_pairing_node;
     //! An array of roots of the queue, indexed by rank
-    let roots: rank_pairing_node*[MAXRANK];
+    let roots: rank_pairing_node[MAXRANK];
     //! Current largest rank in queue
     let largest_rank: uint32;
 };
@@ -65,21 +65,21 @@ export type pq_type = rank_pairing_heap;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-export function pq_create( map: mem_map ): rank_pairing_heap* ;
+export function pq_create( map: mem_map ): rank_pairing_heap ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-export function pq_destroy( queue: rank_pairing_heap* ): void ;
+export function pq_destroy( queue: rank_pairing_heap ): void ;
 
 /**
  * Deletes all nodes from the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-export function pq_clear( queue: rank_pairing_heap* ): void ;
+export function pq_clear( queue: rank_pairing_heap ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -88,7 +88,7 @@ export function pq_clear( queue: rank_pairing_heap* ): void ;
  * @param node  Node to query
  * @return      Node's key
  */
-export function pq_get_key( queue: rank_pairing_heap*, node: rank_pairing_node* ): key_type ;
+export function pq_get_key( queue: rank_pairing_heap, node: rank_pairing_node ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -97,7 +97,7 @@ export function pq_get_key( queue: rank_pairing_heap*, node: rank_pairing_node* 
  * @param node  Node to query
  * @return      Node's item
  */
-export function pq_get_item( queue: rank_pairing_heap*, node: rank_pairing_node* ): item_type* ;
+export function pq_get_item( queue: rank_pairing_heap, node: rank_pairing_node ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -105,7 +105,7 @@ export function pq_get_item( queue: rank_pairing_heap*, node: rank_pairing_node*
  * @param queue Queue to query
  * @return      Size of queue
  */
-export function pq_get_size( queue: rank_pairing_heap* ): uint32 ;
+export function pq_get_size( queue: rank_pairing_heap ): uint32 ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -116,8 +116,8 @@ export function pq_get_size( queue: rank_pairing_heap* ): uint32 ;
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-export function pq_insert( queue: rank_pairing_heap*, item: item_type,
-    key: key_type ): rank_pairing_node* ;
+export function pq_insert( queue: rank_pairing_heap, item: item_type,
+    key: key_type ): rank_pairing_node ;
 
 /**
  * Returns the minimum item from the queue.
@@ -125,7 +125,7 @@ export function pq_insert( queue: rank_pairing_heap*, item: item_type,
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-export function pq_find_min( queue: rank_pairing_heap* ): rank_pairing_node* ;
+export function pq_find_min( queue: rank_pairing_heap ): rank_pairing_node ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -134,7 +134,7 @@ export function pq_find_min( queue: rank_pairing_heap* ): rank_pairing_node* ;
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-export function pq_delete_min( queue: rank_pairing_heap* ): key_type ;
+export function pq_delete_min( queue: rank_pairing_heap ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue and modifies queue structure
@@ -149,7 +149,7 @@ export function pq_delete_min( queue: rank_pairing_heap* ): key_type ;
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-export function pq_delete( queue: rank_pairing_heap*, node: rank_pairing_node* ): key_type ;
+export function pq_delete( queue: rank_pairing_heap, node: rank_pairing_node ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -162,7 +162,7 @@ export function pq_delete( queue: rank_pairing_heap*, node: rank_pairing_node* )
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-export function pq_decrease_key( queue: rank_pairing_heap*, node: rank_pairing_node*,
+export function pq_decrease_key( queue: rank_pairing_heap, node: rank_pairing_node,
     new_key: key_type ): void ;
 
 /**
@@ -171,7 +171,7 @@ export function pq_decrease_key( queue: rank_pairing_heap*, node: rank_pairing_n
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-export function pq_empty( queue: rank_pairing_heap* ): boolean ;
+export function pq_empty( queue: rank_pairing_heap ): boolean ;
 
 #endif
 

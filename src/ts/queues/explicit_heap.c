@@ -4,59 +4,59 @@ import {} from 'explicit_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-export function swap( queue: explicit_heap*, a: explicit_node*, b: explicit_node* ): void ;
-export function swap_connected( queue: explicit_heap*, parent: explicit_node*,
-    child: explicit_node* ): void ;
-export function swap_disconnected( queue: explicit_heap*, a: explicit_node*,
-    b: explicit_node* ): void ;
-export function fill_back_pointers( queue: explicit_heap*, a: explicit_node*,
-    b: explicit_node* ): void ;
-export function heapify_down( queue: explicit_heap*, node: explicit_node* ): void ;
-export function heapify_up( queue: explicit_heap*, node: explicit_node* ): void ;
-export function find_last_node( queue: explicit_heap* ): explicit_node* ;
-export function find_insertion_point( queue: explicit_heap* ): explicit_node* ;
-export function find_node( queue: explicit_heap*, n: uint32 ): explicit_node* ;
+export function swap( queue: explicit_heap, a: explicit_node, b: explicit_node ): void ;
+export function swap_connected( queue: explicit_heap, parent: explicit_node,
+    child: explicit_node ): void ;
+export function swap_disconnected( queue: explicit_heap, a: explicit_node,
+    b: explicit_node ): void ;
+export function fill_back_pointers( queue: explicit_heap, a: explicit_node,
+    b: explicit_node ): void ;
+export function heapify_down( queue: explicit_heap, node: explicit_node ): void ;
+export function heapify_up( queue: explicit_heap, node: explicit_node ): void ;
+export function find_last_node( queue: explicit_heap ): explicit_node ;
+export function find_insertion_point( queue: explicit_heap ): explicit_node ;
+export function find_node( queue: explicit_heap, n: uint32 ): explicit_node ;
 export function int_log2( n: uint32 ): uint32 ;
-export function is_leaf( queue: explicit_heap*, node: explicit_node* ): boolean ;
+export function is_leaf( queue: explicit_heap, node: explicit_node ): boolean ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): explicit_heap* {
-    let queue: explicit_heap* = new Array<explicit_heap>(1);
+export function pq_create( map: mem_map ): explicit_heap {
+    let queue: explicit_heap = new Array<explicit_heap>(1);
     queue.map = map;
 
     return queue;
 }
 
-export function pq_destroy( queue: explicit_heap* ): void {
+export function pq_destroy( queue: explicit_heap ): void {
     pq_clear( queue );
     free( queue );
 }
 
-export function pq_clear( queue: explicit_heap* ): void {
+export function pq_clear( queue: explicit_heap ): void {
     mm_clear( queue.map );
     queue.root = null;
     queue.size = 0;
 }
 
-export function pq_get_key( queue: explicit_heap*, node: explicit_node* ): key_type {
+export function pq_get_key( queue: explicit_heap, node: explicit_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: explicit_heap*, node: explicit_node* ): item_type* {
+export function pq_get_item( queue: explicit_heap, node: explicit_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: explicit_heap* ): uint32 {
+export function pq_get_size( queue: explicit_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: explicit_heap*, item: item_type, key: key_type ): explicit_node* {
+export function pq_insert( queue: explicit_heap, item: item_type, key: key_type ): explicit_node {
     let i: int16;
-    let parent: explicit_node*;
-    let node: explicit_node* = pq_alloc_node( queue.map, 0 );
+    let parent: explicit_node;
+    let node: explicit_node = pq_alloc_node( queue.map, 0 );
     node.item = item;
     node.key = key;
 
@@ -84,20 +84,20 @@ export function pq_insert( queue: explicit_heap*, item: item_type, key: key_type
     return node;
 }
 
-export function pq_find_min( queue: explicit_heap* ): explicit_node* {
+export function pq_find_min( queue: explicit_heap ): explicit_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.root;
 }
 
-export function pq_delete_min( queue: explicit_heap* ): key_type {
+export function pq_delete_min( queue: explicit_heap ): key_type {
     return pq_delete( queue, queue.root );
 }
 
-export function pq_delete( queue: explicit_heap*, node: explicit_node* ): key_type {
+export function pq_delete( queue: explicit_heap, node: explicit_node ): key_type {
     let i: int16;
     let key: key_type = node.key;
-    let last_node: explicit_node* = find_last_node( queue );
+    let last_node: explicit_node = find_last_node( queue );
     swap( queue, node, last_node);
 
     // figure out which child this node is and clear reference from parent
@@ -121,13 +121,13 @@ export function pq_delete( queue: explicit_heap*, node: explicit_node* ): key_ty
     return key;
 }
 
-export function pq_decrease_key( queue: explicit_heap*, node: explicit_node*,
+export function pq_decrease_key( queue: explicit_heap, node: explicit_node,
     new_key: key_type ): void {
     node.key = new_key;
     heapify_up( queue, node );
 }
 
-export function pq_empty( queue: explicit_heap* ): boolean {
+export function pq_empty( queue: explicit_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -144,7 +144,7 @@ export function pq_empty( queue: explicit_heap* ): boolean {
  * @param a     First node to switch
  * @param b     Second node to switch
  */
-export function swap( queue: explicit_heap*, a: explicit_node*, b: explicit_node* ): void {
+export function swap( queue: explicit_heap, a: explicit_node, b: explicit_node ): void {
     if ( ( a == null ) || ( b == null ) || ( a === b ) )
         return;
 
@@ -169,9 +169,9 @@ export function swap( queue: explicit_heap*, a: explicit_node*, b: explicit_node
  * @param parent    Parent node
  * @param child     Child node
  */
-export function swap_connected( queue: explicit_heap*, parent: explicit_node*,
-    child: explicit_node* ): void {
-    let temp: explicit_node*;
+export function swap_connected( queue: explicit_heap, parent: explicit_node,
+    child: explicit_node ): void {
+    let temp: explicit_node;
 
     child.parent = parent.parent;
     parent.parent = child;
@@ -203,18 +203,18 @@ export function swap_connected( queue: explicit_heap*, parent: explicit_node*,
  * @param a     First node
  * @param b     Second node
  */
-export function swap_disconnected( queue: explicit_heap*, a: explicit_node*,
-    b: explicit_node* ): void {
-    let temp: explicit_node*[BRANCHING_FACTOR];
+export function swap_disconnected( queue: explicit_heap, a: explicit_node,
+    b: explicit_node ): void {
+    let temp: explicit_node[BRANCHING_FACTOR];
 
     temp[0] = a.parent;
     a.parent = b.parent;
     b.parent = temp[0];
 
-    memcpy( temp, a.children, BRANCHING_FACTOR * sizeof( explicit_node* ) );
+    memcpy( temp, a.children, BRANCHING_FACTOR * sizeof( explicit_node ) );
     memcpy( a.children, b.children, BRANCHING_FACTOR *
-        sizeof( explicit_node* ) );
-    memcpy( b.children, temp, BRANCHING_FACTOR * sizeof( explicit_node* ) );
+        sizeof( explicit_node ) );
+    memcpy( b.children, temp, BRANCHING_FACTOR * sizeof( explicit_node ) );
 
     fill_back_pointers( queue, a, b );
 }
@@ -227,8 +227,8 @@ export function swap_disconnected( queue: explicit_heap*, a: explicit_node*,
  * @param a First node
  * @param b Second node
  */
-export function fill_back_pointers( queue: explicit_heap*, a: explicit_node*,
-    b: explicit_node* ): void {
+export function fill_back_pointers( queue: explicit_heap, a: explicit_node,
+    b: explicit_node ): void {
     let i: int16;
 
     if ( a.parent != null )
@@ -271,12 +271,12 @@ export function fill_back_pointers( queue: explicit_heap*, a: explicit_node*,
  * @param queue Queue to which the node belongs
  * @param node  Potentially violating node
  */
-export function heapify_down( queue: explicit_heap*, node: explicit_node* ): void {
+export function heapify_down( queue: explicit_heap, node: explicit_node ): void {
     if ( node == null )
         return;
 
     // repeatedly swap with smallest child if node violates queue order
-    let smallest_child: explicit_node*;
+    let smallest_child: explicit_node;
     let k: int16, min_k;
     while ( !is_leaf( queue, node ) )
     {
@@ -304,7 +304,7 @@ export function heapify_down( queue: explicit_heap*, node: explicit_node* ): voi
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-export function heapify_up( queue: explicit_heap*, node: explicit_node* ): void {
+export function heapify_up( queue: explicit_heap, node: explicit_node ): void {
     if ( node == null )
         return;
 
@@ -324,7 +324,7 @@ export function heapify_up( queue: explicit_heap*, node: explicit_node* ): void 
  * @param queue Queue to query
  * @return      Pointer to the last node in the tree
  */
-export function find_last_node( queue: explicit_heap* ): explicit_node* {
+export function find_last_node( queue: explicit_heap ): explicit_node {
     return find_node( queue, queue.size - 1 );
 }
 
@@ -335,7 +335,7 @@ export function find_last_node( queue: explicit_heap* ): explicit_node* {
  * @param queue Queue to query
  * @return      Node which will be the parent of a new insertion
  */
-export function find_insertion_point( queue: explicit_heap* ): explicit_node* {
+export function find_insertion_point( queue: explicit_heap ): explicit_node {
     return find_node( queue, queue.size );
 }
 
@@ -348,10 +348,10 @@ export function find_insertion_point( queue: explicit_heap* ): explicit_node* {
  * @param n     Index of node to find
  * @return      Located node
  */
-export function find_node( queue: explicit_heap*, n: uint32 ): explicit_node* {
+export function find_node( queue: explicit_heap, n: uint32 ): explicit_node {
     let log: uint32, path, i;
     let mask: uint32 = BRANCHING_FACTOR - 1;
-    let current: explicit_node*, next;
+    let current: explicit_node, next;
     let location: uint32 = ( n - 1 );
 
     if( n === 0 )
@@ -397,6 +397,6 @@ export function int_log2( n: uint32 ): uint32 {
  * @param node  Node to query
  * @return      True if leaf, false otherwise
  */
-export function is_leaf( queue: explicit_heap*, node: explicit_node* ): boolean {
+export function is_leaf( queue: explicit_heap, node: explicit_node ): boolean {
     return ( node.children[0] == null );
 }

@@ -3,12 +3,27 @@
   <component name="ChangeListManager">
     <list default="true" id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/c_to_js_regexps.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/c_to_js_regexps.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/binomial_queue.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_heap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_heap_h.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/queues/queue_common_h.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/queue_common_h.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/binomial_queue.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/binomial_queue.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/explicit_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/explicit_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/explicit_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/explicit_heap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/fibonacci_heap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/implicit_simple_heap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/pairing_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/pairing_heap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/pairing_heap.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/quake_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/quake_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/quake_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/quake_heap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_pairing_heap.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ts/typedefs.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/typedefs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/rank_relaxed_weak_queue.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/strict_fibonacci_heap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/violation_heap.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/violation_heap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ts/queues/violation_heap.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ts/queues/violation_heap.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -173,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583478963813</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Convert C to TS">
+      <created>1583480752190</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1583480752190</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

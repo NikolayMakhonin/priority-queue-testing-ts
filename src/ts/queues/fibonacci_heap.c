@@ -4,53 +4,53 @@ import {} from 'fibonacci_heap.h'
 // STATIC DECLARATIONS
 //==============================================================================
 
-export function merge_and_fix_roots( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): void ;
-export function link( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): fibonacci_node* ;
-export function cut_from_parent( queue: fibonacci_heap*, node: fibonacci_node* ): void ;
-export function append_lists( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): fibonacci_node* ;
-export function attempt_insert( queue: fibonacci_heap*, node: fibonacci_node* ): boolean ;
+export function merge_and_fix_roots( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): void ;
+export function link( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): fibonacci_node ;
+export function cut_from_parent( queue: fibonacci_heap, node: fibonacci_node ): void ;
+export function append_lists( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): fibonacci_node ;
+export function attempt_insert( queue: fibonacci_heap, node: fibonacci_node ): boolean ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-export function pq_create( map: mem_map ): fibonacci_heap* {
-    let queue: fibonacci_heap* = new Array<fibonacci_heap>(1);
+export function pq_create( map: mem_map ): fibonacci_heap {
+    let queue: fibonacci_heap = new Array<fibonacci_heap>(1);
     queue.map = map;
 
     return queue;
 }
 
-export function pq_destroy( queue: fibonacci_heap* ): void {
+export function pq_destroy( queue: fibonacci_heap ): void {
     pq_clear( queue );
     free( queue );
 }
 
-export function pq_clear( queue: fibonacci_heap* ): void {
+export function pq_clear( queue: fibonacci_heap ): void {
     mm_clear( queue.map );
     queue.minimum = null;
-    memset( queue.roots, 0, MAXRANK * sizeof( fibonacci_node* ) );
+    memset( queue.roots, 0, MAXRANK * sizeof( fibonacci_node ) );
     queue.largest_rank = 0;
     queue.size = 0;
 }
 
-export function pq_get_key( queue: fibonacci_heap*, node: fibonacci_node* ): key_type {
+export function pq_get_key( queue: fibonacci_heap, node: fibonacci_node ): key_type {
     return node.key;
 }
 
-export function pq_get_item( queue: fibonacci_heap*, node: fibonacci_node* ): item_type* {
+export function pq_get_item( queue: fibonacci_heap, node: fibonacci_node ): item_type* {
     return (item_type*) &(node.item);
 }
 
-export function pq_get_size( queue: fibonacci_heap* ): uint32 {
+export function pq_get_size( queue: fibonacci_heap ): uint32 {
     return queue.size;
 }
 
-export function pq_insert( queue: fibonacci_heap*, item: item_type, key: key_type ): fibonacci_node* {
-    let wrapper: fibonacci_node* = pq_alloc_node( queue.map, 0 );
+export function pq_insert( queue: fibonacci_heap, item: item_type, key: key_type ): fibonacci_node {
+    let wrapper: fibonacci_node = pq_alloc_node( queue.map, 0 );
     wrapper.item = item;
     wrapper.key = key;
     wrapper.next_sibling = wrapper;
@@ -62,16 +62,16 @@ export function pq_insert( queue: fibonacci_heap*, item: item_type, key: key_typ
     return wrapper;
 }
 
-export function pq_find_min( queue: fibonacci_heap* ): fibonacci_node* {
+export function pq_find_min( queue: fibonacci_heap ): fibonacci_node {
     if ( pq_empty( queue ) )
         return null;
     return queue.minimum;
 }
 
-export function pq_delete_min( queue: fibonacci_heap* ): key_type {
-    let node: fibonacci_node* = queue.minimum;
+export function pq_delete_min( queue: fibonacci_heap ): key_type {
+    let node: fibonacci_node = queue.minimum;
     let key: key_type = node.key;
-    let child: fibonacci_node* = node.first_child;
+    let child: fibonacci_node = node.first_child;
 
     // remove from sibling list
     node.next_sibling.prev_sibling = node.prev_sibling;
@@ -91,12 +91,12 @@ export function pq_delete_min( queue: fibonacci_heap* ): key_type {
     return key;
 }
 
-export function pq_delete( queue: fibonacci_heap*, node: fibonacci_node* ): key_type {
+export function pq_delete( queue: fibonacci_heap, node: fibonacci_node ): key_type {
     if( node === queue.minimum )
         return pq_delete_min( queue );
 
     let key: key_type = node.key;
-    let child: fibonacci_node* = node.first_child;
+    let child: fibonacci_node = node.first_child;
 
     // remove from sibling list
     node.next_sibling.prev_sibling = node.prev_sibling;
@@ -127,13 +127,13 @@ export function pq_delete( queue: fibonacci_heap*, node: fibonacci_node* ): key_
     return key;
 }
 
-export function pq_decrease_key( queue: fibonacci_heap*, node: fibonacci_node*,
+export function pq_decrease_key( queue: fibonacci_heap, node: fibonacci_node,
     new_key: key_type ): void {
     node.key = new_key;
     cut_from_parent( queue, node );
 }
 
-export function pq_empty( queue: fibonacci_heap* ): boolean {
+export function pq_empty( queue: fibonacci_heap ): boolean {
     return ( queue.size === 0 );
 }
 
@@ -152,10 +152,10 @@ export function pq_empty( queue: fibonacci_heap* ): boolean {
  * @param a     First node list
  * @param b     Second node list
  */
-export function merge_and_fix_roots( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): void {
-    let start: fibonacci_node* = append_lists( queue, a, b );
-    let current: fibonacci_node*, next;
+export function merge_and_fix_roots( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): void {
+    let start: fibonacci_node = append_lists( queue, a, b );
+    let current: fibonacci_node, next;
     let i: int32, rank;
 
     if ( start == null )
@@ -223,9 +223,9 @@ export function merge_and_fix_roots( queue: fibonacci_heap*, a: fibonacci_node*,
  * @param b     Second root
  * @return      The resulting merged tree
  */
-export function link( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): fibonacci_node* {
-    let parent: fibonacci_node*, child;
+export function link( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): fibonacci_node {
+    let parent: fibonacci_node, child;
     if ( b.key < a.key ) {
         parent = b;
         child = a;
@@ -253,8 +253,8 @@ export function link( queue: fibonacci_heap*, a: fibonacci_node*,
  * @param queue Queue to which node belongs
  * @param node  Node to cut
  */
-export function cut_from_parent( queue: fibonacci_heap*, node: fibonacci_node* ): void {
-    let next: fibonacci_node*, prev;
+export function cut_from_parent( queue: fibonacci_heap, node: fibonacci_node ): void {
+    let next: fibonacci_node, prev;
     if ( node.parent != null ) {
         next = node.next_sibling;
         prev = node.prev_sibling;
@@ -300,9 +300,9 @@ export function cut_from_parent( queue: fibonacci_heap*, node: fibonacci_node* )
  * @param b     Second head
  * @return      Pointer to merged list, starting with head of lesser key
  */
-export function append_lists( queue: fibonacci_heap*, a: fibonacci_node*,
-    b: fibonacci_node* ): fibonacci_node* {
-    let list: fibonacci_node*, a_prev, b_prev;
+export function append_lists( queue: fibonacci_heap, a: fibonacci_node,
+    b: fibonacci_node ): fibonacci_node {
+    let list: fibonacci_node, a_prev, b_prev;
 
     if ( a == null )
         list = b;
@@ -333,9 +333,9 @@ export function append_lists( queue: fibonacci_heap*, a: fibonacci_node*,
  * @param node  Node to insert
  * @return      True if inserted, false if not
  */
-export function attempt_insert( queue: fibonacci_heap*, node: fibonacci_node* ): boolean {
+export function attempt_insert( queue: fibonacci_heap, node: fibonacci_node ): boolean {
     let rank: uint32 = node.rank;
-    let occupant: fibonacci_node* = queue.roots[rank];
+    let occupant: fibonacci_node = queue.roots[rank];
     if ( ( occupant != null ) && ( occupant !== node ) )
         return FALSE;
 
