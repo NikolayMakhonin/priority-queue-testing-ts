@@ -1,0 +1,15 @@
+CSS Validate:
+
+(Run it in incognito mode, for exclude extensions styles)
+Array.from(document.styleSheets)
+	.flatMap(o => Array.from(o.cssRules))
+	.map(o => o.cssText)
+	.join('\r\n')
+
+https://jigsaw.w3.org/css-validator/validator
+http://csslint.net/
+
+
+
+Check CSS in web page:
+https://chrome.google.com/webstore/detail/style-validator/aaeahhnjkelemfcdmkcpaggdhfaffeod

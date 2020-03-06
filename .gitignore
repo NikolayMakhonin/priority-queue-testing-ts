@@ -1,0 +1,31 @@
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# TypeScript v1 declaration files
+/typings/
+
+# Optional npm cache directory
+/.npm
+
+# Optional eslint cache
+/.eslintcache
+
+# dotenv environment variables file
+.env
+
+# sapper
+/.DS_Store
+/__sapper__/
+
+# additional
+/tmp
+/.idea/libraries/Generated_files.xml
+/package-lock.json
+/dist/**/pack/**
+/dist/*/chrome/**
+/dist/
+*.stackdump

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/priority-queue-testing.iml" filepath="$PROJECT_DIR$/.idea/priority-queue-testing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/app-template.iml" filepath="$PROJECT_DIR$/.idea/app-template.iml" />
     </modules>
   </component>
 </project>
