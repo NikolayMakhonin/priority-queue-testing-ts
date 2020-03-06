@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/performance/node/PairingHeap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" afterDir="false" />
     </list>
@@ -85,7 +87,7 @@
     <property name="js.buildTools.grunt.grunt-cli.package" value="$USER_HOME$/AppData/Roaming/npm/node_modules/grunt-cli" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="$USER_HOME$/AppData/Roaming/npm/node_modules/gulp" />
     <property name="jsx.switch.disabled" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/performance/node" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.stylelint" value="true" />
@@ -113,6 +115,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\main\common\contracts.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\test\performance\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\test\tests\common\main" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\main\common" />
     </key>
@@ -129,7 +132,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.Watch">
+  <component name="RunManager" selected="Mocha.Performance">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma.conf.tests.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -162,6 +165,18 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="Performance" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -187,6 +202,21 @@
       <test-names>
         <name value="common &gt; log &gt; objectToString" />
         <name value="base" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; PairingHeap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; PairingHeap" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -232,9 +262,11 @@
       <item itemvalue="Mocha.Intern Export" />
       <item itemvalue="Mocha.Intern Export with rebuild" />
       <item itemvalue="Mocha.Watch" />
+      <item itemvalue="Mocha.Performance" />
       <item itemvalue="Mocha.common &gt; log &gt; objectToString.base" />
       <item itemvalue="Mocha.node &gt; styles &gt; postcss" />
       <item itemvalue="Mocha.node &gt; styles &gt; postcss.jsToCss import + babel" />
+      <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
       <item itemvalue="Node.js.Build Chrome Dev" />
       <item itemvalue="Node.js.Sapper Dev - DEBUG" />
       <item itemvalue="npm.Build and Pack All" />
@@ -259,6 +291,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
         <item itemvalue="Mocha.node &gt; styles &gt; postcss.jsToCss import + babel" />
         <item itemvalue="Mocha.node &gt; styles &gt; postcss" />
       </list>
@@ -307,7 +340,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583516367371</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="PairingHeap debugging...">
+      <created>1583516715418</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1583516715418</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -374,7 +414,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Battery marker" />
     <MESSAGE value="Develop devices" />
     <MESSAGE value="Develop devices and users" />
     <MESSAGE value="build-and-pack:dev OK" />
@@ -399,6 +438,19 @@
     <MESSAGE value="PairingHeap refactoring..." />
     <MESSAGE value="PairingHeap refactoring completed" />
     <MESSAGE value="Develop PairingHeap tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop PairingHeap tests" />
+    <MESSAGE value="PairingHeap debugging..." />
+    <option name="LAST_COMMIT_MESSAGE" value="PairingHeap debugging..." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts</url>
+          <line>80</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

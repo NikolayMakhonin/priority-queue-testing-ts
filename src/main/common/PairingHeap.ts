@@ -250,7 +250,13 @@ export class PairingHeap<TItem, TKey> {
 			this._root = merge( this._root, collapse( node.child ) )
 		}
 
+		node.key = void 0
+		node.item = void 0
+		node.child = null
+		node.prev = null
+		node.next = null
 		this._objectPool.release(node)
+
 		this._size--
 
 		return key

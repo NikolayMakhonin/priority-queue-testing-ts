@@ -122,7 +122,7 @@ describe('common > main > PairingHeap', function() {
 			for (let i = 0, len = addItems.length; i < len; i++) {
 				assert.strictEqual(heap.deleteMin(), i)
 			}
-			heap.deleteMin()
+			// heap.deleteMin()
 		} catch (ex) {
 			console.log(`testsCount: ${totalTests}`)
 			console.log(`addItems: ${addItems.join(',')}`)
@@ -132,10 +132,20 @@ describe('common > main > PairingHeap', function() {
 		totalTests++
 	}
 
+	it('add / delete', function() {
+		const heap = new PairingHeapTester<number, number>()
+
+		testVariant(
+			heap,
+			[0, 3, 1, 5, 4, 6, 2],
+			[1, 5, 2, 4, 3, 0, 6],
+		)
+	})
+
 	it('add / delete random', function() {
 		const heap = new PairingHeapTester<number, number>()
 		const variants = [0, 1, 2, 3, 4, 5, 6]
-		for (let i = 0; i < 100; i++) {
+		for (let i = 0; i < 10000; i++) {
 			const addItems = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
 			const deleteIndexes = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
 			testVariant(
