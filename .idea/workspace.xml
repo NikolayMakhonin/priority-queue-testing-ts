@@ -1,11 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1Yjvoglga6gPt4BrmW6wDvKC9pU" />
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queue-testing\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1YiDILCT0yQoCO3173Qce5WV9In" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/c/queues" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="ts.external.directory.path" value="L:\Program Files\JetBrains\WebStorm 2019.2.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queue-testing\src\c" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a95f0a7c-c803-42e4-88f2-3c28c7b5ea54" name="Default Changelist" comment="" />
+      <created>1583416439406</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1583416439406</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Change directories structure">
+      <created>1583416682586</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1583416682586</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Implementing convert rules...">
+      <created>1583421656451</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1583421656451</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Implementing convert rules...">
+      <created>1583424704524</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1583424704524</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Apply convert rules">
+      <created>1583424724779</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1583424724779</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Converting...">
+      <created>1583438068884</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1583438068884</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added emscripten asm.js variant of implicit_heap">
+      <created>1583465475642</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1583465475642</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added emscripten asm.js variant of implicit_heap">
+      <created>1583465641265</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1583465641265</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Change directories structure">
+      <created>1583465681260</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1583465681260</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Implementing convert rules..." />
+    <MESSAGE value="Apply convert rules" />
+    <MESSAGE value="Converting..." />
+    <MESSAGE value="Added emscripten asm.js variant of implicit_heap" />
+    <MESSAGE value="Change directories structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change directories structure" />
   </component>
 </project>
