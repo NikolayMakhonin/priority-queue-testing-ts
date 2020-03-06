@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -299,7 +300,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583512898319</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Develop PairingHeap tests">
+      <created>1583516367371</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1583516367371</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -366,7 +374,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Devices in process..." />
     <MESSAGE value="Battery marker" />
     <MESSAGE value="Develop devices" />
     <MESSAGE value="Develop devices and users" />
@@ -391,6 +398,7 @@
     <MESSAGE value="Fix ReadMe" />
     <MESSAGE value="PairingHeap refactoring..." />
     <MESSAGE value="PairingHeap refactoring completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="PairingHeap refactoring completed" />
+    <MESSAGE value="Develop PairingHeap tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop PairingHeap tests" />
   </component>
 </project>

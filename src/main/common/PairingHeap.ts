@@ -160,7 +160,7 @@ export class PairingHeap<TItem, TKey> {
 	 *
 	 * @return      Size of queue
 	 */
-	public size(): uint32 {
+	public get size(): uint32 {
 		return this._size
 	}
 

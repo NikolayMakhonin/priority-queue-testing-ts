@@ -46,6 +46,7 @@ class PairingHeapTester<TItem, TKey> {
 		assert.strictEqual(node.item, item)
 		this._checkItems.push(node)
 		this.check()
+		return node
 	}
 
 	public delete(node: PairingNode<TItem, TKey>) {
@@ -58,6 +59,7 @@ class PairingHeapTester<TItem, TKey> {
 		}
 		
 		const key = this._heap.delete(node)
+
 		assert.strictEqual(key, checkKey)
 		if (key == null) {
 			assert.strictEqual(index, -1)
@@ -66,6 +68,8 @@ class PairingHeapTester<TItem, TKey> {
 		}
 
 		this.check()
+
+		return key
 	}
 
 	public deleteMin() {
@@ -85,6 +89,8 @@ class PairingHeapTester<TItem, TKey> {
 		}
 
 		this.check()
+
+		return key
 	}
 }
 
@@ -94,7 +100,7 @@ describe('common > main > PairingHeap', function() {
 	let totalTests = 0
 
 	after(function() {
-		console.log('Total BinaryTree tests >= ' + totalTests)
+		console.log('Total PairingHeap tests >= ' + totalTests)
 	})
 
 	function testVariant(
@@ -110,7 +116,6 @@ describe('common > main > PairingHeap', function() {
 			for (let i = 0, len = deleteNodes.length; i < len; i++) {
 				heap.delete(deleteNodes[i])
 			}
-			heap.delete(deleteNodes[0])
 			for (let i = 0, len = addItems.length; i < len; i++) {
 				deleteNodes.push(heap.add(addItems[i], addItems[i]))
 			}
@@ -130,7 +135,7 @@ describe('common > main > PairingHeap', function() {
 	it('add / delete random', function() {
 		const heap = new PairingHeapTester<number, number>()
 		const variants = [0, 1, 2, 3, 4, 5, 6]
-		for (let i = 0; i < 10000; i++) {
+		for (let i = 0; i < 100; i++) {
 			const addItems = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
 			const deleteIndexes = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
 			testVariant(
