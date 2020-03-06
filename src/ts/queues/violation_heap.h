@@ -5,7 +5,7 @@
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 /**
 * Holds an inserted element, as well as pointers to maintain tree
@@ -15,48 +15,46 @@
 * The last node in the list of siblings will have a null prev pointer
 * and the first node's next pointer will point to their parent.
 */
-struct violation_node_t
-{
+export interface violation_node_t {
     //! Last child of this node
-    struct violation_node_t *child;
+    struct child: violation_node_t*;
     //! Next node in the list of this node's siblings
-    struct violation_node_t *next;
+    struct next: violation_node_t*;
     //! Previous node in the list of this node's siblings
-    struct violation_node_t *prev;
+    struct prev: violation_node_t*;
 
     //! The number of children this node has
-    int32_t rank;
+    let rank: int32_t;
 
     //! Pointer to a piece of client data
-    item_type item;
+    let item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    let key: key_type;
+};
 
-typedef struct violation_node_t violation_node;
-typedef violation_node pq_node_type;
+export type violation_node = violation_node_t;
+export type pq_node_type = violation_node;
 
 /**
  * A mutable, meldable, violation queue.  Maintains a forest of trees indexed by
  * rank.  At most two trees of each rank remain after a @ref <pq_delete> or @ref
  * <pq_delete_min> operation.
  */
-struct violation_heap_t
-{
+export interface violation_heap_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    let map: mem_map*;
     //! The number of items held in the queue
-    uint32_t size;
+    let size: uint32_t;
     //! Pointer to the minimum node in the queue
-    violation_node* minimum;
+    let minimum: violation_node*;
     //! An array of roots of the queue, indexed by rank
-    violation_node* roots[MAXRANK][2];
+    let roots: violation_node*[MAXRANK][2];
     //! Current largest rank in queue
-    uint32_t largest_rank;
-} __attribute__ ((aligned(4)));
+    let largest_rank: uint32_t;
+};
 
-typedef struct violation_heap_t violation_heap;
-typedef violation_heap pq_type;
+export type violation_heap = violation_heap_t;
+export type pq_type = violation_heap;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -68,21 +66,21 @@ typedef violation_heap pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-violation_heap* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): violation_heap* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( violation_heap *queue );
+export function pq_destroy( queue: violation_heap* ): void ;
 
 /**
  * Deletes all items in the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( violation_heap *queue );
+export function pq_clear( queue: violation_heap* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -91,7 +89,7 @@ void pq_clear( violation_heap *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( violation_heap *queue, violation_node *node );
+export function pq_get_key( queue: violation_heap*, node: violation_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -100,7 +98,7 @@ key_type pq_get_key( violation_heap *queue, violation_node *node );
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( violation_heap *queue, violation_node *node );
+export function pq_get_item( queue: violation_heap*, node: violation_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -108,7 +106,7 @@ item_type* pq_get_item( violation_heap *queue, violation_node *node );
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( violation_heap *queue );
+export function pq_get_size( queue: violation_heap* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new
@@ -119,7 +117,7 @@ uint32_t pq_get_size( violation_heap *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-violation_node* pq_insert( violation_heap *queue, item_type item, key_type key );
+export function pq_insert( queue: violation_heap*, item: item_type, key: key_type ): violation_node* ;
 
 /**
  * Returns the minimum item from the queue.
@@ -127,7 +125,7 @@ violation_node* pq_insert( violation_heap *queue, item_type item, key_type key )
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-violation_node* pq_find_min( violation_heap *queue );
+export function pq_find_min( queue: violation_heap* ): violation_node* ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -136,7 +134,7 @@ violation_node* pq_find_min( violation_heap *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( violation_heap *queue );
+export function pq_delete_min( queue: violation_heap* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue and modifies queue structure
@@ -149,7 +147,7 @@ key_type pq_delete_min( violation_heap *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( violation_heap *queue, violation_node *node );
+export function pq_delete( queue: violation_heap*, node: violation_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -162,8 +160,8 @@ key_type pq_delete( violation_heap *queue, violation_node *node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( violation_heap *queue, violation_node *node,
-    key_type new_key );
+export function pq_decrease_key( queue: violation_heap*, node: violation_node*,
+    new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -171,6 +169,6 @@ void pq_decrease_key( violation_heap *queue, violation_node *node,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( violation_heap *queue );
+export function pq_empty( queue: violation_heap* ): boolean ;
 
 #endif

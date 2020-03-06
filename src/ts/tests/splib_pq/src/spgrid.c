@@ -3,17 +3,17 @@
 #include <string.h>
 #include <values.h>
 
-#include "random.c"
+import {} from 'random.c'
 
 #define DASH '-'
-#define VERY_FAR 100000000
+export const VERY_FAR = 100000000;
 
-#define DOUBLE_CYCLE   0
-#define CYCLE          1
-#define PATH           2
+export const DOUBLE_CYCLE = 0;
+export const CYCLE = 1;
+export const PATH = 2;
 
-#define NO             0
-#define YES            1
+export const NO = 0;
+export const YES = 1;
 
 #define NODE( x, y ) (x*Y + y + 1)
 
@@ -24,7 +24,7 @@ if ( p_f ) l += ( p[i] - p[j] );\
 printf ("a %8ld %8ld %12ld\n", i, j, l );\
 }
 
-char   *graph_type[] =
+graph_type: string[] =
   {
     "double cycle",
     "cycle",
@@ -36,47 +36,47 @@ char   *graph_type[] =
 
 main ( argc, argv )
 
-int argc;
-char* argv[];
+let argc: int;
+let argv: string[];
 
 {
 
-char   args[30];
+let args: char[30];
 
-long   X,   /* horizontal size of grid */
+let X: long,   /* horizontal size of grid */
        Y;   /* vertical size of grid */
 
-long   x,
+let x: long,
        y,
        y1, y2, yp,
        dl, dx, xn, yn, count,
-       *mess;
+       mess;
 
-double n;
-long   n0,
+let n: double;
+let n0: long,
        source,
        i,
        i0,
        j,
        dij;
 
-double m;
-long   m0,
+let m: double;
+let m0: long,
        mc,
        k;
 
-long   *p,
+let p: [],
        p_t,
        l,
        lx;
 
-long   seed,
+let seed: long,
        seed1,
        seed2;
 
-int    ext=0;
+let ext: int=0;
 
-FILE   *fout;
+let fout: FILE*;
 
 /* initialized by default values */
 
@@ -85,7 +85,7 @@ FILE   *fout;
 /* variables for generating spanning graph */
 int    c_f = 0, cw_f = 0, cm_f = 0, cl_f = 0;
 
-int    cw = DOUBLE_CYCLE;  /* type of spanning graph */
+let cw: int = DOUBLE_CYCLE;  /* type of spanning graph */
 long   cm = 0,             /* lower bound of the interval */
        cl = 100;           /* upper bound of the interval */
 
@@ -100,7 +100,7 @@ long   ax = 0,             /* number of additional arcs */
 int    i_f = 0, ip_f = 0, ix_f = 0, ih_f = 0,
        im_f = 0, il_f = 0, in_f = 0, is_f = 0;
 
-int    ip = NO;       /* to mess or not to mess */
+let ip: int = NO;       /* to mess or not to mess */
 long   ix = 1,        /* number of interlayered arcs in a NODE */
        ih = 1,        /* step between two layeres */
        il = 10000,    /* upper bound of the interval */
@@ -110,19 +110,19 @@ double in = 1,        /* l *=  in * |x1-x2| */
 
 /* variables for artifical source */
 int    s_f = 0, sl_f = 0, sm_f = 0;
-long   sl   = VERY_FAR, /* upper bound of artifical arc */
+let sl: long   = VERY_FAR, /* upper bound of artifical arc */
        sm,              /* lower bound of artifical arc */
        s;  
 
 /* variables for potentials */
 int    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0;
 
-long   pl,            /* upper bound of the interval */
+let pl: long,            /* upper bound of the interval */
        pm;            /* lower bound of the interval */
 double pn = 0,        /* p +=  ln * (x+1) */ 
        ps = 0;        /* p +=  ls * (x+1)^2 */
 
-int np;               /* number of parameter parsing now */
+let np: int;               /* number of parameter parsing now */
 
 
   /* parsing  parameters */
@@ -133,7 +133,7 @@ np = 0;
 
 strcpy ( args, argv[1] );
 
-  if ( ( args[0] == DASH ) && ( args[1] == 'h')
+  if ( ( args[0] === DASH ) && ( args[1] === 'h')
      )
       goto help;
 
@@ -156,7 +156,7 @@ if ( ( seed = atoi ( argv[3] ) )  <=  0  )  goto usage;
 for ( np = 4; np < argc; np ++ )
   {
     strcpy ( args, argv[np] );
-    if ( args[0] != DASH ) goto usage;
+    if ( args[0] !== DASH ) goto usage;
 
     switch ( args[1] )
       {
@@ -374,7 +374,7 @@ if ( n >= (double)MAXLONG || m >= (double)MAXLONG )
 }
 
 if ( ip_f )
-   mess = (long*) calloc ( Y, sizeof ( long ) );
+   mess = new Array<long>(Y);
 
 /* printing title */
 printf ("c grid network for shortest paths problem\n");
@@ -391,26 +391,26 @@ printf ("\nc\n");
 
 /* printing additional information  */
 if ( cw_f )
-  printf ("c type of spanning graph ->  %s\n",
+  printf ("c type of spanning graph .  %s\n",
            graph_type[cw] );
 if ( a_f )
-  printf ("c additional arcs -> number: %ld min length: %ld max length: %ld\n",
+  printf ("c additional arcs . number: %ld min length: %ld max length: %ld\n",
            ax, am, al );
 if ( i_f )
 {
-  printf ("c inter-layer arcs -> min: %ld max: %ld k1: %.2f k2: %.2f\n",
+  printf ("c inter-layer arcs . min: %ld max: %ld k1: %.2f k2: %.2f\n",
 	  im, il, in, is );
-  printf ("c inter-layer arcs from one node -> number: %ld step: %ld\n",
+  printf ("c inter-layer arcs from one node . number: %ld step: %ld\n",
 	  ix, ih );
   if ( ip_f )
   printf ("c inter-layer arcs will be shuffled\n" );
 }
 if ( s_f )
-  printf ("c length of arcs from artifical source -> min: %ld max: %ld\n",
+  printf ("c length of arcs from artifical source . min: %ld max: %ld\n",
            sm, sl );
 if ( p_f )
   {
-  printf ("c potentials -> min: %ld max: %ld k1: %.2f k2: %.2f\n",
+  printf ("c potentials . min: %ld max: %ld k1: %.2f k2: %.2f\n",
 	  pm, pl, pn, ps );
   }
 printf ("c\n" );
@@ -422,7 +422,7 @@ source = ( s_f ) ? n0-1 : n0;
 
 if ( p_f ) /* generating potentials */
   {
-    p = (long*) calloc ( n0+1, sizeof (long) );
+    p = new Array<long>(n0+1);
     seed1 = 2*seed + 1;
     init_rand ( seed1);
     pl = pl - pm + 1;
@@ -476,7 +476,7 @@ for ( x = 0; x < X; x ++ )
      l = cm + nrand ( cl );    
      PRINT_ARC ( i, j, l )
 
-     if ( cw == DOUBLE_CYCLE )
+     if ( cw === DOUBLE_CYCLE )
        {
          l = cm + nrand ( cl );    
          PRINT_ARC ( j, i, l )
@@ -490,7 +490,7 @@ for ( x = 0; x < X; x ++ )
       l = cm + nrand ( cl );
       PRINT_ARC ( i, j, l )
 
-      if ( cw == DOUBLE_CYCLE )
+      if ( cw === DOUBLE_CYCLE )
         {
 	  l = cm + nrand ( cl );
           PRINT_ARC ( j, i, l )
@@ -504,7 +504,7 @@ for ( x = 0; x < X; x ++ )
        y1 = nrand ( Y );
        do
           y2 = nrand ( Y );
-       while ( y2 == y1 );
+       while ( y2 === y1 );
        i  = NODE ( x, y1 );
        j  = NODE ( x, y2 );
        l = am + nrand ( al );
@@ -550,7 +550,7 @@ for ( x = 0; x < X-1; x ++ )
              yn =  y;
 	  j = NODE ( xn, yn );
 	  l = im + nrand ( il );
-	  if ( in != 0 )
+	  if ( in !== 0 )
             l *= (long) ( in * dx );
           if ( is_f )
             l *= (long) ( ( is * dx ) * dx );
@@ -574,9 +574,9 @@ exit (4);
 
 /* ---- help ---- */
 
- help:
+ let help:
 
-if ( args[2] == 'h') goto hhelp;
+if ( args[2] === 'h') goto hhelp;
 
 fprintf ( stderr, 
 "\n'%s' - grid network generator for shortest paths problem.\n\
@@ -590,7 +590,7 @@ Generates problems in extended DIMACS format.\n\
 -cl#i - #i is the upper bound on layer arc lengths    (default 100)\n\
 -cm#i - #i is the lower bound on layer arc lengths    (default 0)\n\
 -c#t  - #t is the type of connecting graph: { c | d | p }\n\
-           c - cycle, d - double cycle, p - path      (default d)\n\
+           c - cycle, d - cycle: double, p - path      (default d)\n\
 -ip   - shuffle inter-layer arcs                     (default NO)\n\
 -il#i - #i is the upper bound on inter-layer arc lengths (default 10000)\n\
 -im#i - #i is the lower bound on inter-layer arc lengths (default 1000)\n\
@@ -604,14 +604,14 @@ argv[0], argv[0], argv[0] );
 exit (0);
 
 /* --------- sophisticated help ------------ */
- hhelp:
+ let hhelp:
 
 if ( argc < 3 )
      fout = stderr;
 else
      fout = fopen ( argv[2], "w" );
 
-if ( fout == NULL )
+if ( fout == null )
 { fprintf ( stderr, "\nCan't open file  '%s' for writing help\n\n", argv[2] );
   exit ( 2 );
 }
@@ -634,7 +634,7 @@ Generates problems in extended DIMACS format.\n\
 -cl#i - #i is the upper bound on arc lengths          (default 100)\n\
 -cm#i - #i is the lower bound on arc lengths          (default 0)\n\
 -c#t  - #t is the type of connecting graph: { c | d | p }\n\
-           c - cycle, d - double cycle, p - path      (default d)\n\
+           c - cycle, d - cycle: double, p - path      (default d)\n\
 \n\
       Parameters of additional arcs within one layer:\n\
 -ax#i - #i is the number of additional arcs           (default 0)\n\

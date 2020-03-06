@@ -3,10 +3,10 @@
 #include <string.h>
 #include <values.h>
 
-#include "random.c"
+import {} from 'random.c'
 
 #define DASH '-'
-#define VERY_FAR 100000000
+export const VERY_FAR = 100000000;
 
 
 /* generator of acyclic random networks for the shortest paths problem;
@@ -14,14 +14,14 @@
 
 int main ( argc, argv )
 
-int argc;
-char* argv[];
+let argc: int;
+let argv: string[];
 
 {
 
-char   args[30];
+let args: char[30];
 
-long   n,
+let n: long,
        n0,
        source,
        i,
@@ -29,23 +29,23 @@ long   n,
        j,
        dij;
 
-long   m,
+let m: long,
        m0,
        mc,
        k;
 
-long   *p,
+let p: [],
        p_t,
        l,
        lx;
 
-long   seed,
+let seed: long,
        seed1,
        seed2;
 
-int    ext=0;
+let ext: int=0;
 
-FILE   *fout;
+let fout: FILE*;
 
 /* variables for lengths generating */
 /* initialized by default values */
@@ -57,27 +57,27 @@ double ln = 0,        /* l += ln * |i-j| */
 
 /* variables for connecting path(s) */
 int    c_f = 0, cl_f = 0, ch_f = 0, c_rand = 1;
-long   cl = 1;        /* length of path arc */
-long   ch;            /* number of arcs in the path
+let cl: long = 1;        /* length of path arc */
+let ch: long;            /* number of arcs in the path
                          n - by default */
 
 /* variables for artifical source */
 int    s_f = 0, sl_f = 0, sm_f = 0;
-long   sl   = VERY_FAR, /* upper bound of artifical arc */
+let sl: long   = VERY_FAR, /* upper bound of artifical arc */
        sm,              /* lower bound of artifical arc */
        s;  
 
 /* variables for potentials */
 int    p_f = 0, pl_f = 0, pm_f = 0, pn_f = 0, ps_f = 0,
        pa_f = 0, pap_f = 0, pac_f = 0;
-long   pl,            /* upper bound of the interval */
+let pl: long,            /* upper bound of the interval */
        pm;            /* lower bound of the interval */
 double pn = 0,        /* l += ln * |i-j| */ 
        ps = 0,        /* l += ls * |i-j|^2 */
        pap = 0,       /* part of nodes with alternative dustribution */
        pac = -1;      /* multiplier for alternative distribution */
 
-int np;               /* number of parameter parsing now */
+let np: int;               /* number of parameter parsing now */
 
 #define PRINT_ARC( i, j, length )\
 {\
@@ -94,7 +94,7 @@ np = 0;
 
 strcpy ( args, argv[1] );
 
-  if ( ( args[0] == DASH ) && ( args[1] == 'h')
+  if ( ( args[0] === DASH ) && ( args[1] === 'h')
      )
       goto help;
 
@@ -117,7 +117,7 @@ if ( ( seed = atoi ( argv[3] ) )  <=  0  )  goto usage;
 for ( np = 4; np < argc; np ++ )
   {
     strcpy ( args, argv[np] );
-    if ( args[0] != DASH ) goto usage;
+    if ( args[0] !== DASH ) goto usage;
 
     switch ( args[1] )
       {
@@ -284,20 +284,20 @@ printf ("\nc\n");
 
 /* printing additional information  */
 if ( l_f )
-  printf ("c length -> min: %ld max: %ld k1: %.2f k2: %.2f\n",
+  printf ("c length . min: %ld max: %ld k1: %.2f k2: %.2f\n",
            lm, ll, ln, ls );
 if ( c_f )
-  printf ("c path(s) -> number of arcs: %ld arc length: %ld\n",
+  printf ("c path(s) . number of arcs: %ld arc length: %ld\n",
            ch, cl );
 if ( s_f )
-  printf ("c length of arcs from artifical source -> min: %ld max: %ld\n",
+  printf ("c length of arcs from artifical source . min: %ld max: %ld\n",
            sm, sl );
 if ( p_f )
   {
-  printf ("c potentials -> min: %ld max: %ld k1: %.2f k2: %.2f\n",
+  printf ("c potentials . min: %ld max: %ld k1: %.2f k2: %.2f\n",
 	  pm, pl, pn, ps );
   if ( pa_f )
-  printf ("c potentials -> part of alternative distribution: %.2f k: %.2f\n",
+  printf ("c potentials . part of alternative distribution: %.2f k: %.2f\n",
           pap, pac );
   }
 printf ("c\n" );
@@ -311,7 +311,7 @@ printf ("n %8ld\nc\n", source );
 if ( p_f ) /* generating potentials */
   {
     seed1 = 2*seed + 1;
-    p = (long*) calloc ( n+2, sizeof (long) );
+    p = new Array<long>(n+2);
     init_rand ( seed1);
     pl = pl - pm + 1;
 
@@ -351,7 +351,7 @@ ll = ll - lm + 1;
 /* generating connecting path(s) */
 for ( i = 1; i < n; i ++ )
   {
-    if ( ( (i-1) % ch ) != 0 )
+    if ( ( (i-1) % ch ) !== 0 )
       i0 = i;
     else
       i0 = 1;
@@ -370,7 +370,7 @@ for ( k = 1; k <= m - mc; k ++ )
 
     do
     j = 1 + nrand ( n );
-    while ( j == i );
+    while ( j === i );
 
     if ( i > j )
       { i0 = i; i = j; j = i0; }
@@ -398,9 +398,9 @@ exit (4);
 
 /* ---- help ---- */
 
- help:
+ let help:
 
-if ( args[2] == 'h') goto hhelp;
+if ( args[2] === 'h') goto hhelp;
 
 fprintf ( stderr, 
 "\n'%s' - acyclic network generator for shortest paths problem.\n\
@@ -424,14 +424,14 @@ argv[0], argv[0], argv[0] );
 exit (0);
 
 /* --------- sophisticated help ------------ */
- hhelp:
+ let hhelp:
 
 if ( argc < 3 )
      fout = stderr;
 else
      fout = fopen ( argv[2], "w" );
 
-if ( fout == NULL )
+if ( fout == null )
 { fprintf ( stderr, "\nCan't open file  '%s' for writing help\n\n", argv[2] );
   exit ( 2 );
 }

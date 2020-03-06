@@ -6,17 +6,17 @@
 #include <unistd.h>
 
 #ifdef USE_EAGER
-    #include "../memory_management_eager.h"
+    import {} from '../memory_management_eager.h'
 #elif USE_LAZY
-    #include "../memory_management_lazy.h"
+    import {} from '../memory_management_lazy.h'
 #else
-    #include "../memory_management_dumb.h"
+    import {} from '../memory_management_dumb.h'
 #endif
 
-#include "../trace_tools.h"
-#include "../typedefs.h"
+import {} from '../trace_tools.h'
+import {} from '../typedefs.h'
 
-#define CHUNK_SIZE 1000000
+export const CHUNK_SIZE = 1000000;
 #define MIN(a,b) ( b < a ? b : a )
 
 #ifdef DUMMY
@@ -24,7 +24,7 @@
     // subtracted from all heap time measurements.  Does some silly stuff to
     // avoid compiler warnings.
     #define pq_create(m)            map
-    #define pq_destroy(q)           dummy = ( q == NULL ) ? 1 : 0
+    #define pq_destroy(q)           dummy = ( q == null ) ? 1 : 0
     #define pq_clear(q)             dummy = 0
     #define pq_get_key(q,n)         dummy = 0
     #define pq_get_item(q,n)        dummy = 0
@@ -34,57 +34,57 @@
     #define pq_delete(q,n)          dummy = 0
     #define pq_delete_min(q)        dummy = 0
     #define pq_decrease_key(q,n,k)  dummy = 0
-    //#define pq_meld(q,r)            dummy = ( q == r ) ? 1 : 0
+    //#define pq_meld(q,r)            dummy = ( q === r ) ? 1 : 0
     #define pq_empty(q)             dummy = 0
     typedef void pq_type;
     typedef void pq_node_type;
-    static uint32_t dummy;
+    static dummy: uint32_t;
 #else
     #ifdef USE_BINOMIAL
-        #include "../queues/binomial_queue.h"
+        import {} from '../queues/binomial_queue.h'
     #elif USE_EXPLICIT_2
-        #include "../queues/explicit_heap.h"
+        import {} from '../queues/explicit_heap.h'
     #elif defined USE_EXPLICIT_4
-        #include "../queues/explicit_heap.h"
+        import {} from '../queues/explicit_heap.h'
     #elif defined USE_EXPLICIT_8
-        #include "../queues/explicit_heap.h"
+        import {} from '../queues/explicit_heap.h'
     #elif defined USE_EXPLICIT_16
-        #include "../queues/explicit_heap.h"
+        import {} from '../queues/explicit_heap.h'
     #elif defined USE_FIBONACCI
-        #include "../queues/fibonacci_heap.h"
+        import {} from '../queues/fibonacci_heap.h'
     #elif defined USE_IMPLICIT_2
-        #include "../queues/implicit_heap.h"
+        import {} from '../queues/implicit_heap.h'
     #elif defined USE_IMPLICIT_4
-        #include "../queues/implicit_heap.h"
+        import {} from '../queues/implicit_heap.h'
     #elif defined USE_IMPLICIT_8
-        #include "../queues/implicit_heap.h"
+        import {} from '../queues/implicit_heap.h'
     #elif defined USE_IMPLICIT_16
-        #include "../queues/implicit_heap.h"
+        import {} from '../queues/implicit_heap.h'
     #elif defined USE_PAIRING
-        #include "../queues/pairing_heap.h"
+        import {} from '../queues/pairing_heap.h'
     #elif defined USE_QUAKE
-        #include "../queues/quake_heap.h"
+        import {} from '../queues/quake_heap.h'
     #elif defined USE_RANK_PAIRING
-        #include "../queues/rank_pairing_heap.h"
+        import {} from '../queues/rank_pairing_heap.h'
     #elif defined USE_RANK_RELAXED_WEAK
-        #include "../queues/rank_relaxed_weak_queue.h"
+        import {} from '../queues/rank_relaxed_weak_queue.h'
     #elif defined USE_STRICT_FIBONACCI
-        #include "../queues/strict_fibonacci_heap.h"
+        import {} from '../queues/strict_fibonacci_heap.h'
     #elif defined USE_VIOLATION
-        #include "../queues/violation_heap.h"
+        import {} from '../queues/violation_heap.h'
     #endif
 #endif
 
 #ifdef USE_STRICT_FIBONACCI
-    static uint32_t mem_types = 4;
-    static uint32_t mem_sizes[4] =
+    static mem_types: uint32_t = 4;
+    static mem_sizes: uint32_t[4] =
     {
         sizeof( strict_fibonacci_node ),
         sizeof( fix_node ),
         sizeof( active_record ),
         sizeof( rank_record )
     };
-    static uint32_t mem_capacities[4] =
+    static mem_capacities: uint32_t[4] =
     {
         0,
         1000,
@@ -92,56 +92,54 @@
         1000
     };
 #else
-    static uint32_t mem_types = 1;
-    static uint32_t mem_sizes[1] =
+    static mem_types: uint32_t = 1;
+    static mem_sizes: uint32_t[1] =
     {
         sizeof( pq_node_type )
     };
-    static uint32_t mem_capacities[1] =
+    static mem_capacities: uint32_t[1] =
     {
         0
     };
 #endif
 
-int main( int argc, char** argv )
-{
-    uint64_t i;
+export function main( argc: int, argv: string* ): int {
+    let i: uint64_t;
 
     // counters for collecting operation stats
-    uint64_t count_create = 0;
-    uint64_t count_destroy = 0;
-    uint64_t count_clear = 0;
-    uint64_t count_get_key = 0;
-    uint64_t count_get_item = 0;
-    uint64_t count_get_size = 0;
-    uint64_t count_insert = 0;
-    uint64_t count_find_min = 0;
-    uint64_t count_delete = 0;
-    uint64_t count_delete_min = 0;
-    uint64_t count_decrease_key = 0;
-    uint64_t count_empty = 0;
+    let count_create: uint64_t = 0;
+    let count_destroy: uint64_t = 0;
+    let count_clear: uint64_t = 0;
+    let count_get_key: uint64_t = 0;
+    let count_get_item: uint64_t = 0;
+    let count_get_size: uint64_t = 0;
+    let count_insert: uint64_t = 0;
+    let count_find_min: uint64_t = 0;
+    let count_delete: uint64_t = 0;
+    let count_delete_min: uint64_t = 0;
+    let count_decrease_key: uint64_t = 0;
+    let count_empty: uint64_t = 0;
 
     if( argc < 2 )
         exit( -1 );
 
-    int trace_file = open( argv[1], O_RDONLY );
+    let trace_file: int = open( argv[1], O_RDONLY );
     if( trace_file < 0 )
     {
         fprintf( stderr, "Could not open file.\n" );
         return -1;
     }
 
-    pq_trace_header header;
+    let header: pq_trace_header;
     pq_trace_read_header( trace_file, &header );
 
     //printf("Header: (%llu,%lu,%lu)\n",header.op_count,header.pq_ids,
     //    header.node_ids);
 
-    pq_op_blank *ops = calloc( header.op_count, sizeof( pq_op_blank ) );
-    pq_type **pq_index = calloc( header.pq_ids, sizeof( pq_type* ) );
-    pq_node_type **node_index = calloc( header.node_ids,
-        sizeof( pq_node_type* ) );
-    if( ops == NULL || pq_index == NULL || node_index == NULL )
+    let ops: pq_op_blank* = new Array(header.op_count);
+    let pq_index: pq_type*[] = new Array(header.pq_ids);
+    let node_index: pq_node_type*[] = new Array(header.node_ids);
+    if( ops == null || pq_index == null || node_index == null )
     {
         fprintf( stderr, "Calloc fail.\n" );
         return -1;
@@ -153,17 +151,17 @@ int main( int argc, char** argv )
     mem_capacities[0] = header.node_ids;
 #endif
 #ifdef USE_EAGER
-    mem_map *map = mm_create( mem_types, mem_sizes, mem_capacities );
+    let map: mem_map* = mm_create( mem_types, mem_sizes, mem_capacities );
 #else
-    mem_map *map = mm_create( mem_types, mem_sizes );
+    let map: mem_map* = mm_create( mem_types, mem_sizes );
 #endif
 
-    uint64_t op_remaining = header.op_count;
-    uint64_t op_chunk;
-    int status;
-    uint32_t queue_size = 0;
-    uint64_t sum_size = 0;
-    uint32_t max_size = 0;
+    let op_remaining: uint64_t = header.op_count;
+    let op_chunk: uint64_t;
+    let status: int;
+    let queue_size: uint32_t = 0;
+    let sum_size: uint64_t = 0;
+    let max_size: uint32_t = 0;
 
     mm_clear( map );
 
@@ -175,7 +173,7 @@ int main( int argc, char** argv )
         for( i = 0; i < op_chunk; i++ )
         {
             status = pq_trace_read_op( trace_file, ops + i );
-            if( status == -1 )
+            if( status === -1 )
             {
                 fprintf( stderr, "Invalid operation!" );
                 return -1;
@@ -228,14 +226,14 @@ int main( int argc, char** argv )
                 /*case PQ_OP_MELD:
                     printf("Meld.\n");
                     op_meld = (pq_op_meld*) ( ops + i );
-                    q = pq_index[op_meld->pq_src1_id];
-                    r = pq_index[op_meld->pq_src2_id];
-                    pq_index[op_meld->pq_dst_id] = pq_meld( q, r );
+                    q = pq_index[op_meld.pq_src1_id];
+                    r = pq_index[op_meld.pq_src2_id];
+                    pq_index[op_meld.pq_dst_id] = pq_meld( q, r );
                     break;*/
                 case PQ_OP_EMPTY:
                     count_empty++;
                     break;
-                default:
+                let default:
                     break;
             }
         }
@@ -246,7 +244,7 @@ int main( int argc, char** argv )
 
     for( i = 0; i < header.pq_ids; i++ )
     {
-        if( pq_index[i] != NULL )
+        if( pq_index[i] != null )
             pq_destroy( pq_index[i] );
     }
 

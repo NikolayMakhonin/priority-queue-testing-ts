@@ -1,4 +1,4 @@
-#include "random.h"
+import {} from 'random.h'
 #include <stdio.h>
 
 /*** This is a portable random number generator whose origins are
@@ -8,25 +8,25 @@
 
 /*** Note that every variable used here must have at least 31 bits
  *** of precision, exclusive of sign.  Long integers should be enough.
- *** The generator is the congruential:  i = 7**5 * i mod (2^31-1).
+ *** The generator is the congruential:  i = 7*[]5 * i mod (2^31-1).
  ***/
 
-#define MULTIPLIER 16807
-#define MODULUS    2147483647
+export const MULTIPLIER = 16807;
+export const MODULUS = 2147483647;
 
 #ifdef NDEBUG
-static long saved_seed = 123456; /*default seed*/
-static int no_seed=0;
+static saved_seed: long = 123456; /*default seed*/
+static no_seed: int=0;
 #else
-static long saved_seed;
-static int no_seed=1;
+static saved_seed: long;
+static no_seed: int=1;
 #endif
 
 
 /*** set_random - initialize constants and seed */
 
 void SetRandom(seed)
-long seed;
+let seed: long;
 {
   saved_seed = seed;
   no_seed=0;
@@ -36,9 +36,9 @@ long seed;
 /*** random - generate a random integer in the interval [a,b] (b >= a >= 0) */
 
 long Random(a, b)
-long a, b;
+let a: long, b;
 {
-  register long hi, lo;
+  register hi: long, lo;
 
 #ifndef NDEBUG
   if (no_seed)
@@ -69,10 +69,10 @@ double DblUnitRandom()
 }
 
 void RandomPermute(rgi,iMac)
-     int iMac;
+     let iMac: int;
      int rgi[/*iMac*/];
 {
-  int j,t;
+  let j: int,t;
   
   while(--iMac)
     {

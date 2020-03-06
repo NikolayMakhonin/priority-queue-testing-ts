@@ -17,13 +17,13 @@
 #include <values.h>
 #include <math.h>
 
-#include "random.c"
+import {} from 'random.c'
 
 #define DASH '-'
-#define VERY_FAR 100000000
+export const VERY_FAR = 100000000;
 
-double sqrt(double);  /* you can't define math fn. prototypes too many times */
-double ceil(double);  /* I've found this out through hard experience */
+export function sqrt(double): double ;  /* you can't define math fn. prototypes too many times */
+export function ceil(double): double ;  /* I've found this out through hard experience */
 
 #define ARCLEN(k)   /* arclen between nodes i and j if (i-j) = k */ \
       ( (long)(ceil(2.0 * k * sqrt((double)(k)))) )
@@ -39,30 +39,30 @@ double ceil(double);  /* I've found this out through hard experience */
 
 main ( argc, argv )
 
-int argc;
-char* argv[];
+let argc: int;
+let argv: string[];
 
 
 {
 
-  char   args[30];
+  let args: char[30];
 
-  long   n,
+  let n: long,
          source,
          i,
          j,
          np,
          dij;
 
-  long   m,
+  let m: long,
          d,
          k;
 
-  long   lx, h, ch;
+  let lx: long, h, ch;
 
-  long   *head;
+  let head: [];
 
-  long   seed;
+  let seed: long;
 
 
   /* parsing  parameters */
@@ -71,7 +71,7 @@ char* argv[];
 
   strcpy ( args, argv[1] );
 
-  if (( args[0] == DASH ) && ( args[1] == 'h'))
+  if (( args[0] === DASH ) && ( args[1] === 'h'))
       goto help;
 
   if (argc > 4) goto usage;
@@ -91,10 +91,10 @@ char* argv[];
  
  for (np = 3; np < argc; np++) {
     strcpy ( args, argv[np] );
-    if (args[0] != DASH) goto usage;
-    if (args[1] == 'l')
+    if (args[0] !== DASH) goto usage;
+    if (args[1] === 'l')
       lx  = (long ) atof ( &args[2] );
-    else if (args[1] == 's') {
+    else if (args[1] === 's') {
       seed  = (long ) atof ( &args[2] );
      }
     else
@@ -107,7 +107,7 @@ char* argv[];
   m = n*d;
 
   /* allocate space */
-  head = (long *) calloc(n+1, sizeof(long));
+  head = (long *) new Array(n+1);
   
 
   /* start output */
@@ -145,7 +145,7 @@ char* argv[];
       for (k = 2; k <= d; k++) {
 	 do {
 	      j = 1 + nrand(n);
-	      } while ((j == i) || (j == ch) || (head[j] == 1));
+	      } while ((j === i) || (j === ch) || (head[j] === 1));
 	 head[j] = 1;
       }
     }
@@ -165,13 +165,13 @@ char* argv[];
       for (k = 2; k <= n-d; k++) {
 	 do {
 	      j = 1 + nrand(n);
-	      } while (head[j] == 0);
+	      } while (head[j] === 0);
 	 head[j] = 0;
       }
     }
 
     for  (k = 1; k <= n; k++) 
-      if (head[k] == 1) {
+      if (head[k] === 1) {
 	 if (i < k)
 	      dij = k - i;
 	 else
@@ -193,7 +193,7 @@ char* argv[];
 
   /* ---- help ---- */
 
- help:
+ let help:
 
   fprintf ( stderr, 
 	      "\n'%s' - Dijkstra-worst-case shortest path problem generator.\n Generates problems in extended DIMACS format.\n \n %s  n d [ -l#i] \n #i - integer number   #f - real number\n \n n     - number of nodes, must be 2 or more\n, d     - out-degree, must be 1 or more\n, -l#i  - arc lengths multiplier         (default 1)\n -s#i  - seed \n",

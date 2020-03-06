@@ -6,21 +6,19 @@
 #include <stdint.h>
 
 typedef  /* arc */
-   struct arc_st
-{
-   uint32_t              len;            /* length of the arc */
-   struct node_st   *head;           /* head node */
+   export interface arc_st {
+   let len: uint32_t;            /* length of the arc */
+   struct head: node_st*;           /* head node */
 }
   arc;
 
 typedef  /* node */
-   struct node_st
-{
-   arc              *first;           /* first outgoing arc */
-   uint64_t          dist;	      /* tentative shortest path length */
-   struct node_st   *parent;          /* parent pointer */
-   long              heap_pos;        /* number of position in the heap */
-   uint64_t          temp;            /* for temporary labels */
+   export interface node_st {
+   let first: arc*;           /* first outgoing arc */
+   let dist: uint64_t;	      /* tentative shortest path length */
+   struct parent: node_st*;          /* parent pointer */
+   let heap_pos: long;        /* number of position in the heap */
+   let temp: uint64_t;            /* for temporary labels */
 } node;
 
 #endif

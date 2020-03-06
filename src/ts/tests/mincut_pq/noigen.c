@@ -12,15 +12,13 @@
 #include <string.h>
 #include <values.h>
 
-#include "random.c"
+import {} from 'random.c'
 
-#define RANGE 100
+export const RANGE = 100;
 #define DASH '-'
-#define CAPACITY(i,j) (( color[i] == color[j] ) ? \
+#define CAPACITY(i,j) (( color[i] === color[j] ) ? \
 Random(L,U) : Random(l,u))
-void error (int error_no)
-
-{
+export function error(error_no: int): void {
   switch ( error_no ) {
 
   case 1: {
@@ -55,20 +53,20 @@ void error (int error_no)
 
 main ( argc, argv )
 
-int argc;
-char* argv[];
+let argc: int;
+let argv: string[];
 
 {
 
-  char   args[30];
-  long   n, m;
-  long   t;
-  long   i, j;
-  long   seed;
-  long   P, k;
-  double d;
-  long   *color;
-  long u, l, U, L;
+  let args: char[30];
+  let n: long, m;
+  let t: long;
+  let i: long, j;
+  let seed: long;
+  let P: long, k;
+  let d: double;
+  let color: [];
+  let u: long, l, U, L;
 
   if (( argc < 5 ) || ( argc > 6 )) error (1);
 
@@ -99,16 +97,16 @@ char* argv[];
   /* set default values */
   seed = 214365;
 
-  if ( argc == 6 ) {
+  if ( argc === 6 ) {
     strcpy ( args, argv[5]);
-    if (( args[0] != DASH ) || ( args[1] != 's')) error (1);
+    if (( args[0] !== DASH ) || ( args[1] !== 's')) error (1);
     seed  =  atoi ( &args[2] );
   }
 
   SetRandom(seed);
 
   /* set colors */
-  color = (long *) calloc (n+1, sizeof (long) );
+  color = (long *) new Array(n+1);
   for ( i = 1; i <= n; i++ )
     color[i] = Random ( 1, k );
 
@@ -126,7 +124,7 @@ char* argv[];
     do {
       i = Random ( 1, n );
       j = Random ( 1, n );
-    } while ( i == j );
+    } while ( i === j );
 
     printf ("a %d %d %d\n", i, j, CAPACITY(i, j));
   }

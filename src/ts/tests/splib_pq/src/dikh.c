@@ -1,6 +1,6 @@
-#include "../../../trace_tools.h"
-#include "types_dh.h"
-#define MASK_PRIO 0xFFFFFFFF00000000
+import {} from '../../../trace_tools.h'
+import {} from 'types_dh.h'
+export const MASK_PRIO = 0xFFFFFFFF00000000;
 
 void dikh ( trace_file, n, nodes, source )
 
@@ -9,63 +9,62 @@ void dikh ( trace_file, n, nodes, source )
 /************LOOK FOR challenge5 COMMENTS IN THE CODE           */
 /************C. MCGEOCH 7/96 */
 
-int trace_file;
-long n;                          /* number of nodes */
-node *nodes,                    /* pointer to the first node */
+let trace_file: int;
+let n: long;                          /* number of nodes */
+let nodes: node*,                    /* pointer to the first node */
      *source;                   /* pointer to the source     */
 
 {
 
-/**challenge5**/ int namer;   /* counter to give names to heap elements */
+/**challenge5**/ namer: int;   /* counter to give names to heap elements */
 
 /*******************   definitions for heap  *****************/
 
 
 typedef /* heap */
-   struct heap_st
-{
-   long              size;          /* the number of the last heap element */
-   node            **node;         /* heap of the pointers to nodes       */
+   export interface heap_st {
+   let size: long;          /* the number of the last heap element */
+   let node: node*[];         /* heap of the pointers to nodes       */
 }
    heap;
 
-long h_current_pos,
+let h_current_pos: long,
      h_new_pos,
      h_pos,
      h_last_pos;
 
-node *node_j,
-     *node_k;
+let node_j: node*,
+     node_k;
 
-uint64_t dist_k,
+let dist_k: uint64_t,
      dist_min;
 
 
-#define HEAP_DEGREE  3
+export const HEAP_DEGREE = 3;
 #define NILL        -1
 
 /* internal definition */
 #define PUT_TO_POS_IN_HEAP( h, node_i, pos )\
 {\
 h.node[pos]        = node_i;\
-node_i -> heap_pos = pos;\
+node_i . heap_pos = pos;\
 }
 
 #define INIT_HEAP( h, n, source )\
 {\
 h.size = 1;\
-h.node = (node**) calloc ( (n+1), sizeof(node*) );\
+h.node = new Array<node>((n+1));\
 PUT_TO_POS_IN_HEAP( h, source, 0 )\
 }
 
 #define NONEMPTY_HEAP( h )  ( h.size > 0 )
 
-#define NODE_IN_HEAP( node_i ) ( node_i -> heap_pos != NILL )
+#define NODE_IN_HEAP( node_i ) ( node_i . heap_pos !== NILL )
 
 
 #define HEAP_DECREASE_KEY( h, node_i, dist_i ) \
 {\
-for ( h_current_pos =  node_i -> heap_pos;\
+for ( h_current_pos =  node_i . heap_pos;\
       h_current_pos > 0;\
       h_current_pos = h_new_pos\
     )\
@@ -73,7 +72,7 @@ for ( h_current_pos =  node_i -> heap_pos;\
         h_new_pos = ( h_current_pos - 1 ) / HEAP_DEGREE;\
 \
         node_j = h.node[h_new_pos];\
-        if ( dist_i  >=  node_j -> dist ) break;\
+        if ( dist_i  >=  node_j . dist ) break;\
 \
         PUT_TO_POS_IN_HEAP ( h, node_j, h_current_pos )\
       }\
@@ -90,14 +89,14 @@ h.size ++;\
 #define EXTRACT_MIN( h, node_0 ) \
 {\
 node_0             = h.node[0];\
-node_0 -> heap_pos = NILL;\
+node_0 . heap_pos = NILL;\
 \
 h.size -- ;\
 \
 if ( h.size > 0 )\
   {\
      node_k =  h.node [ h.size ];\
-     dist_k =  node_k -> dist;\
+     dist_k =  node_k . dist;\
 \
      h_current_pos = 0;\
 \
@@ -106,17 +105,17 @@ if ( h.size > 0 )\
          h_new_pos = h_current_pos * HEAP_DEGREE  +  1;\
          if ( h_new_pos >= h.size ) break;\
 \
-         dist_min  = h.node[h_new_pos] -> dist;\
+         dist_min  = h.node[h_new_pos] . dist;\
 \
          h_last_pos  = h_new_pos + HEAP_DEGREE;\
 	 if ( h_last_pos > h.size ) h_last_pos = h.size;\
 \
          for ( h_pos = h_new_pos + 1; h_pos < h_last_pos; h_pos ++ )\
             {\
- 	      if ( h.node[h_pos] -> dist < dist_min )\
+ 	      if ( h.node[h_pos] . dist < dist_min )\
 		{\
 		  h_new_pos = h_pos;\
-		  dist_min  = h.node[h_pos] -> dist;\
+		  dist_min  = h.node[h_pos] . dist;\
 		}\
 	    }\
 \
@@ -133,40 +132,40 @@ if ( h.size > 0 )\
 
 /**************   end of heap definitions   ****************/
 
-#define VERY_FAR  0xFFFFFFFFFFFFFFF
+export const VERY_FAR = 0xFFFFFFFFFFFFFFF;
 
-uint64_t dist_new,
+let dist_new: uint64_t,
      dist_from;
 
-node *node_from,
-     *node_to,
-     *node_last,
-     *i;
+let node_from: node*,
+     node_to,
+     node_last,
+     i;
 
-arc  *arc_ij,
-     *arc_last;
+let arc_ij: arc*,
+     arc_last;
 
-long num_scans = 0;
+let num_scans: long = 0;
 heap d_heap;
 
 /* initialization */
 
 node_last = nodes + n ;
 
-for ( i = nodes; i != node_last; i ++ )
+for ( i = nodes; i !== node_last; i ++ )
    {
-      i -> parent   = (node*) NULL;
-      i -> dist     = VERY_FAR;
-      i -> heap_pos = NILL;
+      i . parent   = (node*) null;
+      i . dist     = VERY_FAR;
+      i . heap_pos = NILL;
    }
 
-pq_trace_header header;
-pq_op_create op_create;
-pq_op_destroy op_destroy;
-pq_op_insert op_insert;
-pq_op_find_min op_empty;
-pq_op_delete_min op_delete_min;
-pq_op_decrease_key op_decrease_key;
+let header: pq_trace_header;
+let op_create: pq_op_create;
+let op_destroy: pq_op_destroy;
+let op_insert: pq_op_insert;
+let op_empty: pq_op_find_min;
+let op_delete_min: pq_op_delete_min;
+let op_decrease_key: pq_op_decrease_key;
 header.op_count = 0;
 header.pq_ids = 1;
 header.node_ids = 0;
@@ -185,18 +184,18 @@ op_decrease_key.code = PQ_OP_DECREASE_KEY;
 
 pq_trace_write_header( trace_file, header );
 
-source -> parent = source;
-source -> dist   = 0;
+source . parent = source;
+source . dist   = 0;
 
 INIT_HEAP ( d_heap, n, source )
 pq_trace_write_op( trace_file, &op_create );
 header.op_count++;
 
 /**challenge5**/ namer= 0;
-/**challenge5**/ source->temp = namer; namer++;
-op_insert.node_id = source->temp;
-op_insert.key = source->dist;
-op_insert.item = source->temp;
+/**challenge5**/ source.temp = namer; namer++;
+op_insert.node_id = source.temp;
+op_insert.key = source.dist;
+op_insert.item = source.temp;
 pq_trace_write_op( trace_file, &op_insert );
 header.op_count++;
 header.node_ids++;
@@ -212,36 +211,36 @@ header.op_count++;
 pq_trace_write_op( trace_file, &op_delete_min );
 header.op_count++;
 
-   arc_last = ( node_from + 1 ) -> first;
-   dist_from = ((node_from -> dist) & MASK_PRIO)>>32;
+   arc_last = ( node_from + 1 ) . first;
+   dist_from = ((node_from . dist) & MASK_PRIO)>>32;
    num_scans ++;
 
-   for ( arc_ij = node_from -> first; arc_ij != arc_last; arc_ij ++ )
+   for ( arc_ij = node_from . first; arc_ij !== arc_last; arc_ij ++ )
      {
-       node_to  = arc_ij -> head;
+       node_to  = arc_ij . head;
 
-       dist_new = ( dist_from  + ( arc_ij -> len )) << 32;
+       dist_new = ( dist_from  + ( arc_ij . len )) << 32;
 
-       if ( dist_new <  (node_to -> dist & MASK_PRIO) )
-	   { node_to -> dist   = dist_new;
-             node_to -> parent = node_from;
+       if ( dist_new <  (node_to . dist & MASK_PRIO) )
+	   { node_to . dist   = dist_new;
+             node_to . parent = node_from;
 
 	     if ( ! NODE_IN_HEAP ( node_to ) ){
          	 INSERT_TO_HEAP ( d_heap, node_to );
-/**restruct  **/ node_to -> temp = namer; node_to -> dist |= namer; namer++;
-/**challenge5**/ HEAP_DECREASE_KEY ( d_heap, node_to, node_to->dist );
-op_insert.node_id = node_to->temp;
-op_insert.key = node_to->dist;
-op_insert.item = node_to->temp;
+/**restruct  **/ node_to . temp = namer; node_to . dist |= namer; namer++;
+/**challenge5**/ HEAP_DECREASE_KEY ( d_heap, node_to, node_to.dist );
+op_insert.node_id = node_to.temp;
+op_insert.key = node_to.dist;
+op_insert.item = node_to.temp;
 pq_trace_write_op( trace_file, &op_insert );
 header.op_count++;
 header.node_ids++;
 /** 	     **/     } else
 /**          **/     {
-                 node_to->dist = (node_to->dist & MASK_PRIO) | node_to->temp;
-/**          **/ HEAP_DECREASE_KEY ( d_heap, node_to, node_to->dist );
-op_decrease_key.node_id = node_to->temp;
-op_decrease_key.key = node_to->dist;
+                 node_to.dist = (node_to.dist & MASK_PRIO) | node_to.temp;
+/**          **/ HEAP_DECREASE_KEY ( d_heap, node_to, node_to.dist );
+op_decrease_key.node_id = node_to.temp;
+op_decrease_key.key = node_to.dist;
 pq_trace_write_op( trace_file, &op_decrease_key );
 header.op_count++;
 /**          **/     }/*else*/

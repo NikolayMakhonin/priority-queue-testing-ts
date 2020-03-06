@@ -43,11 +43,11 @@ float timer()
 /*                                                                   */
 /*********************************************************************/
 
-unsigned long internal_seed;
+let internal_seed: unsigned long;
 
 void init_rand ( init_seed )
 
-long init_seed;
+let init_seed: long;
 
 { internal_seed = ( init_seed > 0 )
                  ? (unsigned long) init_seed
@@ -55,7 +55,7 @@ long init_seed;
                 
 
   /* only odd numbers are acceptable */
-  if ( internal_seed % 2 == 0 ) internal_seed --;
+  if ( internal_seed % 2 === 0 ) internal_seed --;
 }
 
 /*********************************************************************/
@@ -63,20 +63,20 @@ long init_seed;
 /* Internal function  irand  may depend on OS and compiler           */
 /*                                                                   */
 /* irand assumption:                                                 */
-/* unsigned long i,j;                                                */
+/* i: unsigned long,j;                                                */
 /*   if i*j > max(unsigned long)                                     */
 /*           1. No overflow interruption                             */
 /*           2. i*j = i*j mod max(unsigned long)                     */
 /*                                                                   */
 /* This assumption is true for a lot of computers.                   */
 /* If your computer fails:                                           */
-/*   rename: irand <---> xrand                                       */
+/*   rename: irand <--. xrand                                       */
 /*                                                                   */
 /*********************************************************************/
  
-#define  A   1220703125
-#define  B   2147483647
-#define  BF  2147483647.
+export const A = 1220703125;
+export const B = 2147483647;
+export const BF = 2147483647.;
 
 static long irand ()
 
@@ -91,14 +91,14 @@ static long irand ()
 /*********************************************************************/
 
 
-#define T15  32768 
-#define T16  65536
-#define A1   37252
-#define A2   29589
+export const T15 = 32768;
+export const T16 = 65536;
+export const A1 = 37252;
+export const A2 = 29589;
 
 static long xrand()
 
-{ unsigned long is1, is2;
+{ is1: unsigned long, is2;
 
   is1 = internal_seed / T15;
   is2 = internal_seed % T15;
@@ -118,17 +118,17 @@ double rand01()
   
 /*********************************************************************/
 
-#define NK  12
+export const NK = 12;
 
 double randg01()
 
-{ int i;
-  double sum = 0;
+{ i: int;
+  let sum: double = 0;
 
   for ( i = 0; i < NK; i++ ) sum += rand01();
   return sum - 6.;
 
-  /* if   NK != 12  then you must return (12/NK)*sum - (NK/2) */
+  /* if   NK !== 12  then you must return (12/NK)*sum - (NK/2) */
 }
 
 #undef NK
@@ -138,7 +138,7 @@ double randg01()
 
 long nrand ( n )
 
-long n;
+let n: long;
 
 { return (long) ( rand01() * (double) n );
 }

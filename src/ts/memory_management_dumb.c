@@ -1,38 +1,33 @@
-#include "memory_management_dumb.h"
+import {} from 'memory_management_dumb.h'
 #include <stdio.h>
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-mem_map* mm_create( uint32_t types, uint32_t *sizes )
-{
-    mem_map *map = malloc( sizeof( mem_map ) );
-    map->types = types;
-    map->sizes = malloc( types * sizeof( uint32_t ) );
+export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* {
+    let map: mem_map* = malloc( sizeof( mem_map ) );
+    map.types = types;
+    map.sizes = malloc( types * sizeof( uint32_t ) );
 
     return map;
 }
 
-void mm_destroy( mem_map *map )
-{
-    free( map->sizes );
+export function mm_destroy( map: mem_map* ): void {
+    free( map.sizes );
     free( map );
 }
 
-void mm_clear( mem_map *map )
-{
+export function mm_clear( map: mem_map* ): void {
     return;
 }
 
-void* pq_alloc_node( mem_map *map, uint32_t type )
-{
-    void *node = calloc( 1, map->sizes[type] );
+export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
+    let node: void* = new Array(1);
 
     return node;
 }
 
-void pq_free_node( mem_map *map, uint32_t type, void *node )
-{
+export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void {
     free( node );
 }

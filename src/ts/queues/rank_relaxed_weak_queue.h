@@ -5,10 +5,10 @@
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
-#define ROOTS 0
-#define MARKS 1
+export const ROOTS = 0;
+export const MARKS = 1;
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 /**
  * Holds an inserted element, as well as pointers to maintain tree
@@ -17,28 +17,27 @@
  * left and right children.  In the case of a root, the right child
  * pointer points to the next root.
  */
-struct rank_relaxed_weak_node_t
-{
+export interface rank_relaxed_weak_node_t {
     //! Parent node
-    struct rank_relaxed_weak_node_t *parent;
+    struct parent: rank_relaxed_weak_node_t*;
     //! Left child
-    struct rank_relaxed_weak_node_t *left;
+    struct left: rank_relaxed_weak_node_t*;
     //! Right child, or next root if this node is a root
-    struct rank_relaxed_weak_node_t *right;
+    struct right: rank_relaxed_weak_node_t*;
 
     //! A proxy for tree size
-    uint32_t rank;
+    let rank: uint32_t;
     //! Mark status
-    uint32_t marked;
+    let marked: uint32_t;
 
     //! Pointer to a piece of client data
-    item_type item;
+    let item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    let key: key_type;
+};
 
-typedef struct rank_relaxed_weak_node_t rank_relaxed_weak_node;
-typedef rank_relaxed_weak_node pq_node_type;
+export type rank_relaxed_weak_node = rank_relaxed_weak_node_t;
+export type pq_node_type = rank_relaxed_weak_node;
 
 /**
  * A mutable, meldable, rank-relaxed weak queue.  Maintains a forest of
@@ -47,22 +46,21 @@ typedef rank_relaxed_weak_node pq_node_type;
  * of the same rank, no marked node with a parent which is also marked, and no
  * marked node which is a left child.
  */
-struct rank_relaxed_weak_queue_t
-{
+export interface rank_relaxed_weak_queue_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    let map: mem_map*;
     //! The number of items held in the queue
-    uint32_t size;
+    let size: uint32_t;
     //! Pointer to the minimum node in the queue
-    rank_relaxed_weak_node *minimum;
+    let minimum: rank_relaxed_weak_node*;
     //! Arrays of roots and marked nodes in the queue, indexed by rank
-    rank_relaxed_weak_node *nodes[2][MAXRANK];
+    let nodes: rank_relaxed_weak_node*[2][MAXRANK];
     //! Bit vectors indicating which pointers
-    uint64_t registry[2];
-} __attribute__ ((aligned(4)));
+    let registry: uint64_t[2];
+};
 
-typedef struct rank_relaxed_weak_queue_t rank_relaxed_weak_queue;
-typedef rank_relaxed_weak_queue pq_type;
+export type rank_relaxed_weak_queue = rank_relaxed_weak_queue_t;
+export type pq_type = rank_relaxed_weak_queue;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -74,21 +72,21 @@ typedef rank_relaxed_weak_queue pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-rank_relaxed_weak_queue* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): rank_relaxed_weak_queue* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( rank_relaxed_weak_queue *queue );
+export function pq_destroy( queue: rank_relaxed_weak_queue* ): void ;
 
 /**
  * Deletes all nodes from the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( rank_relaxed_weak_queue *queue );
+export function pq_clear( queue: rank_relaxed_weak_queue* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -97,8 +95,8 @@ void pq_clear( rank_relaxed_weak_queue *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node );
+export function pq_get_key( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -107,8 +105,8 @@ key_type pq_get_key( rank_relaxed_weak_queue *queue,
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node );
+export function pq_get_item( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -116,7 +114,7 @@ item_type* pq_get_item( rank_relaxed_weak_queue *queue,
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( rank_relaxed_weak_queue *queue );
+export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -128,8 +126,8 @@ uint32_t pq_get_size( rank_relaxed_weak_queue *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-rank_relaxed_weak_node* pq_insert( rank_relaxed_weak_queue *queue,
-    item_type item, key_type key );
+export function pq_insert( queue: rank_relaxed_weak_queue*,
+    item: item_type, key: key_type ): rank_relaxed_weak_node* ;
 
 /**
  * Returns the minimum item from the queue.
@@ -137,7 +135,7 @@ rank_relaxed_weak_node* pq_insert( rank_relaxed_weak_queue *queue,
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-rank_relaxed_weak_node* pq_find_min( rank_relaxed_weak_queue *queue );
+export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node* ;
 
 /**
  * Removes the minimum item from the queue and modifies queue structure to
@@ -152,7 +150,7 @@ rank_relaxed_weak_node* pq_find_min( rank_relaxed_weak_queue *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( rank_relaxed_weak_queue *queue );
+export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue and returns it.  Relies on
@@ -163,8 +161,8 @@ key_type pq_delete_min( rank_relaxed_weak_queue *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node );
+export function pq_delete( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -175,8 +173,8 @@ key_type pq_delete( rank_relaxed_weak_queue *queue,
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node, key_type new_key );
+export function pq_decrease_key( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node*, new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -184,7 +182,7 @@ void pq_decrease_key( rank_relaxed_weak_queue *queue,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( rank_relaxed_weak_queue *queue );
+export function pq_empty( queue: rank_relaxed_weak_queue* ): boolean ;
 
 #endif
 

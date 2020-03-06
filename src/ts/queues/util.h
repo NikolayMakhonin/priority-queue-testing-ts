@@ -17,7 +17,7 @@ using namespace std;
 
 // default debug level. will be overidden e.g. if debug.h is included
 #ifndef DEBUGLEVEL
-#define DEBUGLEVEL 3
+export const DEBUGLEVEL = 3;
 #endif
 
 #if DEBUGLEVEL >= 0
@@ -82,11 +82,11 @@ using namespace std;
 #endif
 
 #ifndef PI
-#define PI 3.1415927
+export const PI = 3.1415927;
 #endif
 
 // is this the right definition of limit?
-inline double limit(double x, double bound)
+inline double limit(x: double, bound: double)
 {
   if      (x >  bound) { return  bound; }
   else if (x < -bound) { return -bound; }

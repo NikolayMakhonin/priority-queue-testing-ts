@@ -6,53 +6,51 @@
 //==============================================================================
 
 #ifdef BRANCH_16
-    #define BRANCHING_FACTOR 16
+    export const BRANCHING_FACTOR = 16;
 #elif defined BRANCH_8
-    #define BRANCHING_FACTOR 8
+    export const BRANCHING_FACTOR = 8;
 #elif defined BRANCH_4
-    #define BRANCHING_FACTOR 4
+    export const BRANCHING_FACTOR = 4;
 #else
-    #define BRANCHING_FACTOR 2
+    export const BRANCHING_FACTOR = 2;
 #endif
 
-#include "queue_common.h"
+import {} from './queue_common_h'
 
 /**
  * Holds an inserted element, as well as the current index in the node array.
  * Acts as a handle to clients for the purpose of mutability.
  */
-struct implicit_node_t
-{
+export interface implicit_node_t {
     //! Index for the item in the "tree" array
-    uint32_t index;
+    index: uint32_t;
 
     //! Pointer to a piece of client data
-    item_type item;
+    item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    key: key_type;
+}
 
-typedef struct implicit_node_t implicit_node;
-typedef implicit_node pq_node_type;
+export type implicit_node = implicit_node_t;
+export type pq_node_type = implicit_node;
 
 /**
  * A mutable, meldable, array-based d-ary heap.  Maintains a single, complete
  * d-ary tree.  Imposes the standard heap invariant.
  */
-struct implicit_heap_t
-{
+export interface implicit_heap_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    map: mem_map;
     //! The array of node pointers encoding the tree structure
-    implicit_node **nodes;
+    nodes: implicit_node[];
     //! The number of items held in the queue
-    uint32_t size;
+    size: uint32_t;
     //! Current capacity of the heap
-    uint32_t capacity;
-} __attribute__ ((aligned(4)));
+    capacity: uint32_t;
+}
 
-typedef struct implicit_heap_t implicit_heap;
-typedef implicit_heap pq_type;
+export type implicit_heap = implicit_heap_t;
+export type pq_type = implicit_heap;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -64,21 +62,21 @@ typedef implicit_heap pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-implicit_heap* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): implicit_heap;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( implicit_heap *queue );
+export function pq_destroy( queue: implicit_heap): void ;
 
 /**
  * Removes all items from the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( implicit_heap *queue );
+export function pq_clear( queue: implicit_heap): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -87,7 +85,7 @@ void pq_clear( implicit_heap *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( implicit_heap *queue, implicit_node *node );
+export function pq_get_key( queue: implicit_heap, node: implicit_node ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -96,7 +94,7 @@ key_type pq_get_key( implicit_heap *queue, implicit_node *node );
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( implicit_heap *queue, implicit_node *node );
+export function pq_get_item( queue: implicit_heap, node: implicit_node ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -104,7 +102,7 @@ item_type* pq_get_item( implicit_heap *queue, implicit_node *node );
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( implicit_heap *queue );
+export function pq_get_size( queue: implicit_heap ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert into the queue and creates a new
@@ -116,7 +114,7 @@ uint32_t pq_get_size( implicit_heap *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-implicit_node* pq_insert( implicit_heap *queue, item_type item, key_type key );
+export function pq_insert( queue: implicit_heap, item: item_type, key: key_type ): implicit_node ;
 
 /**
  * Returns the minimum item from the queue without modifying the queue.
@@ -124,7 +122,7 @@ implicit_node* pq_insert( implicit_heap *queue, item_type item, key_type key );
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-implicit_node* pq_find_min( implicit_heap *queue );
+export function pq_find_min( queue: implicit_heap ): implicit_node ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -134,7 +132,7 @@ implicit_node* pq_find_min( implicit_heap *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( implicit_heap *queue ) ;
+export function pq_delete_min( queue: implicit_heap ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue.  Requires that the location
@@ -147,7 +145,7 @@ key_type pq_delete_min( implicit_heap *queue ) ;
  * @param node  Pointer to node corresponding to the target item
  * @return      Key of item removed
  */
-key_type pq_delete( implicit_heap *queue, implicit_node* node );
+export function pq_delete( queue: implicit_heap, node: implicit_node ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way as to decrease the
@@ -158,8 +156,8 @@ key_type pq_delete( implicit_heap *queue, implicit_node* node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( implicit_heap *queue, implicit_node *node,
-    key_type new_key );
+export function pq_decrease_key( queue: implicit_heap, node: implicit_node,
+    new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -167,6 +165,6 @@ void pq_decrease_key( implicit_heap *queue, implicit_node *node,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( implicit_heap *queue );
+export function pq_empty( queue: implicit_heap ): boolean ;
 
 #endif

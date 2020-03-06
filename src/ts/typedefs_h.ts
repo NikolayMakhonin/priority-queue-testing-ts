@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef uint64_t key_type;
-typedef uint32_t item_type;
+export type key_type = uint64_t;
+export type item_type = uint32_t;
 
 #endif

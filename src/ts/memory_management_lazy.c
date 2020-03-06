@@ -1,11 +1,11 @@
-#include "memory_management_lazy.h"
+import {} from 'memory_management_lazy.h'
 #include <stdio.h>
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static const uint32_t mm_sizes[PQ_MEM_WIDTH] =
+static const mm_sizes: uint32_t[PQ_MEM_WIDTH] =
 {
     0x00000001, 0x00000002, 0x00000004, 0x00000008,
     0x00000010, 0x00000020, 0x00000040, 0x00000080,
@@ -17,134 +17,127 @@ static const uint32_t mm_sizes[PQ_MEM_WIDTH] =
     0x10000000, 0x20000000, 0x40000000, 0x80000000
 };
 
-static void mm_grow_data( mem_map *map, uint32_t type );
-static void mm_grow_free( mem_map *map, uint32_t type );
+export function mm_grow_data( map: mem_map*, type: uint32_t ): void ;
+export function mm_grow_free( map: mem_map*, type: uint32_t ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-mem_map* mm_create( uint32_t types, uint32_t *sizes )
-{
-    int i;
+export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* {
+    let i: int;
 
-    mem_map *map = malloc( sizeof( mem_map ) );
-    map->types = types;
-    map->sizes = malloc( types * sizeof( uint32_t ) );
-    map->data = malloc( types * sizeof( uint8_t* ) );
-    map->free = malloc( types * sizeof( uint8_t** ) );
-    map->chunk_data = calloc( types, sizeof( uint32_t ) );
-    map->chunk_free = calloc( types, sizeof( uint32_t ) );
-    map->index_data = calloc( types, sizeof( uint32_t ) );
-    map->index_free = calloc( types, sizeof( uint32_t ) );
+    let map: mem_map* = malloc( sizeof( mem_map ) );
+    map.types = types;
+    map.sizes = malloc( types * sizeof( uint32_t ) );
+    map.data = malloc( types * sizeof( uint8_t* ) );
+    map.free = malloc( types * sizeof( uint8_t*[] ) );
+    map.chunk_data = new Array(types);
+    map.chunk_free = new Array(types);
+    map.index_data = new Array(types);
+    map.index_free = new Array(types);
 
 
     for( i = 0; i < types; i++ )
     {
-        map->sizes[i] = sizes[i];
+        map.sizes[i] = sizes[i];
 
-        map->data[i] = calloc( PQ_MEM_WIDTH, sizeof( uint8_t* ) );
-        map->free[i] = calloc( PQ_MEM_WIDTH, sizeof( uint8_t** ) );
+        map.data[i] = new Array(PQ_MEM_WIDTH);
+        map.free[i] = new Array(PQ_MEM_WIDTH);
 
-        map->data[i][0] = malloc( map->sizes[i] );
-        map->free[i][0] = malloc( sizeof( uint8_t* ) );
+        map.data[i][0] = malloc( map.sizes[i] );
+        map.free[i][0] = malloc( sizeof( uint8_t* ) );
     }
 
     return map;
 }
 
-void mm_destroy( mem_map *map )
-{
-    int i, j;
-    for( i = 0; i < map->types; i++ )
+export function mm_destroy( map: mem_map* ): void {
+    let i: int, j;
+    for( i = 0; i < map.types; i++ )
     {
         for( j = 0; j < PQ_MEM_WIDTH; j++ )
         {
-            if( map->data[i][j] != NULL )
-                free( map->data[i][j] );
-            if( map->free[i][j] != NULL )
-                free( map->free[i][j] );
+            if( map.data[i][j] != null )
+                free( map.data[i][j] );
+            if( map.free[i][j] != null )
+                free( map.free[i][j] );
         }
 
-        free( map->data[i] );
-        free( map->free[i] );
+        free( map.data[i] );
+        free( map.free[i] );
     }
 
-    free( map->data );
-    free( map->free );
-    free( map->sizes );
-    free( map->chunk_data );
-    free( map->chunk_free );
-    free( map->index_data );
-    free( map->index_free );
+    free( map.data );
+    free( map.free );
+    free( map.sizes );
+    free( map.chunk_data );
+    free( map.chunk_free );
+    free( map.index_data );
+    free( map.index_free );
 
     free( map );
 }
 
-void mm_clear( mem_map *map )
-{
-    int i;
-    for( i = 0; i < map->types; i++ )
+export function mm_clear( map: mem_map* ): void {
+    let i: int;
+    for( i = 0; i < map.types; i++ )
     {
-        map->chunk_data[i] = 0;
-        map->chunk_free[i] = 0;
-        map->index_data[i] = 0;
-        map->index_free[i] = 0;
+        map.chunk_data[i] = 0;
+        map.chunk_free[i] = 0;
+        map.index_data[i] = 0;
+        map.index_free[i] = 0;
     }
 }
 
-void* pq_alloc_node( mem_map *map, uint32_t type )
-{
-    void *node;
-    if ( map->chunk_free[type] == 0 && map->index_free[type] == 0 )
+export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* {
+    let node: void*;
+    if ( map.chunk_free[type] === 0 && map.index_free[type] === 0 )
     {
-        if( map->index_data[type] == mm_sizes[map->chunk_data[type]] )
+        if( map.index_data[type] === mm_sizes[map.chunk_data[type]] )
             mm_grow_data( map, type );
 
-        node = ( map->data[type][map->chunk_data[type]] + ( map->sizes[type] *
-            (map->index_data[type])++ ) );
+        node = ( map.data[type][map.chunk_data[type]] + ( map.sizes[type] *
+            (map.index_data[type])++ ) );
     }
     else
     {
-        if( map->index_free[type] == 0 )
-            map->index_free[type] = mm_sizes[--(map->chunk_free[type])];
+        if( map.index_free[type] === 0 )
+            map.index_free[type] = mm_sizes[--(map.chunk_free[type])];
 
         node =
-            map->free[type][map->chunk_free[type]][--(map->index_free[type])];
+            map.free[type][map.chunk_free[type]][--(map.index_free[type])];
     }
 
-    memset( node, 0, map->sizes[type] );
+    memset( node, 0, map.sizes[type] );
 
     return node;
 }
 
-void pq_free_node( mem_map *map, uint32_t type, void *node )
-{
-    if( map->index_free[type] == mm_sizes[map->chunk_free[type]] )
+export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void {
+    if( map.index_free[type] === mm_sizes[map.chunk_free[type]] )
         mm_grow_free( map, type );
 
-    map->free[type][map->chunk_free[type]][(map->index_free[type])++] = node;
+    map.free[type][map.chunk_free[type]][(map.index_free[type])++] = node;
 }
 
 //==============================================================================
 // STATIC METHODS
 //==============================================================================
 
-static void mm_grow_data( mem_map *map, uint32_t type )
-{
-    uint32_t chunk = ++(map->chunk_data[type]);
-    map->index_data[type] = 0;
+export function mm_grow_data( map: mem_map*, type: uint32_t ): void {
+    let chunk: uint32_t = ++(map.chunk_data[type]);
+    map.index_data[type] = 0;
 
-    if( map->data[type][chunk] == NULL )
-        map->data[type][chunk] = malloc( map->sizes[type] * mm_sizes[chunk] );
+    if( map.data[type][chunk] == null )
+        map.data[type][chunk] = malloc( map.sizes[type] * mm_sizes[chunk] );
 }
 
-static void mm_grow_free( mem_map *map, uint32_t type )
-{
-    uint32_t chunk = ++(map->chunk_free[type]);
-    map->index_free[type] = 0;
+export function mm_grow_free( map: mem_map*, type: uint32_t ): void {
+    let chunk: uint32_t = ++(map.chunk_free[type]);
+    map.index_free[type] = 0;
 
-    if( map->free[type][chunk] == NULL )
-        map->free[type][chunk] = malloc( map->sizes[type] * mm_sizes[chunk] );
+    if( map.free[type][chunk] == null )
+        map.free[type][chunk] = malloc( map.sizes[type] * mm_sizes[chunk] );
 }
 

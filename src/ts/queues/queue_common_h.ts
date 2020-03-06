@@ -12,32 +12,32 @@
 #include <float.h>
 
 #ifdef USE_EAGER
-    #include "../memory_management_eager.h"
+    import {} from '../memory_management_eager.h'
 #elif USE_LAZY
-    #include "../memory_management_lazy.h"
+    import {} from '../memory_management_lazy.h'
 #else
-    #include "../memory_management_dumb.h"
+    import {} from '../memory_management_dumb.h'
 #endif
 
-#include "../typedefs.h"
+import {} from '../typedefs_h'
 
 #ifndef DEF_VALUES
     #define DEF_VALUES
-    #define FALSE       0
-    #define TRUE        1
-    #define LEFT        0
-    #define MAXRANK     64
-    #define ALPHA       0.75
-    #define INFINITY    0xFFFFFFFF
+    export const FALSE = 0;
+    export const TRUE = 1;
+    export const LEFT = 0;
+    export const MAXRANK = 64;
+    export const ALPHA = 0.75;
+    export const INFINITY = 0xFFFFFFFF;
 #endif
 
 #ifndef __cplusplus
-typedef uint32_t bool;
+export type boolean = uint32_t;
 #endif
 
 #define ITEM_ASSIGN(a,b) ( a = b )
 
-#define MAX_KEY 0xFFFFFFFFFFFFFFFF
+export const MAX_KEY = 0xFFFFFFFFFFFFFFFF;
 
 #define OCCUPIED(a,b)       ( a & ( ( (uint64_t) 1 ) << b ) )
 #define REGISTRY_SET(a,b)   ( a |= ( ( (uint64_t) 1 ) << b ) )

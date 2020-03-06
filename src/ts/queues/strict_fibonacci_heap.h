@@ -6,83 +6,80 @@
 //==============================================================================
 
 // passive, active non-root with 0 loss, active root, positive loss
-#define STRICT_TYPE_PASSIVE 0
-#define STRICT_TYPE_ACTIVE  1
-#define STRICT_TYPE_ROOT    2
-#define STRICT_TYPE_LOSS    3
+export const STRICT_TYPE_PASSIVE = 0;
+export const STRICT_TYPE_ACTIVE = 1;
+export const STRICT_TYPE_ROOT = 2;
+export const STRICT_TYPE_LOSS = 3;
 
 // node types for memory map allocation
-#define STRICT_NODE_FIB     0
-#define STRICT_NODE_FIX     1
-#define STRICT_NODE_ACTIVE  2
-#define STRICT_NODE_RANK    3
+export const STRICT_NODE_FIB = 0;
+export const STRICT_NODE_FIX = 1;
+export const STRICT_NODE_ACTIVE = 2;
+export const STRICT_NODE_RANK = 3;
 
 // modes for fix list operations
-#define STRICT_FIX_ROOT     0
-#define STRICT_FIX_LOSS     1
+export const STRICT_FIX_ROOT = 0;
+export const STRICT_FIX_LOSS = 1;
 
 // directions for rank moves
-#define STRICT_DIR_DEMOTE   0
-#define STRICT_DIR_PROMOTE  1
+export const STRICT_DIR_DEMOTE = 0;
+export const STRICT_DIR_PROMOTE = 1;
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 // forward declares for pointer resolution
 struct strict_fibonacci_node_t;
 struct fix_node_t;
 
-typedef struct strict_item_t strict_item;
+export type strict_item = strict_item_t;
 
 /**
  * All active nodes in a single heap will point to the same active record.
  * Setting the flag to passive will render an entire heap passive for the
  * purpose of melding.
  */
-struct active_record_t
-{
+export interface active_record_t {
     //! 1 if active, 0 otherwise
-    uint32_t flag;
+    let flag: uint32_t;
     //! Number of nodes currently pointing to it.  If 0, free record.
-    uint32_t ref_count;
-} __attribute__ ((aligned(4)));
+    let ref_count: uint32_t;
+};
 
-typedef struct active_record_t active_record;
+export type active_record = active_record_t;
 
 /**
  * List of nodes representing rank.  Used to group active nodes for
  * restructuring.
  */
-struct rank_record_t
-{
-    uint32_t rank;
+export interface rank_record_t {
+    let rank: uint32_t;
     //! rank one higher if exists
-    struct rank_record_t *inc;
+    struct inc: rank_record_t*;
     //! rank one lower if exists
-    struct rank_record_t *dec;
+    struct dec: rank_record_t*;
     //! flags of last known transformability status
-    int transformable[2];
+    let transformable: int[2];
     //! pointers to fix nodes of the current rank
-    struct fix_node_t *head[2];
-    struct fix_node_t *tail[2];
+    struct head: fix_node_t*[2];
+    struct tail: fix_node_t*[2];
     //! number of nodes pointing to it, free record if 0
-    uint32_t ref_count;
-} __attribute__ ((aligned(4)));
+    let ref_count: uint32_t;
+};
 
-typedef struct rank_record_t rank_record;
+export type rank_record = rank_record_t;
 
 /**
  * A node in a doubly-linked circular list.  Holds a pointer to an active node
  * and a corresponding rank.
  */
-struct fix_node_t
-{
-    struct strict_fibonacci_node_t *node;
-    struct fix_node_t *left;
-    struct fix_node_t *right;
-    rank_record *rank;
-} __attribute__ ((aligned(4)));
+export interface fix_node_t {
+    struct node: strict_fibonacci_node_t*;
+    struct left: fix_node_t*;
+    struct right: fix_node_t*;
+    let rank: rank_record*;
+};
 
-typedef struct fix_node_t fix_node;
+export type fix_node = fix_node_t;
 
 /**
  * The main structural element of the heap.  Each node stores an item-key pair
@@ -94,50 +91,48 @@ typedef struct fix_node_t fix_node;
  * restructuring can be avoided.  Finally, active nodes may also have positive
  * loss and a reference to a node in the fix list.
  */
-struct strict_fibonacci_node_t
-{
-    item_type item;
-    key_type key;
+export interface strict_fibonacci_node_t {
+    let item: item_type;
+    let key: key_type;
 
-    struct strict_fibonacci_node_t *parent;
-    struct strict_fibonacci_node_t *left;
-    struct strict_fibonacci_node_t *right;
-    struct strict_fibonacci_node_t *left_child;
+    struct parent: strict_fibonacci_node_t*;
+    struct left: strict_fibonacci_node_t*;
+    struct right: strict_fibonacci_node_t*;
+    struct left_child: strict_fibonacci_node_t*;
 
-    struct strict_fibonacci_node_t *q_prev;
-    struct strict_fibonacci_node_t *q_next;
+    struct q_prev: strict_fibonacci_node_t*;
+    struct q_next: strict_fibonacci_node_t*;
 
-    uint32_t type;
-    active_record *active;
-    rank_record *rank;
-    fix_node *fix;
-    uint32_t loss;
-} __attribute__ ((aligned(4)));
+    let type: uint32_t;
+    let active: active_record*;
+    let rank: rank_record*;
+    let fix: fix_node*;
+    let loss: uint32_t;
+};
 
-typedef struct strict_fibonacci_node_t strict_fibonacci_node;
-typedef strict_fibonacci_node pq_node_type;
+export type strict_fibonacci_node = strict_fibonacci_node_t;
+export type pq_node_type = strict_fibonacci_node;
 
 /**
  * A mutable, meldable, strict Fibonacci heap.  Maintains a single tree with
  * an auxiliary queue and a fix list.  Entirely pointer-based.
  */
-struct strict_fibonacci_heap_t
-{
-    mem_map *map;
-    uint32_t size;
+export interface strict_fibonacci_heap_t {
+    let map: mem_map*;
+    let size: uint32_t;
 
-    strict_fibonacci_node *root;
-    strict_fibonacci_node *q_head;
+    let root: strict_fibonacci_node*;
+    let q_head: strict_fibonacci_node*;
 
-    active_record *active;
-    rank_record *rank_list;
-    fix_node *fix_list[2];
+    let active: active_record*;
+    let rank_list: rank_record*;
+    let fix_list: fix_node*[2];
 
-    fix_node *garbage_fix;
-} __attribute__ ((aligned(4)));
+    let garbage_fix: fix_node*;
+};
 
-typedef struct strict_fibonacci_heap_t strict_fibonacci_heap;
-typedef strict_fibonacci_heap pq_type;
+export type strict_fibonacci_heap = strict_fibonacci_heap_t;
+export type pq_type = strict_fibonacci_heap;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -149,21 +144,21 @@ typedef strict_fibonacci_heap pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-strict_fibonacci_heap* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): strict_fibonacci_heap* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( strict_fibonacci_heap *queue );
+export function pq_destroy( queue: strict_fibonacci_heap* ): void ;
 
 /**
  * Deletes all nodes in the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( strict_fibonacci_heap *queue );
+export function pq_clear( queue: strict_fibonacci_heap* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -172,8 +167,8 @@ void pq_clear( strict_fibonacci_heap *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
+export function pq_get_key( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -182,8 +177,8 @@ key_type pq_get_key( strict_fibonacci_heap *queue,
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
+export function pq_get_item( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -191,7 +186,7 @@ item_type* pq_get_item( strict_fibonacci_heap *queue,
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( strict_fibonacci_heap *queue );
+export function pq_get_size( queue: strict_fibonacci_heap* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -202,8 +197,8 @@ uint32_t pq_get_size( strict_fibonacci_heap *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-strict_fibonacci_node* pq_insert( strict_fibonacci_heap *queue, item_type item,
-    key_type key );
+export function pq_insert( queue: strict_fibonacci_heap*, item: item_type,
+    key: key_type ): strict_fibonacci_node* ;
 
 /**
  * Returns the minimum item from the queue without modifying the queue.
@@ -211,7 +206,7 @@ strict_fibonacci_node* pq_insert( strict_fibonacci_heap *queue, item_type item,
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-strict_fibonacci_node* pq_find_min( strict_fibonacci_heap *queue );
+export function pq_find_min( queue: strict_fibonacci_heap* ): strict_fibonacci_node* ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -220,7 +215,7 @@ strict_fibonacci_node* pq_find_min( strict_fibonacci_heap *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( strict_fibonacci_heap *queue );
+export function pq_delete_min( queue: strict_fibonacci_heap* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue.  Requires that the location
@@ -233,7 +228,7 @@ key_type pq_delete_min( strict_fibonacci_heap *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( strict_fibonacci_heap *queue, strict_fibonacci_node *node );
+export function pq_delete( queue: strict_fibonacci_heap*, node: strict_fibonacci_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -246,8 +241,8 @@ key_type pq_delete( strict_fibonacci_heap *queue, strict_fibonacci_node *node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( strict_fibonacci_heap *queue, strict_fibonacci_node *node,
-    key_type new_key );
+export function pq_decrease_key( queue: strict_fibonacci_heap*, node: strict_fibonacci_node*,
+    new_key: key_type ): void ;
 
 /**
  * Combines two different item-disjoint queues which share a memory map.
@@ -257,8 +252,8 @@ void pq_decrease_key( strict_fibonacci_heap *queue, strict_fibonacci_node *node,
  * @param b Second queue
  * @return  Resulting merged queue
  */
-strict_fibonacci_heap* pq_meld( strict_fibonacci_heap *a,
-    strict_fibonacci_heap *b );
+export function pq_meld( a: strict_fibonacci_heap*,
+    b: strict_fibonacci_heap* ): strict_fibonacci_heap* ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -266,6 +261,6 @@ strict_fibonacci_heap* pq_meld( strict_fibonacci_heap *a,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( strict_fibonacci_heap *queue );
+export function pq_empty( queue: strict_fibonacci_heap* ): boolean ;
 
 #endif

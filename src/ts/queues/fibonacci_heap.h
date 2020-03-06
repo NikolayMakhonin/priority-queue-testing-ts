@@ -5,7 +5,7 @@
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 /**
  * Holds an inserted element, as well as pointers to maintain tree
@@ -14,29 +14,28 @@
  * of its siblings.  Additionally, each node has a pointer to its parent
  * and its first child.
  */
-struct fibonacci_node_t
-{
+export interface fibonacci_node_t {
     //! Parent of this node
-    struct fibonacci_node_t *parent;
+    struct parent: fibonacci_node_t*;
     //! "First" child of this node
-    struct fibonacci_node_t *first_child;
+    struct first_child: fibonacci_node_t*;
     //! Next node in the list of this node's siblings
-    struct fibonacci_node_t *next_sibling;
+    struct next_sibling: fibonacci_node_t*;
     //! Previous node in the list of this node's siblings
-    struct fibonacci_node_t *prev_sibling;
+    struct prev_sibling: fibonacci_node_t*;
 
     //! The "height" of a node, i.e. bound on log of subtree size
-    uint32_t rank;
+    let rank: uint32_t;
     //! Denotes if a non-root node has lost a child or not
-    bool marked;
+    let marked: boolean;
     //! Pointer to a piece of client data
-    item_type item;
+    let item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    let key: key_type;
+};
 
-typedef struct fibonacci_node_t fibonacci_node;
-typedef fibonacci_node pq_node_type;
+export type fibonacci_node = fibonacci_node_t;
+export type pq_node_type = fibonacci_node;
 
 /**
  * A mutable, meldable, Fibonacci heap.  Maintains a forest of (partial)
@@ -47,22 +46,21 @@ typedef fibonacci_node pq_node_type;
  * is performed after a key decrease or non-minimum deletion if the parent loses
  * it's second child.
  */
-struct fibonacci_heap_t
-{
+export interface fibonacci_heap_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    let map: mem_map*;
     //! The number of items held in the queue
-    uint32_t size;
+    let size: uint32_t;
     //! Pointer to the minimum node in the queue
-    fibonacci_node *minimum;
+    let minimum: fibonacci_node*;
     //! An array of roots of the queue, indexed by rank
-    fibonacci_node *roots[MAXRANK];
+    let roots: fibonacci_node*[MAXRANK];
     //! Current largest rank in queue
-    uint32_t largest_rank;
-} __attribute__ ((aligned(4)));
+    let largest_rank: uint32_t;
+};
 
-typedef struct fibonacci_heap_t fibonacci_heap;
-typedef fibonacci_heap pq_type;
+export type fibonacci_heap = fibonacci_heap_t;
+export type pq_type = fibonacci_heap;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -74,21 +72,21 @@ typedef fibonacci_heap pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-fibonacci_heap* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): fibonacci_heap* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( fibonacci_heap *queue );
+export function pq_destroy( queue: fibonacci_heap* ): void ;
 
 /**
  * Deletes all nodes in the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( fibonacci_heap *queue );
+export function pq_clear( queue: fibonacci_heap* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -97,7 +95,7 @@ void pq_clear( fibonacci_heap *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( fibonacci_heap *queue, fibonacci_node *node );
+export function pq_get_key( queue: fibonacci_heap*, node: fibonacci_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -106,7 +104,7 @@ key_type pq_get_key( fibonacci_heap *queue, fibonacci_node *node );
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( fibonacci_heap *queue, fibonacci_node *node );
+export function pq_get_item( queue: fibonacci_heap*, node: fibonacci_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -114,7 +112,7 @@ item_type* pq_get_item( fibonacci_heap *queue, fibonacci_node *node );
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( fibonacci_heap *queue );
+export function pq_get_size( queue: fibonacci_heap* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -125,7 +123,7 @@ uint32_t pq_get_size( fibonacci_heap *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-fibonacci_node* pq_insert( fibonacci_heap *queue, item_type item, key_type key );
+export function pq_insert( queue: fibonacci_heap*, item: item_type, key: key_type ): fibonacci_node* ;
 
 /**
  * Returns the minimum item from the queue without modifying the queue.
@@ -133,7 +131,7 @@ fibonacci_node* pq_insert( fibonacci_heap *queue, item_type item, key_type key )
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-fibonacci_node* pq_find_min( fibonacci_heap *queue );
+export function pq_find_min( queue: fibonacci_heap* ): fibonacci_node* ;
 
 /**
  * Removes the minimum item from the queue and returns it.   After removing the
@@ -143,7 +141,7 @@ fibonacci_node* pq_find_min( fibonacci_heap *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( fibonacci_heap *queue );
+export function pq_delete_min( queue: fibonacci_heap* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue.  Requires that the location
@@ -155,7 +153,7 @@ key_type pq_delete_min( fibonacci_heap *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( fibonacci_heap *queue, fibonacci_node *node );
+export function pq_delete( queue: fibonacci_heap*, node: fibonacci_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -168,8 +166,8 @@ key_type pq_delete( fibonacci_heap *queue, fibonacci_node *node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( fibonacci_heap *queue, fibonacci_node *node,
-    key_type new_key );
+export function pq_decrease_key( queue: fibonacci_heap*, node: fibonacci_node*,
+    new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -177,6 +175,6 @@ void pq_decrease_key( fibonacci_heap *queue, fibonacci_node *node,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( fibonacci_heap *queue );
+export function pq_empty( queue: fibonacci_heap* ): boolean ;
 
 #endif

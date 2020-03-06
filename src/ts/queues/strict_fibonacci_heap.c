@@ -1,4 +1,4 @@
-#include "strict_fibonacci_heap.h"
+import {} from 'strict_fibonacci_heap.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
@@ -8,225 +8,216 @@
 // BASIC NODE FUNCTIONS
 //--------------------------------------
 
-static inline int is_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static inline void choose_order_pair( strict_fibonacci_node *a,
-    strict_fibonacci_node *b, strict_fibonacci_node **parent,
-    strict_fibonacci_node **child );
-static inline void choose_order_triple( strict_fibonacci_node *a,
-    strict_fibonacci_node *b, strict_fibonacci_node *c,
-    strict_fibonacci_node **grand, strict_fibonacci_node **parent,
-    strict_fibonacci_node **child );
-static inline void remove_from_siblings( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void link( strict_fibonacci_heap *queue, strict_fibonacci_node *parent,
-    strict_fibonacci_node *child );
-static strict_fibonacci_node* select_new_root( strict_fibonacci_heap *queue );
+static inline int is_active( queue: strict_fibonacci_heap*,
+    let node: strict_fibonacci_node* );
+static inline void choose_order_pair( a: strict_fibonacci_node*,
+    b: strict_fibonacci_node*, parent: strict_fibonacci_node*[],
+    let child: strict_fibonacci_node*[] );
+static inline void choose_order_triple( a: strict_fibonacci_node*,
+    b: strict_fibonacci_node*, c: strict_fibonacci_node*,
+    grand: strict_fibonacci_node*[], parent: strict_fibonacci_node*[],
+    let child: strict_fibonacci_node*[] );
+static inline void remove_from_siblings( queue: strict_fibonacci_heap*,
+    let node: strict_fibonacci_node* );
+export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_node*,
+    child: strict_fibonacci_node* ): void ;
+export function select_new_root( queue: strict_fibonacci_heap* ): strict_fibonacci_node* ;
 
 //--------------------------------------
 // QUEUE MANAGEMENT
 //--------------------------------------
 
-static void enqueue_node( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void dequeue_node( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static strict_fibonacci_node* consume_node( strict_fibonacci_heap *queue );
+export function enqueue_node( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function dequeue_node( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_node* ;
 
 //--------------------------------------
 // ACTIVE NODE MANAGEMENT
 //--------------------------------------
 
-static void increase_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void decrease_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void increase_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void decrease_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void switch_node_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node, rank_record *new_rank );
-static void insert_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
-    int type );
-static void remove_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
-    int type );
-static void check_rank( strict_fibonacci_heap *queue, rank_record *rank,
-    int type );
-static void move_rank( strict_fibonacci_heap *queue, rank_record *rank,
-    int type, int direction );
+export function increase_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function decrease_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function increase_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function decrease_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function switch_node_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node*, new_rank: rank_record* ): void ;
+export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+    type: int ): void ;
+export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+    type: int ): void ;
+export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+    type: int ): void ;
+export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+    type: int, direction: int ): void ;
 
 //--------------------------------------
 // NODE TYPE CONVERSIONS
 //--------------------------------------
 
-static void convert_active_to_root( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void convert_active_to_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void convert_root_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void convert_loss_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void convert_passive_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void convert_to_passive( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
+export function convert_active_to_root( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function convert_active_to_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function convert_root_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function convert_loss_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function convert_passive_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function convert_to_passive( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
 
 //--------------------------------------
 // REDUCTIONS
 //--------------------------------------
 
-static int reduce_active_roots( strict_fibonacci_heap *queue );
-static int reduce_root_degree( strict_fibonacci_heap *queue );
-static int reduce_loss( strict_fibonacci_heap *queue );
-static void post_meld_reduction( strict_fibonacci_heap *queue );
-static void post_delete_min_reduction( strict_fibonacci_heap *queue );
-static void post_decrease_key_reduction( strict_fibonacci_heap *queue );
+export function reduce_active_roots( queue: strict_fibonacci_heap* ): int ;
+export function reduce_root_degree( queue: strict_fibonacci_heap* ): int ;
+export function reduce_loss( queue: strict_fibonacci_heap* ): int ;
+export function post_meld_reduction( queue: strict_fibonacci_heap* ): void ;
+export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void ;
+export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void ;
 
 //--------------------------------------
 // GARBAGE COLLECTION & ALLOCATION
 //--------------------------------------
 
-static rank_record* create_rank_record( strict_fibonacci_heap *queue,
-    uint32_t rank, rank_record *pred );
-static void release_active_record( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void release_rank_record( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node );
-static void release_to_garbage_collector( strict_fibonacci_heap *queue,
-    strict_fibonacci_heap *garbage_queue );
-static void garbage_collection( strict_fibonacci_heap *queue );
+export function create_rank_record( queue: strict_fibonacci_heap*,
+    rank: uint32_t, pred: rank_record* ): rank_record* ;
+export function release_active_record( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function release_rank_record( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void ;
+export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
+    garbage_queue: strict_fibonacci_heap* ): void ;
+export function garbage_collection( queue: strict_fibonacci_heap* ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-strict_fibonacci_heap* pq_create( mem_map *map )
-{
-    strict_fibonacci_heap *queue = (strict_fibonacci_heap*) calloc( 1,
-        sizeof( strict_fibonacci_heap ) );
-    queue->map = map;
+export function pq_create( map: mem_map* ): strict_fibonacci_heap* {
+    let queue: strict_fibonacci_heap* = new Array<strict_fibonacci_heap>(1);
+    queue.map = map;
 
     return queue;
 }
 
-void pq_destroy( strict_fibonacci_heap *queue ){
+export function pq_destroy( queue: strict_fibonacci_heap* ): void {
     pq_clear( queue );
     free( queue );
 }
 
-void pq_clear( strict_fibonacci_heap *queue )
-{
-    mm_clear( queue->map );
-    queue->size = 0;
+export function pq_clear( queue: strict_fibonacci_heap* ): void {
+    mm_clear( queue.map );
+    queue.size = 0;
 
-    queue->root = NULL;
-    queue->q_head = NULL;
+    queue.root = null;
+    queue.q_head = null;
 
-    queue->active = NULL;
-    queue->rank_list = NULL;
-    queue->fix_list[0] = NULL;
-    queue->fix_list[1] = NULL;
+    queue.active = null;
+    queue.rank_list = null;
+    queue.fix_list[0] = null;
+    queue.fix_list[1] = null;
 }
 
-key_type pq_get_key( strict_fibonacci_heap *queue, strict_fibonacci_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: strict_fibonacci_heap*, node: strict_fibonacci_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    return (item_type*) &(node->item);
+export function pq_get_item( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): item_type* {
+    return (item_type*) &(node.item);
 }
 
-uint32_t pq_get_size( strict_fibonacci_heap *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: strict_fibonacci_heap* ): uint32_t {
+    return queue.size;
 }
 
-strict_fibonacci_node* pq_insert( strict_fibonacci_heap *queue, item_type item,
-    key_type key )
-{
-    strict_fibonacci_node* wrapper = pq_alloc_node( queue->map,
+export function pq_insert( queue: strict_fibonacci_heap*, item: item_type,
+    key: key_type ): strict_fibonacci_node* {
+    let wrapper: strict_fibonacci_node* = pq_alloc_node( queue.map,
         STRICT_NODE_FIB );
-    ITEM_ASSIGN( wrapper->item, item );
-    wrapper->key = key;
-    wrapper->right = wrapper;
-    wrapper->left = wrapper;
-    wrapper->q_next = wrapper;
-    wrapper->q_prev = wrapper;
+    wrapper.item = item;
+    wrapper.key = key;
+    wrapper.right = wrapper;
+    wrapper.left = wrapper;
+    wrapper.q_next = wrapper;
+    wrapper.q_prev = wrapper;
 
-    strict_fibonacci_node *parent, *child;
-    if( queue->root == NULL )
-        queue->root = wrapper;
+    let parent: strict_fibonacci_node*, child;
+    if( queue.root == null )
+        queue.root = wrapper;
     else
     {
-        choose_order_pair( wrapper, queue->root, &parent, &child );
+        choose_order_pair( wrapper, queue.root, &parent, &child );
         link( queue, parent, child );
-        queue->root = parent;
+        queue.root = parent;
         enqueue_node( queue, child );
 
         post_meld_reduction( queue );
     }
 
-    queue->size++;
+    queue.size++;
     garbage_collection( queue );
 
     return wrapper;
 }
 
-strict_fibonacci_node* pq_find_min( strict_fibonacci_heap *queue )
-{
+export function pq_find_min( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
     if ( pq_empty( queue ) )
-        return NULL;
-    return queue->root;
+        return null;
+    return queue.root;
 }
 
-key_type pq_delete_min( strict_fibonacci_heap *queue )
-{
+export function pq_delete_min( queue: strict_fibonacci_heap* ): key_type {
     if( pq_empty( queue ) )
         return 0;
 
-    key_type key = queue->root->key;
-    strict_fibonacci_node *current, *new_root, *old_root;
-    int i, j;
+    let key: key_type = queue.root.key;
+    let current: strict_fibonacci_node*, new_root, old_root;
+    let i: int, j;
 
-    old_root = queue->root;
+    old_root = queue.root;
 
-    if( old_root->left_child == NULL )
+    if( old_root.left_child == null )
     {
-        old_root = queue->root;
+        old_root = queue.root;
         if( is_active( queue, old_root ) )
             convert_to_passive( queue, old_root );
-        queue->root = NULL;
+        queue.root = null;
     }
     else
     {
         new_root = select_new_root( queue );
         remove_from_siblings( queue, new_root );
         dequeue_node( queue, new_root );
-        queue->root = new_root;
+        queue.root = new_root;
 
         if( is_active( queue, new_root ) )
             convert_to_passive( queue, new_root );
         if( is_active( queue, old_root ) )
             convert_to_passive( queue, old_root );
 
-        while( old_root->left_child != NULL )
-            link( queue, new_root, old_root->left_child );
+        while( old_root.left_child != null )
+            link( queue, new_root, old_root.left_child );
 
         for( i = 0; i < 2; i++ )
         {
             current = consume_node( queue );
-            if( current != NULL )
+            if( current != null )
             {
                 for( j = 0; j < 2; j++ )
                 {
-                    if( current->left_child != NULL &&
-                            !is_active( queue, current->left_child->left ) )
-                        link( queue, new_root, current->left_child->left );
+                    if( current.left_child != null &&
+                            !is_active( queue, current.left_child.left ) )
+                        link( queue, new_root, current.left_child.left );
                     else
                         break;
                 }
@@ -234,19 +225,18 @@ key_type pq_delete_min( strict_fibonacci_heap *queue )
         }
     }
 
-    pq_free_node( queue->map, STRICT_NODE_FIB, old_root );
+    pq_free_node( queue.map, STRICT_NODE_FIB, old_root );
 
     post_delete_min_reduction( queue );
     garbage_collection( queue );
 
-    queue->size--;
+    queue.size--;
 
     return key;
 }
 
-key_type pq_delete( strict_fibonacci_heap *queue, strict_fibonacci_node *node )
-{
-    key_type key = node->key;
+export function pq_delete( queue: strict_fibonacci_heap*, node: strict_fibonacci_node* ): key_type {
+    let key: key_type = node.key;
 
     pq_decrease_key( queue, node, 0 );
     pq_delete_min( queue );
@@ -254,24 +244,23 @@ key_type pq_delete( strict_fibonacci_heap *queue, strict_fibonacci_node *node )
     return key;
 }
 
-void pq_decrease_key( strict_fibonacci_heap *queue, strict_fibonacci_node *node,
-    key_type new_key )
-{
-    strict_fibonacci_node *old_parent = node->parent;
+export function pq_decrease_key( queue: strict_fibonacci_heap*, node: strict_fibonacci_node*,
+    new_key: key_type ): void {
+    let old_parent: strict_fibonacci_node* = node.parent;
 
-    node->key = new_key;
+    node.key = new_key;
 
-    if( old_parent == NULL || node->key > old_parent->key)
+    if( old_parent == null || node.key > old_parent.key)
         return;
 
-    strict_fibonacci_node *parent, *child;
-    choose_order_pair( node, queue->root, &parent, &child );
+    let parent: strict_fibonacci_node*, child;
+    choose_order_pair( node, queue.root, &parent, &child );
 
     link( queue, parent, child );
-    queue->root = parent;
-    queue->root->parent = NULL;
+    queue.root = parent;
+    queue.root.parent = null;
 
-    if( parent == node )
+    if( parent === node )
     {
         dequeue_node( queue, parent );
         enqueue_node( queue, child );
@@ -281,27 +270,26 @@ void pq_decrease_key( strict_fibonacci_heap *queue, strict_fibonacci_node *node,
     {
         if( is_active( queue, old_parent ) )
             decrease_rank( queue, old_parent );
-        if( node->type != STRICT_TYPE_ROOT )
+        if( node.type !== STRICT_TYPE_ROOT )
             convert_active_to_root( queue, node );
     }
-    if( is_active( queue, old_parent ) && old_parent->type != STRICT_TYPE_ROOT )
+    if( is_active( queue, old_parent ) && old_parent.type !== STRICT_TYPE_ROOT )
         increase_loss( queue, old_parent );
 
     post_decrease_key_reduction( queue );
     garbage_collection( queue );
 }
 
-strict_fibonacci_heap* pq_meld( strict_fibonacci_heap *a,
-    strict_fibonacci_heap *b )
-{
-    strict_fibonacci_heap *new_heap = pq_create( a->map );
-    strict_fibonacci_heap *big, *small;
+export function pq_meld( a: strict_fibonacci_heap*,
+    b: strict_fibonacci_heap* ): strict_fibonacci_heap* {
+    let new_heap: strict_fibonacci_heap* = pq_create( a.map );
+    let big: strict_fibonacci_heap*, small;
 
-    strict_fibonacci_node *big_head, *big_tail, *small_head, *small_tail;
-    strict_fibonacci_node *parent, *child;
+    let big_head: strict_fibonacci_node*, big_tail, small_head, small_tail;
+    let parent: strict_fibonacci_node*, child;
 
     // pick which heap to preserve
-    if( a->size < b->size )
+    if( a.size < b.size )
     {
         big = b;
         small = a;
@@ -313,31 +301,31 @@ strict_fibonacci_heap* pq_meld( strict_fibonacci_heap *a,
     }
 
     // set heap fields
-    new_heap->size = big->size + small->size;
-    new_heap->q_head = big->q_head;
-    new_heap->active = big->active;
-    new_heap->rank_list = big->rank_list;
-    new_heap->fix_list[0] = big->fix_list[0];
-    new_heap->fix_list[1] = big->fix_list[1];
+    new_heap.size = big.size + small.size;
+    new_heap.q_head = big.q_head;
+    new_heap.active = big.active;
+    new_heap.rank_list = big.rank_list;
+    new_heap.fix_list[0] = big.fix_list[0];
+    new_heap.fix_list[1] = big.fix_list[1];
 
-    if( small->active != NULL )
-        small->active->flag = 0;
+    if( small.active != null )
+        small.active.flag = 0;
 
     // merge the queues
-    big_head = big->q_head;
-    big_tail = big_head->q_prev;
-    small_head = small->q_head;
-    small_tail = small_head->q_prev;
+    big_head = big.q_head;
+    big_tail = big_head.q_prev;
+    small_head = small.q_head;
+    small_tail = small_head.q_prev;
 
-    big_head->q_prev = small_tail;
-    small_tail->q_next = big_head;
-    small_head->q_prev = big_tail;
-    big_tail->q_next = small_head;
+    big_head.q_prev = small_tail;
+    small_tail.q_next = big_head;
+    small_head.q_prev = big_tail;
+    big_tail.q_next = small_head;
 
     // actually link the two trees
-    choose_order_pair( big->root, small->root, &parent, &child );
+    choose_order_pair( big.root, small.root, &parent, &child );
     link( new_heap, parent, child );
-    new_heap->root = parent;
+    new_heap.root = parent;
     enqueue_node( new_heap, child );
 
     // take care of some garbage collection
@@ -349,9 +337,8 @@ strict_fibonacci_heap* pq_meld( strict_fibonacci_heap *a,
     return new_heap;
 }
 
-bool pq_empty( strict_fibonacci_heap *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: strict_fibonacci_heap* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -370,19 +357,19 @@ bool pq_empty( strict_fibonacci_heap *queue )
  * @param node  Node to check
  * @return      1 if active, 0 otherwise
  */
-static inline int is_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
+static inline int is_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* )
 {
-    if( node->active == NULL )
+    if( node.active == null )
         return 0;
 
-    if( !node->active->flag )
+    if( !node.active.flag )
     {
         release_active_record( queue, node );
         release_rank_record( queue, node );
-        if( node->fix != NULL )
-            node->fix = NULL;
-        node->type = STRICT_TYPE_PASSIVE;
+        if( node.fix != null )
+            node.fix = null;
+        node.type = STRICT_TYPE_PASSIVE;
 
         return 0;
     }
@@ -399,11 +386,11 @@ static inline int is_active( strict_fibonacci_heap *queue,
  * @param parent    Destination pointer for the node of lesser key
  * @param child     Destination pointer for the node of greater key
  */
-static inline void choose_order_pair( strict_fibonacci_node *a,
-    strict_fibonacci_node *b, strict_fibonacci_node **parent,
-    strict_fibonacci_node **child )
+static inline void choose_order_pair( a: strict_fibonacci_node*,
+    b: strict_fibonacci_node*, parent: strict_fibonacci_node*[],
+    child: strict_fibonacci_node*[] )
 {
-    if( a->key <= b->key )
+    if( a.key <= b.key )
     {
         *parent = a;
         *child = b;
@@ -426,20 +413,20 @@ static inline void choose_order_pair( strict_fibonacci_node *a,
  * @param parent    Destination pointer for the node of middle key
  * @param child     Destination pointer for the node of greatest key
  */
-static inline void choose_order_triple( strict_fibonacci_node *a,
-    strict_fibonacci_node *b, strict_fibonacci_node *c,
-    strict_fibonacci_node **grand, strict_fibonacci_node **parent,
-    strict_fibonacci_node **child )
+static inline void choose_order_triple( a: strict_fibonacci_node*,
+    b: strict_fibonacci_node*, c: strict_fibonacci_node*,
+    grand: strict_fibonacci_node*[], parent: strict_fibonacci_node*[],
+    child: strict_fibonacci_node*[] )
 {
-    if( a->key < b->key )
+    if( a.key < b.key )
     {
-        if( b->key < c->key )
+        if( b.key < c.key )
         {
             *grand = a;
             *parent = b;
             *child = c;
         }
-        else if( a->key < c->key )
+        else if( a.key < c.key )
         {
             *grand = a;
             *parent = c;
@@ -454,13 +441,13 @@ static inline void choose_order_triple( strict_fibonacci_node *a,
     }
     else
     {
-        if( a->key < c->key )
+        if( a.key < c.key )
         {
             *grand = b;
             *parent = a;
             *child = c;
         }
-        else if( b->key < c->key )
+        else if( b.key < c.key )
         {
             *grand = b;
             *parent = c;
@@ -481,31 +468,31 @@ static inline void choose_order_triple( strict_fibonacci_node *a,
  * @param queue Queue in which to operate
  * @param node  Node to remove
  */
-static inline void remove_from_siblings( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
+static inline void remove_from_siblings( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* )
 {
-    if( node->parent == NULL )
+    if( node.parent == null )
         return;
 
-    strict_fibonacci_node *next = node->right;
-    strict_fibonacci_node *prev;
+    let next: strict_fibonacci_node* = node.right;
+    let prev: strict_fibonacci_node*;
 
-    if( next == node )
+    if( next === node )
     {
-        node->parent->left_child = NULL;
+        node.parent.left_child = null;
     }
     else
     {
-        prev = node->left;
-        next->left = prev;
-        prev->right = next;
-        if( node->parent->left_child == node )
-            node->parent->left_child = next;
+        prev = node.left;
+        next.left = prev;
+        prev.right = next;
+        if( node.parent.left_child === node )
+            node.parent.left_child = next;
     }
 
-    node->right = node;
-    node->left = node;
-    node->parent = NULL;
+    node.right = node;
+    node.left = node;
+    node.parent = null;
 }
 
 /**
@@ -516,35 +503,34 @@ static inline void remove_from_siblings( strict_fibonacci_heap *queue,
  * @param parent    Parent node
  * @param child     New child node
  */
-static void link( strict_fibonacci_heap *queue, strict_fibonacci_node *parent,
-    strict_fibonacci_node *child )
-{
-    if( parent == child->parent )
+export function link( queue: strict_fibonacci_heap*, parent: strict_fibonacci_node*,
+    child: strict_fibonacci_node* ): void {
+    if( parent === child.parent )
         return;
 
-    if( child == queue->root )
+    if( child === queue.root )
         remove_from_siblings( queue, parent );
     else
         remove_from_siblings( queue, child );
 
-    strict_fibonacci_node *next = parent->left_child;
-    strict_fibonacci_node *prev;
+    let next: strict_fibonacci_node* = parent.left_child;
+    let prev: strict_fibonacci_node*;
 
-    if( parent->left_child == NULL )
-        parent->left_child = child;
+    if( parent.left_child == null )
+        parent.left_child = child;
     else
     {
-        prev = next->left;
-        child->right = next;
-        child->left = prev;
-        prev->right = child;
-        next->left = child;
+        prev = next.left;
+        child.right = next;
+        child.left = prev;
+        prev.right = child;
+        next.left = child;
 
         if( is_active( queue, child ) )
-            parent->left_child = child;
+            parent.left_child = child;
     }
 
-    child->parent = parent;
+    child.parent = parent;
 }
 
 /**
@@ -553,17 +539,16 @@ static void link( strict_fibonacci_heap *queue, strict_fibonacci_node *parent,
  * @param queue Queue in which to operate
  * @return      Pointer to the new root of the heap
  */
-static strict_fibonacci_node* select_new_root( strict_fibonacci_heap *queue )
-{
-    strict_fibonacci_node *old_root = queue->root;
-    strict_fibonacci_node *new_root = old_root->left_child;
+export function select_new_root( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
+    let old_root: strict_fibonacci_node* = queue.root;
+    let new_root: strict_fibonacci_node* = old_root.left_child;
 
-    strict_fibonacci_node *current = new_root->right;
-    while( current != old_root->left_child )
+    let current: strict_fibonacci_node* = new_root.right;
+    while( current !== old_root.left_child )
     {
-        if( current->key < new_root->key )
+        if( current.key < new_root.key )
             new_root = current;
-        current = current->right;
+        current = current.right;
     }
 
     return new_root;
@@ -579,23 +564,22 @@ static strict_fibonacci_node* select_new_root( strict_fibonacci_heap *queue )
  * @param queue Queue in which to operate
  * @param node  Node to enqueue
  */
-static void enqueue_node( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    strict_fibonacci_node *next, *prev;
+export function enqueue_node( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let next: strict_fibonacci_node*, prev;
 
-    if( queue->q_head != NULL )
+    if( queue.q_head != null )
     {
-        next = queue->q_head;
-        prev = next->q_prev;
+        next = queue.q_head;
+        prev = next.q_prev;
 
-        node->q_next = next;
-        node->q_prev = prev;
-        next->q_prev = node;
-        prev->q_next = node;
+        node.q_next = next;
+        node.q_prev = prev;
+        next.q_prev = node;
+        prev.q_next = node;
     }
 
-    queue->q_head = node->q_next;
+    queue.q_head = node.q_next;
 }
 
 /**
@@ -604,24 +588,23 @@ static void enqueue_node( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to dequeue
  */
-static void dequeue_node( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    strict_fibonacci_node *prev;
-    strict_fibonacci_node *next = node->q_next;
-    if( next == node )
-        queue->q_head = NULL;
+export function dequeue_node( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let prev: strict_fibonacci_node*;
+    let next: strict_fibonacci_node* = node.q_next;
+    if( next === node )
+        queue.q_head = null;
     else
     {
-        prev = node->q_prev;
+        prev = node.q_prev;
 
-        next->q_prev = prev;
-        prev->q_next = next;
+        next.q_prev = prev;
+        prev.q_next = next;
 
-        node->q_next = node;
-        node->q_prev = node;
+        node.q_next = node;
+        node.q_prev = node;
 
-        queue->q_head = next;
+        queue.q_head = next;
     }
 }
 
@@ -631,13 +614,12 @@ static void dequeue_node( strict_fibonacci_heap *queue,
  *
  * @param queue Queue in which to operate
  */
-static strict_fibonacci_node* consume_node( strict_fibonacci_heap *queue )
-{
-    if( queue->q_head == NULL )
-        return NULL;
+export function consume_node( queue: strict_fibonacci_heap* ): strict_fibonacci_node* {
+    if( queue.q_head == null )
+        return null;
 
-    strict_fibonacci_node *target = queue->q_head;
-    queue->q_head = target->q_next;
+    let target: strict_fibonacci_node* = queue.q_head;
+    queue.q_head = target.q_next;
 
     return target;
 }
@@ -653,12 +635,11 @@ static strict_fibonacci_node* consume_node( strict_fibonacci_heap *queue )
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-static void increase_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    rank_record *new_rank = node->rank->inc;
-    uint32_t target_rank = node->rank->rank + 1;
-    if( new_rank->rank != target_rank )
+export function increase_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let new_rank: rank_record* = node.rank.inc;
+    let target_rank: uint32_t = node.rank.rank + 1;
+    if( new_rank.rank !== target_rank )
         new_rank = create_rank_record( queue, target_rank, new_rank );
 
     switch_node_rank( queue, node, new_rank );
@@ -671,13 +652,12 @@ static void increase_rank( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-static void decrease_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    rank_record *new_rank = node->rank->dec;
-    uint32_t target_rank = node->rank->rank - 1;
-    if( new_rank->rank != target_rank )
-        new_rank = create_rank_record( queue, target_rank, node->rank );
+export function decrease_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let new_rank: rank_record* = node.rank.dec;
+    let target_rank: uint32_t = node.rank.rank - 1;
+    if( new_rank.rank !== target_rank )
+        new_rank = create_rank_record( queue, target_rank, node.rank );
 
     switch_node_rank( queue, node, new_rank );
 }
@@ -689,11 +669,10 @@ static void decrease_rank( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-static void increase_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    node->loss++;
-    if( node->loss == 1 )
+export function increase_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    node.loss++;
+    if( node.loss === 1 )
         convert_active_to_loss( queue, node );
 }
 
@@ -704,10 +683,9 @@ static void increase_loss( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to alter
  */
-static void decrease_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    node->loss = 0;
+export function decrease_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    node.loss = 0;
     convert_loss_to_active( queue, node );
 }
 
@@ -719,23 +697,22 @@ static void decrease_loss( strict_fibonacci_heap *queue,
  * @param node      Node to alter
  * @param new_rank  New rank for the node
  */
-static void switch_node_rank( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node, rank_record *new_rank )
-{
-    int type = ( node->type == STRICT_TYPE_ROOT ) ? STRICT_FIX_ROOT :
+export function switch_node_rank( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node*, new_rank: rank_record* ): void {
+    int type = ( node.type === STRICT_TYPE_ROOT ) ? STRICT_FIX_ROOT :
         STRICT_FIX_LOSS;
 
-    fix_node *fix = node->fix;
-    if( fix != NULL )
+    let fix: fix_node* = node.fix;
+    if( fix != null )
         remove_fix_node( queue, fix, type );
 
     release_rank_record( queue, node );
-    node->rank = new_rank;
-    new_rank->ref_count++;
+    node.rank = new_rank;
+    new_rank.ref_count++;
 
-    if( fix != NULL )
+    if( fix != null )
     {
-        fix->rank = new_rank;
+        fix.rank = new_rank;
         insert_fix_node( queue, fix, type );
     }
 }
@@ -747,41 +724,40 @@ static void switch_node_rank( strict_fibonacci_heap *queue,
  * @param fix   Fix node to insert
  * @param type  Which list to alter
  */
-static void insert_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
-    int type )
-{
-    rank_record *rank = fix->rank;
+export function insert_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+    type: int ): void {
+    let rank: rank_record* = fix.rank;
 
-    if( rank->head[type] == NULL )
+    if( rank.head[type] == null )
     {
-        rank->head[type] = fix;
-        rank->tail[type] = fix;
+        rank.head[type] = fix;
+        rank.tail[type] = fix;
 
-        if( queue->fix_list[type] == NULL )
+        if( queue.fix_list[type] == null )
         {
-            fix->right = fix;
-            fix->left = fix;
-            queue->fix_list[type] = fix;
+            fix.right = fix;
+            fix.left = fix;
+            queue.fix_list[type] = fix;
             return;
         }
         else
         {
-            fix->right = queue->fix_list[type];
-            fix->left = fix->right->left;
-            fix->right->left = fix;
-            fix->left->right = fix;
+            fix.right = queue.fix_list[type];
+            fix.left = fix.right.left;
+            fix.right.left = fix;
+            fix.left.right = fix;
         }
     }
     else
     {
-        fix->right = rank->head[type];
-        fix->left = fix->right->left;
-        fix->right->left = fix;
-        fix->left->right = fix;
+        fix.right = rank.head[type];
+        fix.left = fix.right.left;
+        fix.right.left = fix;
+        fix.left.right = fix;
 
-        if( queue->fix_list[type] == rank->head[type] )
-            queue->fix_list[type] = fix;
-        rank->head[type] = fix;
+        if( queue.fix_list[type] === rank.head[type] )
+            queue.fix_list[type] = fix;
+        rank.head[type] = fix;
     }
 
     check_rank( queue, rank, type );
@@ -794,37 +770,36 @@ static void insert_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
  * @param fix   Fix node to remove
  * @param type  Which list to alter
  */
-static void remove_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
-    int type )
-{
-    rank_record *rank = fix->rank;
+export function remove_fix_node( queue: strict_fibonacci_heap*, fix: fix_node*,
+    type: int ): void {
+    let rank: rank_record* = fix.rank;
 
-    if( queue->fix_list[type] == fix )
+    if( queue.fix_list[type] === fix )
     {
-        if( fix->right == fix )
-            queue->fix_list[type] = NULL;
+        if( fix.right === fix )
+            queue.fix_list[type] = null;
         else
-            queue->fix_list[type] = fix->right;
+            queue.fix_list[type] = fix.right;
     }
 
-    if( rank->head[type] == fix )
+    if( rank.head[type] === fix )
     {
-        if( rank->tail[type] == fix )
+        if( rank.tail[type] === fix )
         {
-            rank->head[type] = NULL;
-            rank->tail[type] = NULL;
+            rank.head[type] = null;
+            rank.tail[type] = null;
         }
         else
-            rank->head[type] = fix->right;
+            rank.head[type] = fix.right;
     }
-    else if( rank->tail[type] == fix )
-        rank->tail[type] = fix->left;
+    else if( rank.tail[type] === fix )
+        rank.tail[type] = fix.left;
 
-    fix_node *next = fix->right;
-    fix_node *prev = fix->left;
+    let next: fix_node* = fix.right;
+    let prev: fix_node* = fix.left;
 
-    next->left = prev;
-    prev->right = next;
+    next.left = prev;
+    prev.right = next;
 
     check_rank( queue, rank, type );
 }
@@ -837,18 +812,17 @@ static void remove_fix_node( strict_fibonacci_heap *queue, fix_node *fix,
  * @param rank  Rank to check
  * @param type  Which list to alter
  */
-static void check_rank( strict_fibonacci_heap *queue, rank_record *rank,
-    int type )
-{
-    if( rank->head[type] == NULL )
+export function check_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+    type: int ): void {
+    if( rank.head[type] == null )
         return;
 
-    int status = ( rank->head[type] != rank->tail[type] ||
-        rank->head[type]->node->loss > 1 );
+    int status = ( rank.head[type] !== rank.tail[type] ||
+        rank.head[type].node.loss > 1 );
 
-    if( rank->transformable[type] && !status )
+    if( rank.transformable[type] && !status )
         move_rank( queue, rank, type, STRICT_DIR_DEMOTE );
-    else if( !rank->transformable[type] && status )
+    else if( !rank.transformable[type] && status )
         move_rank( queue, rank, type, STRICT_DIR_PROMOTE );
 }
 
@@ -860,47 +834,46 @@ static void check_rank( strict_fibonacci_heap *queue, rank_record *rank,
  * @param type      Which list to alter
  * @param direction STRICT_DIR_PROMOTE or STRICT_DIR_DEMOTE
  */
-static void move_rank( strict_fibonacci_heap *queue, rank_record *rank,
-    int type, int direction )
-{
-    fix_node *head = rank->head[type];
-    fix_node *tail = rank->tail[type];
-    fix_node *pred = head->left;
-    fix_node *succ = tail->right;
+export function move_rank( queue: strict_fibonacci_heap*, rank: rank_record*,
+    type: int, direction: int ): void {
+    let head: fix_node* = rank.head[type];
+    let tail: fix_node* = rank.tail[type];
+    let pred: fix_node* = head.left;
+    let succ: fix_node* = tail.right;
 
-    rank->transformable[type] = direction;
+    rank.transformable[type] = direction;
 
-    if( pred == tail )
+    if( pred === tail )
         return;
 
-    if( queue->fix_list[type] == head && direction == STRICT_DIR_PROMOTE )
+    if( queue.fix_list[type] === head && direction === STRICT_DIR_PROMOTE )
         return;
 
-    if( queue->fix_list[type] == succ && direction == STRICT_DIR_DEMOTE )
+    if( queue.fix_list[type] === succ && direction === STRICT_DIR_DEMOTE )
         return;
 
-    if( queue->fix_list[type] == succ && direction == STRICT_DIR_PROMOTE )
+    if( queue.fix_list[type] === succ && direction === STRICT_DIR_PROMOTE )
     {
-        queue->fix_list[type] = head;
+        queue.fix_list[type] = head;
         return;
     }
 
-    if( queue->fix_list[type] == head )
-        queue->fix_list[type] = succ;
+    if( queue.fix_list[type] === head )
+        queue.fix_list[type] = succ;
 
-    pred->right = succ;
-    succ->left = pred;
+    pred.right = succ;
+    succ.left = pred;
 
-    succ = queue->fix_list[type];
-    pred = succ->left;
+    succ = queue.fix_list[type];
+    pred = succ.left;
 
-    succ->left = tail;
-    pred->right = head;
-    head->left = pred;
-    tail->right = succ;
+    succ.left = tail;
+    pred.right = head;
+    head.left = pred;
+    tail.right = succ;
 
-    if( direction == STRICT_DIR_PROMOTE )
-        queue->fix_list[type] = rank->head[type];
+    if( direction === STRICT_DIR_PROMOTE )
+        queue.fix_list[type] = rank.head[type];
 }
 
 //--------------------------------------
@@ -914,17 +887,16 @@ static void move_rank( strict_fibonacci_heap *queue, rank_record *rank,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_active_to_root( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    if( is_active( queue, node ) && node->type == STRICT_TYPE_LOSS )
+export function convert_active_to_root( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    if( is_active( queue, node ) && node.type === STRICT_TYPE_LOSS )
         convert_loss_to_active( queue, node );
 
-    fix_node *fix = pq_alloc_node( queue->map, STRICT_NODE_FIX );
-    fix->node = node;
-    fix->rank = node->rank;
-    node->fix = fix;
-    node->type = STRICT_TYPE_ROOT;
+    let fix: fix_node* = pq_alloc_node( queue.map, STRICT_NODE_FIX );
+    fix.node = node;
+    fix.rank = node.rank;
+    node.fix = fix;
+    node.type = STRICT_TYPE_ROOT;
 
     insert_fix_node( queue, fix, STRICT_FIX_ROOT );
 }
@@ -936,14 +908,13 @@ static void convert_active_to_root( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_active_to_loss( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    fix_node *fix = pq_alloc_node( queue->map, STRICT_NODE_FIX );
-    fix->node = node;
-    fix->rank = node->rank;
-    node->fix = fix;
-    node->type = STRICT_TYPE_LOSS;
+export function convert_active_to_loss( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let fix: fix_node* = pq_alloc_node( queue.map, STRICT_NODE_FIX );
+    fix.node = node;
+    fix.rank = node.rank;
+    node.fix = fix;
+    node.type = STRICT_TYPE_LOSS;
 
     insert_fix_node( queue, fix, STRICT_FIX_LOSS );
 }
@@ -955,13 +926,12 @@ static void convert_active_to_loss( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_root_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    remove_fix_node( queue, node->fix, STRICT_FIX_ROOT );
-    pq_free_node( queue->map, STRICT_NODE_FIX, node->fix );
-    node->fix = NULL;
-    node->type = STRICT_TYPE_ACTIVE;
+export function convert_root_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    remove_fix_node( queue, node.fix, STRICT_FIX_ROOT );
+    pq_free_node( queue.map, STRICT_NODE_FIX, node.fix );
+    node.fix = null;
+    node.type = STRICT_TYPE_ACTIVE;
 }
 
 /**
@@ -971,13 +941,12 @@ static void convert_root_to_active( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_loss_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    remove_fix_node( queue, node->fix, STRICT_FIX_LOSS );
-    pq_free_node( queue->map, STRICT_NODE_FIX, node->fix );
-    node->fix = NULL;
-    node->type = STRICT_TYPE_ACTIVE;
+export function convert_loss_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    remove_fix_node( queue, node.fix, STRICT_FIX_LOSS );
+    pq_free_node( queue.map, STRICT_NODE_FIX, node.fix );
+    node.fix = null;
+    node.type = STRICT_TYPE_ACTIVE;
 }
 
 /**
@@ -987,25 +956,24 @@ static void convert_loss_to_active( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_passive_to_active( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    if( queue->active == NULL )
+export function convert_passive_to_active( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    if( queue.active == null )
     {
-        queue->active = pq_alloc_node( queue->map, STRICT_NODE_ACTIVE );
-        queue->active->flag = 1;
+        queue.active = pq_alloc_node( queue.map, STRICT_NODE_ACTIVE );
+        queue.active.flag = 1;
     }
-    node->active = queue->active;
-    queue->active->ref_count++;
+    node.active = queue.active;
+    queue.active.ref_count++;
 
-    rank_record *rank = queue->rank_list;
-    if( rank == NULL || rank->rank != 0 )
-        rank = create_rank_record( queue, 0, queue->rank_list );
-    node->rank = rank;
-    rank->ref_count++;
-    node->type = STRICT_TYPE_ACTIVE;
+    let rank: rank_record* = queue.rank_list;
+    if( rank == null || rank.rank !== 0 )
+        rank = create_rank_record( queue, 0, queue.rank_list );
+    node.rank = rank;
+    rank.ref_count++;
+    node.type = STRICT_TYPE_ACTIVE;
 
-    node->parent->left_child = node;
+    node.parent.left_child = node;
 }
 
 /**
@@ -1015,36 +983,35 @@ static void convert_passive_to_active( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node to convert
  */
-static void convert_to_passive( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    if( node->fix != NULL )
+export function convert_to_passive( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    if( node.fix != null )
     {
-        remove_fix_node( queue, node->fix, ( node->type == STRICT_TYPE_ROOT ) ?
+        remove_fix_node( queue, node.fix, ( node.type === STRICT_TYPE_ROOT ) ?
             STRICT_FIX_ROOT : STRICT_FIX_LOSS );
-        pq_free_node( queue->map, STRICT_NODE_FIX, node->fix );
-        node->fix = NULL;
+        pq_free_node( queue.map, STRICT_NODE_FIX, node.fix );
+        node.fix = null;
     }
 
     release_rank_record( queue, node );
     release_active_record( queue, node );
-    node->type = STRICT_TYPE_PASSIVE;
+    node.type = STRICT_TYPE_PASSIVE;
 
-    if( node->parent != NULL )
-        link( queue, node->parent, node );
+    if( node.parent != null )
+        link( queue, node.parent, node );
 
-    if( node->left_child == NULL )
+    if( node.left_child == null )
         return;
 
-    strict_fibonacci_node *current = node->left_child;
-    if( is_active( queue, current ) && current->type == STRICT_TYPE_ACTIVE )
+    let current: strict_fibonacci_node* = node.left_child;
+    if( is_active( queue, current ) && current.type === STRICT_TYPE_ACTIVE )
         convert_active_to_root( queue, current );
-    current = current->right;
-    while( current != node->left_child )
+    current = current.right;
+    while( current !== node.left_child )
     {
-        if( is_active( queue, current ) && current->type == STRICT_TYPE_ACTIVE )
+        if( is_active( queue, current ) && current.type === STRICT_TYPE_ACTIVE )
             convert_active_to_root( queue, current );
-        current = current->right;
+        current = current.right;
     }
 }
 
@@ -1058,27 +1025,26 @@ static void convert_to_passive( strict_fibonacci_heap *queue,
  *
  * @param queue Queue in which to operate
  */
-static int reduce_active_roots( strict_fibonacci_heap *queue )
-{
-    fix_node *head = queue->fix_list[STRICT_FIX_ROOT];
-    if( head == NULL )
+export function reduce_active_roots( queue: strict_fibonacci_heap* ): int {
+    let head: fix_node* = queue.fix_list[STRICT_FIX_ROOT];
+    if( head == null )
         return 0;
 
-    rank_record *rank = head->rank;
-    if( head == rank->tail[STRICT_FIX_ROOT] )
+    let rank: rank_record* = head.rank;
+    if( head === rank.tail[STRICT_FIX_ROOT] )
         return 0;
 
-    fix_node *next = head->right;
-    strict_fibonacci_node *parent, *child;
-    choose_order_pair( head->node, next->node, &parent, &child );
+    let next: fix_node* = head.right;
+    let parent: strict_fibonacci_node*, child;
+    choose_order_pair( head.node, next.node, &parent, &child );
 
     link( queue, parent, child );
     convert_root_to_active( queue, child );
     increase_rank( queue, parent );
 
-    strict_fibonacci_node *extra = parent->left_child->left;
+    let extra: strict_fibonacci_node* = parent.left_child.left;
     if( !is_active( queue, extra ) )
-        link( queue, queue->root, extra );
+        link( queue, queue.root, extra );
 
     return 1;
 }
@@ -1088,30 +1054,29 @@ static int reduce_active_roots( strict_fibonacci_heap *queue )
  *
  * @param queue Queue in which to operate
  */
-static int reduce_root_degree( strict_fibonacci_heap *queue )
-{
-    if( queue->root == NULL || queue->root->left_child == NULL )
+export function reduce_root_degree( queue: strict_fibonacci_heap* ): int {
+    if( queue.root == null || queue.root.left_child == null )
         return 0;
 
-    strict_fibonacci_node *x = queue->root->left_child->left;
-    if( x == queue->root->left_child || is_active( queue, x ) )
+    let x: strict_fibonacci_node* = queue.root.left_child.left;
+    if( x === queue.root.left_child || is_active( queue, x ) )
         return 0;
 
-    strict_fibonacci_node *y = x->left;
-    if( y == queue->root->left_child || is_active( queue, y ) )
+    let y: strict_fibonacci_node* = x.left;
+    if( y === queue.root.left_child || is_active( queue, y ) )
         return 0;
 
-    strict_fibonacci_node *z = y->left;
-    if( z == queue->root->left_child || is_active( queue, z ) )
+    let z: strict_fibonacci_node* = y.left;
+    if( z === queue.root.left_child || is_active( queue, z ) )
         return 0;
 
-    strict_fibonacci_node *grand, *parent, *child;
+    let grand: strict_fibonacci_node*, parent, child;
     choose_order_triple( x, y, z, &grand, &parent, &child );
 
     convert_passive_to_active( queue, parent );
     convert_passive_to_active( queue, grand );
     increase_rank( queue, grand );
-    if( !is_active( queue, queue->root ) )
+    if( !is_active( queue, queue.root ) )
         convert_active_to_root( queue, grand );
 
     link( queue, parent, child );
@@ -1126,38 +1091,37 @@ static int reduce_root_degree( strict_fibonacci_heap *queue )
  *
  * @param queue Queue in which to operate
  */
-static int reduce_loss( strict_fibonacci_heap *queue )
-{
-    int reduction = 2;
-    fix_node *head = queue->fix_list[STRICT_FIX_LOSS];
-    if( head == NULL )
+export function reduce_loss( queue: strict_fibonacci_heap* ): int {
+    let reduction: int = 2;
+    let head: fix_node* = queue.fix_list[STRICT_FIX_LOSS];
+    if( head == null )
         return 0;
 
-    rank_record *rank = head->rank;
-    if( head == rank->tail[STRICT_FIX_LOSS] && head->node->loss < 2 )
+    let rank: rank_record* = head.rank;
+    if( head === rank.tail[STRICT_FIX_LOSS] && head.node.loss < 2 )
         return 0;
 
-    fix_node *single;
-    fix_node *next = head->right;
-    strict_fibonacci_node *child, *parent, *old_parent;
-    if( head->node->loss > 1 )
+    let single: fix_node*;
+    let next: fix_node* = head.right;
+    let child: strict_fibonacci_node*, parent, old_parent;
+    if( head.node.loss > 1 )
     {
         reduction = 1;
         single = head;
     }
-    else if( next->node->loss > 1 )
+    else if( next.node.loss > 1 )
     {
         reduction = 1;
         single = next;
     }
 
-    if( reduction == 1 )
+    if( reduction === 1 )
     {
-        child = single->node;
-        parent = queue->root;
-        old_parent = child->parent;
+        child = single.node;
+        parent = queue.root;
+        old_parent = child.parent;
 
-        if( child != parent )
+        if( child !== parent )
             link( queue, parent, child );
 
         decrease_loss( queue, child );
@@ -1167,8 +1131,8 @@ static int reduce_loss( strict_fibonacci_heap *queue )
     }
     else
     {
-        choose_order_pair( head->node, next->node, &parent, &child );
-        old_parent = child->parent;
+        choose_order_pair( head.node, next.node, &parent, &child );
+        old_parent = child.parent;
 
         link( queue, parent, child );
 
@@ -1177,11 +1141,11 @@ static int reduce_loss( strict_fibonacci_heap *queue )
         increase_rank( queue, parent );
     }
 
-    if( old_parent != NULL && is_active( queue, old_parent ) )
+    if( old_parent != null && is_active( queue, old_parent ) )
     {
         decrease_rank( queue, old_parent );
         if( is_active( queue, old_parent ) &&
-                old_parent->type != STRICT_TYPE_ROOT )
+                old_parent.type !== STRICT_TYPE_ROOT )
             increase_loss( queue, old_parent );
     }
 
@@ -1195,10 +1159,9 @@ static int reduce_loss( strict_fibonacci_heap *queue )
  *
  * @param queue Queue in which to operate
  */
-static void post_meld_reduction( strict_fibonacci_heap *queue )
-{
-    int count_root = 0;
-    int count_degree = 0;
+export function post_meld_reduction( queue: strict_fibonacci_heap* ): void {
+    let count_root: int = 0;
+    let count_degree: int = 0;
 
     reduce_loss( queue );
 
@@ -1219,8 +1182,7 @@ static void post_meld_reduction( strict_fibonacci_heap *queue )
  *
  * @param queue Queue in which to operate
  */
-static void post_delete_min_reduction( strict_fibonacci_heap *queue )
-{
+export function post_delete_min_reduction( queue: strict_fibonacci_heap* ): void {
     while( 1 )
     {
         if( reduce_active_roots( queue ) )
@@ -1239,10 +1201,9 @@ static void post_delete_min_reduction( strict_fibonacci_heap *queue )
  *
  * @param queue Queue in which to operate
  */
-static void post_decrease_key_reduction( strict_fibonacci_heap *queue )
-{
-    int count_root = 0;
-    int count_degree = 0;
+export function post_decrease_key_reduction( queue: strict_fibonacci_heap* ): void {
+    let count_root: int = 0;
+    let count_degree: int = 0;
 
     reduce_loss( queue );
 
@@ -1269,26 +1230,25 @@ static void post_decrease_key_reduction( strict_fibonacci_heap *queue )
  * @param rank  Rank for the new record
  * @param succ  Next greatest rank in the list
  */
-static rank_record* create_rank_record( strict_fibonacci_heap *queue,
-    uint32_t rank, rank_record *succ )
-{
-    rank_record *pred;
-    rank_record *new_rank = pq_alloc_node( queue->map, STRICT_NODE_RANK );
-    new_rank->rank = rank;
-    new_rank->inc = new_rank;
-    new_rank->dec = new_rank;
+export function create_rank_record( queue: strict_fibonacci_heap*,
+    rank: uint32_t, succ: rank_record* ): rank_record* {
+    let pred: rank_record*;
+    let new_rank: rank_record* = pq_alloc_node( queue.map, STRICT_NODE_RANK );
+    new_rank.rank = rank;
+    new_rank.inc = new_rank;
+    new_rank.dec = new_rank;
 
-    if( succ == NULL )
-        queue->rank_list = new_rank;
+    if( succ == null )
+        queue.rank_list = new_rank;
     else
     {
-        pred = succ->dec;
+        pred = succ.dec;
 
-        new_rank->inc = succ;
-        new_rank->dec = pred;
+        new_rank.inc = succ;
+        new_rank.dec = pred;
 
-        succ->dec = new_rank;
-        pred->inc = new_rank;
+        succ.dec = new_rank;
+        pred.inc = new_rank;
     }
 
     return new_rank;
@@ -1301,17 +1261,16 @@ static rank_record* create_rank_record( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node containing active record reference
  */
-static void release_active_record( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    node->active->ref_count--;
-    if( node->active->ref_count == 0 )
+export function release_active_record( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    node.active.ref_count--;
+    if( node.active.ref_count === 0 )
     {
-        if( node->active == queue->active )
-            queue->active = NULL;
-        pq_free_node( queue->map, STRICT_NODE_ACTIVE, node->active );
+        if( node.active === queue.active )
+            queue.active = null;
+        pq_free_node( queue.map, STRICT_NODE_ACTIVE, node.active );
     }
-    node->active = NULL;
+    node.active = null;
 }
 
 /**
@@ -1321,30 +1280,29 @@ static void release_active_record( strict_fibonacci_heap *queue,
  * @param queue Queue in which to operate
  * @param node  Node containing rank record reference
  */
-static void release_rank_record( strict_fibonacci_heap *queue,
-    strict_fibonacci_node *node )
-{
-    rank_record *rank = node->rank;
-    rank->ref_count--;
-    if( rank->ref_count == 0 )
+export function release_rank_record( queue: strict_fibonacci_heap*,
+    node: strict_fibonacci_node* ): void {
+    let rank: rank_record* = node.rank;
+    rank.ref_count--;
+    if( rank.ref_count === 0 )
     {
-        if( rank->inc == rank )
+        if( rank.inc === rank )
         {
-            if( queue->rank_list == rank )
-                queue->rank_list = NULL;
+            if( queue.rank_list === rank )
+                queue.rank_list = null;
         }
         else
         {
-            if( queue->rank_list == rank )
-                queue->rank_list = rank->inc;
+            if( queue.rank_list === rank )
+                queue.rank_list = rank.inc;
 
-            rank->inc->dec = rank->dec;
-            rank->dec->inc = rank->inc;
+            rank.inc.dec = rank.dec;
+            rank.dec.inc = rank.inc;
         }
 
-        pq_free_node( queue->map, STRICT_NODE_RANK, rank );
+        pq_free_node( queue.map, STRICT_NODE_RANK, rank );
     }
-    node->rank = NULL;
+    node.rank = null;
 }
 
 /**
@@ -1354,29 +1312,28 @@ static void release_rank_record( strict_fibonacci_heap *queue,
  * @param queue         Queue which which will not be deleted
  * @param garbage_queue Queue to release for garbage collection
  */
-static void release_to_garbage_collector( strict_fibonacci_heap *queue,
-    strict_fibonacci_heap *garbage_queue )
-{
-    int i;
-    fix_node *tail, *head, *g_tail, *g_head;
+export function release_to_garbage_collector( queue: strict_fibonacci_heap*,
+    garbage_queue: strict_fibonacci_heap* ): void {
+    let i: int;
+    let tail: fix_node*, head, g_tail, g_head;
 
     for( i = 0; i < 2; i++ )
     {
-        if( garbage_queue->fix_list[i] != NULL )
+        if( garbage_queue.fix_list[i] != null )
         {
-            if( queue->garbage_fix == NULL )
-                queue->garbage_fix = garbage_queue->fix_list[i];
+            if( queue.garbage_fix == null )
+                queue.garbage_fix = garbage_queue.fix_list[i];
             else
             {
-                head = queue->garbage_fix;
-                tail = head->left;
-                g_head = garbage_queue->fix_list[i];
-                g_tail = g_head->left;
+                head = queue.garbage_fix;
+                tail = head.left;
+                g_head = garbage_queue.fix_list[i];
+                g_tail = g_head.left;
 
-                head->left = g_tail;
-                tail->right = g_head;
-                g_tail->right = head;
-                g_head->left = tail;
+                head.left = g_tail;
+                tail.right = g_head;
+                g_tail.right = head;
+                g_head.left = tail;
             }
         }
     }
@@ -1387,20 +1344,19 @@ static void release_to_garbage_collector( strict_fibonacci_heap *queue,
  *
  * @param queue Queue in which to operate
  */
-static void garbage_collection( strict_fibonacci_heap *queue )
-{
-    fix_node *fix;
+export function garbage_collection( queue: strict_fibonacci_heap* ): void {
+    let fix: fix_node*;
 
-    if( queue->garbage_fix != NULL )
+    if( queue.garbage_fix != null )
     {
-        fix = queue->garbage_fix;
-        if( fix->right == fix )
-            queue->garbage_fix = NULL;
+        fix = queue.garbage_fix;
+        if( fix.right === fix )
+            queue.garbage_fix = null;
         else
         {
-            queue->garbage_fix = fix->right;
-            fix->right->left = fix->left;
-            fix->left->right = fix->right;
+            queue.garbage_fix = fix.right;
+            fix.right.left = fix.left;
+            fix.left.right = fix.right;
         }
     }
 }

@@ -1,27 +1,25 @@
 #include <stdint.h>
 
 typedef  /* arc */
-   struct arc_st
-{
-   int64_t             cap;             /* capacity */
-   struct node_st   *head;           /* head node */
-   struct arc_st    *next;           /* next in the arc list */
-   struct arc_st    *prev;           /* next in the arc list */
-/*   int passPR2;    field to check if node is marked for prtest2 */
+   export interface arc_st {
+   let cap: int64_t;             /* capacity */
+   struct head: node_st*;           /* head node */
+   struct next: arc_st*;           /* next in the arc list */
+   struct prev: arc_st*;           /* next in the arc list */
+/*   passPR2: int;    field to check if node is marked for prtest2 */
 
 }
   arc;
 
 typedef  /* node */
-   struct node_st
-{
-   arc              *first;           /* first outgoing arc */
-   arc              *last;           /* last outgoing arc */
-   int64_t           key;              /* priority queue key */
-   long             heap_pos;         /* heap position */
-   struct node_st   *leader;
-   arc              *auxArc;          /* used to delete parallel edges */
-   int              status;           /* in or out of cut */
-   int64_t           cap;	      /* capacity of cut {v} */
+   export interface node_st {
+   let first: arc*;           /* first outgoing arc */
+   let last: arc*;           /* last outgoing arc */
+   let key: int64_t;              /* priority queue key */
+   let heap_pos: long;         /* heap position */
+   struct leader: node_st*;
+   let auxArc: arc*;          /* used to delete parallel edges */
+   let status: int;           /* in or out of cut */
+   let cap: int64_t;	      /* capacity of cut {v} */
 } node;
 

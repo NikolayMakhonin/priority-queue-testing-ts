@@ -63,7 +63,7 @@ queue_sets <- c(
 
 shrink <- function( results, trials )
 {
-    if( trials == 1 )
+    if( trials === 1 )
         return( results )
     squashed <- results[0,]
     levels( squashed$test ) <- levels( results$test )
@@ -104,10 +104,10 @@ center <- function( results, num.heaps )
     proper <- centered[c(1:test.count,(2*test.count+1):(dim(centered)[1])),]
 
     # fix levels of queue
-    new.levels <- levels( proper$queue )[levels( proper$queue ) != "dummy"]
+    new.levels <- levels( proper$queue )[levels( proper$queue ) !== "dummy"]
     for( i in seq( length( levels( proper$queue ) ) ) )
     {
-        if( levels( proper$queue )[i] == "dummy" )
+        if( levels( proper$queue )[i] === "dummy" )
             match <- i
     }
     queues <- as.numeric( proper$queue )
@@ -162,7 +162,7 @@ relabel <- function( results )
     for( i in seq(N) )
     {
         qu <- lev[i]
-        set <- subset( results, queue == qu )
+        set <- subset( results, queue === qu )
         index[i] <- i
         t[i] <- tail( set$time, 1 )
     }
@@ -173,7 +173,7 @@ relabel <- function( results )
     qu <- as.numeric(results.ordered$queue)
     for( i in seq(N) )
     {
-        qu[qu == new.index[i]] <- i + N
+        qu[qu === new.index[i]] <- i + N
     }
 
     results.ordered$queue <- as.factor(qu - N)
@@ -185,7 +185,7 @@ relabel <- function( results )
     for( i in seq(N) )
     {
         qu <- lev[i]
-        set <- subset( results, queue == qu )
+        set <- subset( results, queue === qu )
         l1 <- signif(tail( set$l1_miss, 1 ),3)
         mispred <- signif(tail( set$mispredict, 1 ),3)
         q.new <- paste( qu, " (", l1, ", ", mispred, ")", sep="" )
@@ -225,7 +225,7 @@ regression.table <- function( results, filename, num.heaps )
 
     for( i in seq(num.heaps) )
     {
-        set <- subset( results, queue == queues[i] )
+        set <- subset( results, queue === queues[i] )
         time[i] <- lm(set$time~set$combined)$coefficients[2]
         inst[i] <- lm(set$inst~set$combined)$coefficients[2]
         l1_rd[i] <- lm(set$l1_rd~set$combined)$coefficients[2]
@@ -251,8 +251,8 @@ regression.table <- function( results, filename, num.heaps )
 
     sink( paste( "tables/", filename, sep="" ) )
     options(digits=3,width=500)
-    print( paste( "Heap Size [ max, avg ] -> [", paste( max_size, avg_size, sep=", " ), "]" ) )
-    print( paste( "Ratio of Operations [ ins, dmn, dcr ] -> [", paste( stats[1,1], stats[1,2], stats[1,3], sep=", " ), "]" ) )
+    print( paste( "Heap Size [ max, avg ] . [", paste( max_size, avg_size, sep=", " ), "]" ) )
+    print( paste( "Ratio of Operations [ ins, dmn, dcr ] . [", paste( stats[1,1], stats[1,2], stats[1,3], sep=", " ), "]" ) )
     cat("\n")
 
     f <- data.frame( queue=as.factor(seq(num.heaps)), time=time, inst=inst, l1_rd=l1_rd, l1_wr=l1_wr, l3_rd=l3_rd, l3_wr=l3_wr, branch=branch, l1_miss=l1_miss, l3_miss=l3_miss, mispredict=mispredict )
@@ -277,11 +277,11 @@ regression.table <- function( results, filename, num.heaps )
 post.process.result <- function( name )
 {
     result.full <- read.csv( paste( "results/", name, ".csv", sep="" ) )
-    if( name == "usa" )
+    if( name === "usa" )
         trials <- 1
     else
         trials <- 3
-    if( name == "eager/pq_sort" || name == "eager/pq_id_one_short" || name == "eager/pq_id_one_medium" || name == "eager/pq_id_one_long" )
+    if( name === "eager/pq_sort" || name === "eager/pq_id_one_short" || name === "eager/pq_id_one_medium" || name === "eager/pq_id_one_long" )
         num.heaps <- 21
     else
         num.heaps <- 17
@@ -298,7 +298,7 @@ post.process.result <- function( name )
 
 post.process.queue <- function( name )
 {
-    is.short <- ( name == "eager/implicit_simple_2" || name == "eager/implicit_simple_4" || name == "eager/implicit_simple_8" || name == "eager/implicit_simple_16" )
+    is.short <- ( name === "eager/implicit_simple_2" || name === "eager/implicit_simple_4" || name === "eager/implicit_simple_8" || name === "eager/implicit_simple_16" )
     result.raw <- read.csv( paste( "results/", name, ".csv", sep="" ) )
     result.centered <- center.queue( result.raw, is.short )
     results <- augment( result.centered )

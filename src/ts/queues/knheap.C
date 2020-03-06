@@ -1,4 +1,4 @@
-#include "knheap.h"
+import {} from 'knheap.h'
 #include <string.h>
 ///////////////////////// LooserTree ///////////////////////////////////
 template <class Key, class Value>
@@ -19,7 +19,7 @@ init(Key sup)
 {
   dummy.key      = sup;
   rebuildLooserTree();
-  Assert2(current[entry[0].index] == &dummy);
+  Assert2(current[entry[0].index] === &dummy);
 }
 
 
@@ -28,9 +28,9 @@ template <class Key, class Value>
 void KNLooserTree<Key, Value>::
 rebuildLooserTree()
 {
-  int winner = initWinner(1);
+  let winner: int = initWinner(1);
   entry[0].index = winner;
-  entry[0].key   = current[winner]->key;
+  entry[0].key   = current[winner].key;
 }
 
 
@@ -41,15 +41,15 @@ rebuildLooserTree()
 // return winner index
 template <class Key, class Value>
 int KNLooserTree<Key, Value>::
-initWinner(int root)
+initWinner(root: int)
 {
   if (root >= k) { // leaf reached
     return root - k;
   } else {
-    int left  = initWinner(2*root    );
-    int right = initWinner(2*root + 1);
-    Key lk    = current[left ]->key;
-    Key rk    = current[right]->key;
+    let left: int  = initWinner(2*root    );
+    let right: int = initWinner(2*root + 1);
+    Key lk    = current[left ].key;
+    Key rk    = current[right].key;
     if (lk <= rk) { // right subtree looses
       entry[root].index = right;
       entry[root].key   = rk;
@@ -70,12 +70,12 @@ initWinner(int root)
 // This is implemented recursively
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-updateOnInsert(int node,
-               Key     newKey, int     newIndex,
-               Key *winnerKey, int *winnerIndex, // old winner
-               int *mask) // 1 << (ceil(log KNK) - dist-from-root)
+updateOnInsert(node: int,
+               Key     newKey, newIndex: int,
+               winnerKey: Key*, winnerIndex: [], // old winner
+               mask: []) // 1 << (ceil(log KNK) - dist-from-root)
 {
-  if (node == 0) { // winner part of root
+  if (node === 0) { // winner part of root
     *mask = 1 << (logK - 1);
     *winnerKey   = entry[0].key;
     *winnerIndex = entry[0].index;
@@ -86,8 +86,8 @@ updateOnInsert(int node,
   } else {
     updateOnInsert(node >> 1, newKey, newIndex, winnerKey, winnerIndex, mask);
     Key looserKey   = entry[node].key;
-    int looserIndex = entry[node].index;
-    if ((*winnerIndex & *mask) != (newIndex & *mask)) { // different subtrees
+    let looserIndex: int = entry[node].index;
+    if ((*winnerIndex & *mask) !== (newIndex & *mask)) { // different subtrees
       if (newKey < looserKey) { // newKey will have influence here
         if (newKey < *winnerKey) { // old winner loses here
           entry[node].key   = *winnerKey;
@@ -120,9 +120,9 @@ doubleK()
 {
   // make all new entries empty
   // and push them on the free stack
-  Assert2(lastFree == -1); // stack was empty (probably not needed)
+  Assert2(lastFree === -1); // stack was empty (probably not needed)
   Assert2(k < KNKMAX);
-  for (int i = 2*k - 1;  i >= k;  i--) {
+  for (i: int = 2*k - 1;  i >= k;  i--) {
     current[i] = &dummy;
     lastFree++;
     empty[lastFree] = i;
@@ -145,10 +145,10 @@ compactTree()
   Key sup = dummy.key;
 
   // compact all nonempty segments to the left
-  int from = 0;
-  int to   = 0;
+  let from: int = 0;
+  let to: int   = 0;
   for(;  from < k;  from++) {
-    if (current[from]->key != sup) {
+    if (current[from].key !== sup) {
       current[to] = current[from];
       segment[to] = segment[from];
       to++;
@@ -176,19 +176,19 @@ compactTree()
 
 
 // insert segment beginning at to
-// require: spaceIsAvailable() == 1
+// require: spaceIsAvailable() === 1
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-insertSegment(Element *to, int sz)
+insertSegment(to: Element*, sz: int)
 {
   if (sz > 0) {
-    Assert2(to[0   ].key != getSupremum());
-    Assert2(to[sz-1].key != getSupremum());
+    Assert2(to[0   ].key !== getSupremum());
+    Assert2(to[sz-1].key !== getSupremum());
     // get a free slot
     if (lastFree < 0) { // tree is too small
       doubleK();
     }
-    int index = empty[lastFree];
+    let index: int = empty[lastFree];
     lastFree--; // pop
 
 
@@ -198,9 +198,9 @@ insertSegment(Element *to, int sz)
 
     // propagate new information up the tree
     Key dummyKey;
-    int dummyIndex;
-    int dummyMask;
-    updateOnInsert((index + k) >> 1, to->key, index,
+    let dummyIndex: int;
+    let dummyMask: int;
+    updateOnInsert((index + k) >> 1, to.key, index,
                    &dummyKey, &dummyIndex, &dummyMask);
   } else {
     // immediately deallocate
@@ -215,7 +215,7 @@ insertSegment(Element *to, int sz)
 // free an empty segment
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-deallocateSegment(int index)
+deallocateSegment(index: int)
 {
   // reroute current pointer to some empty dummy segment
   // with a sentinel key
@@ -233,53 +233,53 @@ deallocateSegment(int index)
 // multi-merge for a fixed K=1<<LogK
 // this looks ugly but the include file explains
 // why this is the most portable choice
-#define LogK 3
+export const LogK = 3;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled3(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled3(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 4
+export const LogK = 4;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled4(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled4(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 5
+export const LogK = 5;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled5(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled5(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 6
+export const LogK = 6;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled6(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled6(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 7
+export const LogK = 7;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled7(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled7(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 8
+export const LogK = 8;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled8(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled8(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 9
+export const LogK = 9;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled9(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled9(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
-#define LogK 10
+export const LogK = 10;
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeUnrolled10(Element *to, int l)
-#include "multiMergeUnrolled.C"
+multiMergeUnrolled10(to: Element*, l: int)
+import {} from 'multiMergeUnrolled.C'
 #undef LogK
 
 // delete the l smallest elements and write them to "to"
@@ -289,27 +289,27 @@ multiMergeUnrolled10(Element *to, int l)
 // - segments are ended by sentinels
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMerge(Element *to, int l)
+multiMerge(to: Element*, l: int)
 {
   switch(logK) {
   case 0:
-    Assert2(k == 1);
-    Assert2(entry[0].index == 0);
-    Assert2(lastFree == -1 || l == 0);
+    Assert2(k === 1);
+    Assert2(entry[0].index === 0);
+    Assert2(lastFree === -1 || l === 0);
     memcpy(to, current[0], l * sizeof(Element));
     current[0] += l;
-    entry[0].key = current[0]->key;
+    entry[0].key = current[0].key;
     if (segmentIsEmpty(0)) deallocateSegment(0);
     break;
   case 1:
-    Assert2(k == 2);
+    Assert2(k === 2);
     merge(current + 0, current + 1, to, l);
     rebuildLooserTree();
     if (segmentIsEmpty(0)) deallocateSegment(0);
     if (segmentIsEmpty(1)) deallocateSegment(1);
     break;
   case 2:
-    Assert2(k == 4);
+    Assert2(k === 4);
     merge4(current + 0, current + 1, current + 2, current + 3, to, l);
     rebuildLooserTree();
     if (segmentIsEmpty(0)) deallocateSegment(0);
@@ -325,7 +325,7 @@ multiMerge(Element *to, int l)
   case  8: multiMergeUnrolled8(to, l); break;
   case  9: multiMergeUnrolled9(to, l); break;
   case 10: multiMergeUnrolled10(to, l); break;
-  default: multiMergeK       (to, l); break;
+  let default: multiMergeK       (to, l); break;
   }
   size -= l;
 
@@ -340,52 +340,52 @@ multiMerge(Element *to, int l)
 // is this segment empty and does not point to dummy yet?
 template <class Key, class Value>
 inline int KNLooserTree<Key, Value>::
-segmentIsEmpty(int i)
+segmentIsEmpty(i: int)
 {
-  return current[i]->key == getSupremum() &&
-         current[i] != &dummy;
+  return current[i].key === getSupremum() &&
+         current[i] !== &dummy;
 }
 
 
 // multi-merge for arbitrary K
 template <class Key, class Value>
 void KNLooserTree<Key, Value>::
-multiMergeK(Element *to, int l)
+multiMergeK(to: Element*, l: int)
 {
-  Entry *currentPos;
+  let currentPos: Entry*;
   Key currentKey;
-  int currentIndex; // leaf pointed to by current entry
-  int kReg = k;
-  Element *done = to + l;
-  int      winnerIndex = entry[0].index;
+  let currentIndex: int; // leaf pointed to by current entry
+  let kReg: int = k;
+  let done: Element* = to + l;
+  let winnerIndex: int = entry[0].index;
   Key      winnerKey   = entry[0].key;
-  Element *winnerPos;
+  let winnerPos: Element*;
   Key sup = dummy.key; // supremum
   while (to < done) {
     winnerPos = current[winnerIndex];
 
     // write result
-    to->key   = winnerKey;
-    to->value = winnerPos->value;
+    to.key   = winnerKey;
+    to.value = winnerPos.value;
 
     // advance winner segment
     winnerPos++;
     current[winnerIndex] = winnerPos;
-    winnerKey = winnerPos->key;
+    winnerKey = winnerPos.key;
 
     // remove winner segment if empty now
-    if (winnerKey == sup) {
+    if (winnerKey === sup) {
       deallocateSegment(winnerIndex);
     }
 
     // go up the entry-tree
-    for (int i = (winnerIndex + kReg) >> 1;  i > 0;  i >>= 1) {
+    for (i: int = (winnerIndex + kReg) >> 1;  i > 0;  i >>= 1) {
       currentPos = entry + i;
-      currentKey = currentPos->key;
+      currentKey = currentPos.key;
       if (currentKey < winnerKey) {
-        currentIndex      = currentPos->index;
-        currentPos->key   = winnerKey;
-        currentPos->index = winnerIndex;
+        currentIndex      = currentPos.index;
+        currentPos.key   = winnerKey;
+        currentPos.index = winnerIndex;
         winnerKey         = currentKey;
         winnerIndex       = currentIndex;
       }
@@ -405,7 +405,7 @@ KNHeap(Key sup, Key infimum) : insertHeap(sup, infimum),
 {
   buffer1[KNBufferSize1].key = sup; // sentinel
   minBuffer1 = buffer1 + KNBufferSize1; // empty
-  for (int i = 0;  i < KNLevels;  i++) {
+  for (i: int = 0;  i < KNLevels;  i++) {
     tree[i].init(sup); // put tree[i] in a consistent state
     buffer2[i][KNN].key = sup; // sentinel
     minBuffer2[i] = &(buffer2[i][KNN]); // empty
@@ -417,12 +417,12 @@ KNHeap(Key sup, Key infimum) : insertHeap(sup, infimum),
 
 // refill buffer2[j] and return number of elements found
 template <class Key, class Value>
-int KNHeap<Key, Value>::refillBuffer2(int j)
+int KNHeap<Key, Value>::refillBuffer2(j: int)
 {
-  Element *oldTarget;
-  int deleteSize;
-  int treeSize = tree[j].getSize();
-  int bufferSize = (&(buffer2[j][0]) + KNN) - minBuffer2[j];
+  let oldTarget: Element*;
+  let deleteSize: int;
+  let treeSize: int = tree[j].getSize();
+  let bufferSize: int = (&(buffer2[j][0]) + KNN) - minBuffer2[j];
   if (treeSize + bufferSize >= KNN) { // buffer will be filled
     oldTarget = &(buffer2[j][0]);
     deleteSize = KNN - bufferSize;
@@ -448,13 +448,13 @@ int KNHeap<Key, Value>::refillBuffer2(int j)
 template <class Key, class Value>
 void KNHeap<Key, Value>::refillBuffer1()
 {
-  int totalSize = 0;
-  int sz;
-  for (int i = activeLevels - 1;  i >= 0;  i--) {
+  let totalSize: int = 0;
+  let sz: int;
+  for (i: int = activeLevels - 1;  i >= 0;  i--) {
     if ((&(buffer2[i][0]) + KNN) - minBuffer2[i] < KNBufferSize1) {
       sz = refillBuffer2(i);
       // max active level dry now?
-      if (sz == 0 && i == activeLevels - 1) { activeLevels--; }
+      if (sz === 0 && i === activeLevels - 1) { activeLevels--; }
       else {totalSize += sz;}
     } else {
       totalSize += KNBufferSize1; // actually only a sufficient lower bound
@@ -467,7 +467,7 @@ void KNHeap<Key, Value>::refillBuffer1()
   } else {
     minBuffer1 = buffer1 + KNBufferSize1 - totalSize;
     sz = totalSize;
-    Assert2(size == sz); // trees and buffer2 get empty
+    Assert2(size === sz); // trees and buffer2 get empty
     size = 0;
   }
 
@@ -499,12 +499,12 @@ void KNHeap<Key, Value>::refillBuffer1()
 
 
 template <class Key, class Value>
-void KNHeap<Key, Value>::refillBuffer13(int sz)
+void KNHeap<Key, Value>::refillBuffer13(sz: int)
 { Assert(0); // not yet implemented
 }
 
 template <class Key, class Value>
-void KNHeap<Key, Value>::refillBuffer14(int sz)
+void KNHeap<Key, Value>::refillBuffer14(sz: int)
 { Assert(0); // not yet implemented
 }
 
@@ -515,18 +515,18 @@ void KNHeap<Key, Value>::refillBuffer14(int sz)
 // empty this level if necessary leading to a recursive call.
 // return the level where space was finally available
 template <class Key, class Value>
-int KNHeap<Key, Value>::makeSpaceAvailable(int level)
+int KNHeap<Key, Value>::makeSpaceAvailable(level: int)
 {
-  int finalLevel;
+  let finalLevel: int;
 
   Assert2(level <= activeLevels);
-  if (level == activeLevels) { activeLevels++; }
+  if (level === activeLevels) { activeLevels++; }
   if (tree[level].spaceIsAvailable()) {
     finalLevel = level;
   } else {
     finalLevel = makeSpaceAvailable(level + 1);
-    int segmentSize = tree[level].getSize();
-    Element *newSegment = new Element[segmentSize + 1];
+    let segmentSize: int = tree[level].getSize();
+    let newSegment: Element* = new Element[segmentSize + 1];
     tree[level].multiMerge(newSegment, segmentSize); // empty this level
     //    tree[level].cleanUp();
     newSegment[segmentSize].key = buffer1[KNBufferSize1].key; // sentinel
@@ -546,8 +546,8 @@ void KNHeap<Key, Value>::emptyInsertHeap()
   const Key sup = getSupremum();
 
   // build new segment
-  Element *newSegment = new Element[KNN + 1];
-  Element *newPos = newSegment;
+  let newSegment: Element* = new Element[KNN + 1];
+  let newPos: Element* = newSegment;
 
   // put the new data there for now
   insertHeap.sortTo(newSegment);
@@ -555,11 +555,11 @@ void KNHeap<Key, Value>::emptyInsertHeap()
 
   // copy the buffer1 and buffer2[0] to temporary storage
   // (the tomporary can be eliminated using some dirty tricks)
-  const int tempSize = KNN + KNBufferSize1;
+  const tempSize: int = KNN + KNBufferSize1;
   Element temp[tempSize + 1];
-  int sz1 = getSize1();
-  int sz2 = getSize2(0);
-  Element *pos = temp + tempSize - sz1 - sz2;
+  let sz1: int = getSize1();
+  let sz2: int = getSize2(0);
+  let pos: Element* = temp + tempSize - sz1 - sz2;
   memcpy(pos      , minBuffer1   , sz1 * sizeof(Element));
   memcpy(pos + sz1, minBuffer2[0], sz2 * sizeof(Element));
   temp[tempSize].key = sup; // sentinel
@@ -580,14 +580,14 @@ void KNHeap<Key, Value>::emptyInsertHeap()
   merge(&pos, &newPos, newSegment, KNN);
 
   // and insert it
-  int freeLevel = makeSpaceAvailable(0);
-  Assert2(freeLevel == 0 || tree[0].getSize() == 0);
+  let freeLevel: int = makeSpaceAvailable(0);
+  Assert2(freeLevel === 0 || tree[0].getSize() === 0);
   tree[0].insertSegment(newSegment, KNN);
 
   // get rid of invalid level 2 buffers
   // by inserting them into tree 0 (which is almost empty in this case)
   if (freeLevel > 0) {
-    for (int i = freeLevel;  i >= 0;  i--) { // reverse order not needed
+    for (i: int = freeLevel;  i >= 0;  i--) { // reverse order not needed
       // but would allow immediate refill
       newSegment = new Element[getSize2(i) + 1]; // with sentinel
       memcpy(newSegment, minBuffer2[i], (getSize2(i) + 1) * sizeof(Element));
@@ -600,7 +600,7 @@ void KNHeap<Key, Value>::emptyInsertHeap()
   size += KNN;
 
   // special case if the tree was empty before
-  if (minBuffer1 == buffer1 + KNBufferSize1) { refillBuffer1(); }
+  if (minBuffer1 === buffer1 + KNBufferSize1) { refillBuffer1(); }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -613,27 +613,26 @@ void KNHeap<Key, Value>::emptyInsertHeap()
 // require: to may overwrite one of the sources as long as
 //   *fx + sz is before the end of fx
 template <class Key, class Value>
-void merge(KNElement<Key, Value> **f0,
+export function merge(KNElement<Key, Value> **f0,
            KNElement<Key, Value> **f1,
-           KNElement<Key, Value>  *to, int sz)
-{
+           KNElement<Key, Value>  *to, sz: int): void {
   KNElement<Key, Value> *from0   = *f0;
   KNElement<Key, Value> *from1   = *f1;
   KNElement<Key, Value> *done    = to + sz;
-  Key      key0    = from0->key;
-  Key      key1    = from1->key;
+  Key      key0    = from0.key;
+  Key      key1    = from1.key;
 
   while (to < done) {
     if (key1 <= key0) {
-      to->key   = key1;
-      to->value = from1->value; // note that this may be the same address
+      to.key   = key1;
+      to.value = from1.value; // note that this may be the same address
       from1++; // nach hinten schieben?
-      key1 = from1->key;
+      key1 = from1.key;
     } else {
-      to->key   = key0;
-      to->value = from0->value; // note that this may be the same address
+      to.key   = key0;
+      to.value = from0.value; // note that this may be the same address
       from0++; // nach hinten schieben?
-      key0 = from0->key;
+      key0 = from0.key;
     }
     to++;
   }
@@ -643,24 +642,23 @@ void merge(KNElement<Key, Value> **f0,
 
 
 // merge sz element from the three sentinel terminated input
-// sequences *f0, *f1 and *f2 to "to"
-// advance *f0, *f1 and *f2 accordingly.
+// f0: sequences*, f1 and *f2 to "to"
+// f0: advance*, f1 and *f2 accordingly.
 // require: at least sz nonsentinel elements available in f0, f1 and f2
 // require: to may overwrite one of the sources as long as
 //   *fx + sz is before the end of fx
 template <class Key, class Value>
-void merge3(KNElement<Key, Value> **f0,
+export function merge3(KNElement<Key, Value> **f0,
            KNElement<Key, Value> **f1,
            KNElement<Key, Value> **f2,
-           KNElement<Key, Value>  *to, int sz)
-{
+           KNElement<Key, Value>  *to, sz: int): void {
   KNElement<Key, Value> *from0   = *f0;
   KNElement<Key, Value> *from1   = *f1;
   KNElement<Key, Value> *from2   = *f2;
   KNElement<Key, Value> *done    = to + sz;
-  Key      key0    = from0->key;
-  Key      key1    = from1->key;
-  Key      key2    = from2->key;
+  Key      key0    = from0.key;
+  Key      key1    = from1.key;
+  Key      key2    = from2.key;
 
   if (key0 < key1) {
     if (key1 < key2)   { goto s012; }
@@ -677,12 +675,12 @@ void merge3(KNElement<Key, Value> **f0,
 
 #define Merge3Case(a,b,c)\
   s ## a ## b ## c :\
-  if (to == done) goto finish;\
-  to->key = key ## a;\
-  to->value = from ## a -> value;\
+  if (to === done) goto finish;\
+  to.key = key ## a;\
+  to.value = from ## a . value;\
   to++;\
   from ## a ++;\
-  key ## a = from ## a -> key;\
+  key ## a = from ## a . key;\
   if (key ## a < key ## b) goto s ## a ## b ## c;\
   if (key ## a < key ## c) goto s ## b ## a ## c;\
   goto s ## b ## c ## a;
@@ -704,27 +702,26 @@ void merge3(KNElement<Key, Value> **f0,
 
 
 // merge sz element from the three sentinel terminated input
-// sequences *f0, *f1, *f2 and *f3 to "to"
-// advance *f0, *f1, *f2 and *f3 accordingly.
+// f0: sequences*, f1, f2 and *f3 to "to"
+// f0: advance*, f1, f2 and *f3 accordingly.
 // require: at least sz nonsentinel elements available in f0, f1, f2 and f2
 // require: to may overwrite one of the sources as long as
 //   *fx + sz is before the end of fx
 template <class Key, class Value>
-void merge4(KNElement<Key, Value> **f0,
+export function merge4(KNElement<Key, Value> **f0,
            KNElement<Key, Value> **f1,
            KNElement<Key, Value> **f2,
            KNElement<Key, Value> **f3,
-           KNElement<Key, Value>  *to, int sz)
-{
+           KNElement<Key, Value>  *to, sz: int): void {
   KNElement<Key, Value> *from0   = *f0;
   KNElement<Key, Value> *from1   = *f1;
   KNElement<Key, Value> *from2   = *f2;
   KNElement<Key, Value> *from3   = *f3;
   KNElement<Key, Value> *done    = to + sz;
-  Key      key0    = from0->key;
-  Key      key1    = from1->key;
-  Key      key2    = from2->key;
-  Key      key3    = from3->key;
+  Key      key0    = from0.key;
+  Key      key1    = from1.key;
+  Key      key2    = from2.key;
+  Key      key3    = from3.key;
 
 #define StartMerge4(a, b, c, d)\
   if (key##a <= key##b && key##b <= key##c && key##c <= key##d)\
@@ -762,12 +759,12 @@ void merge4(KNElement<Key, Value> **f0,
 
 #define Merge4Case(a, b, c, d)\
   s ## a ## b ## c ## d:\
-  if (to == done) goto finish;\
-  to->key = key ## a;\
-  to->value = from ## a -> value;\
+  if (to === done) goto finish;\
+  to.key = key ## a;\
+  to.value = from ## a . value;\
   to++;\
   from ## a ++;\
-  key ## a = from ## a -> key;\
+  key ## a = from ## a . key;\
   if (key ## a < key ## c) {\
     if (key ## a < key ## b) { goto s ## a ## b ## c ## d; }\
     else                     { goto s ## b ## a ## c ## d; }\
@@ -813,70 +810,59 @@ void merge4(KNElement<Key, Value> **f0,
   *f3   = from3;
 }
 
-pq_type* pq_create( mem_map *map ) {
+export function pq_create( map: mem_map* ): pq_type* {
   return new pq_type(PQ_KEY_SUP, PQ_KEY_INF);
 }
 
-void pq_destroy( pq_type *queue )
-{
+export function pq_destroy( queue: pq_type* ): void {
     delete queue;
 }
 
-void pq_clear( pq_type *queue )
-{
+export function pq_clear( queue: pq_type* ): void {
 
 }
 
-key_type pq_get_key( pq_type *queue, pq_node_type *node )
-{
+export function pq_get_key( queue: pq_type*, node: pq_node_type* ): key_type {
     return PQ_KEY_INF;
 }
 
-item_type* pq_get_item( pq_type *queue, pq_node_type *node )
-{
+export function pq_get_item( queue: pq_type*, node: pq_node_type* ): item_type* {
     return 0;
 }
 
-uint32_t pq_get_size( pq_type *queue )
-{
-    return queue->getSize();
+export function pq_get_size( queue: pq_type* ): uint32_t {
+    return queue.getSize();
 }
 
-pq_node_type* pq_insert( pq_type *queue, item_type item, key_type key )
-{
-    queue->insert(key,item);
-    return NULL;
+export function pq_insert( queue: pq_type*, item: item_type, key: key_type ): pq_node_type* {
+    queue.insert(key,item);
+    return null;
 }
 
-pq_node_type* pq_find_min( pq_type *queue )
-{
-    key_type key;
-    item_type item;
-    queue->getMin(&key,&item);
-    return NULL;
+export function pq_find_min( queue: pq_type* ): pq_node_type* {
+    let key: key_type;
+    let item: item_type;
+    queue.getMin(&key,&item);
+    return null;
 }
 
-key_type pq_delete_min( pq_type *queue )
-{
-    key_type key;
-    item_type item;
-    queue->deleteMin(&key,&item);
+export function pq_delete_min( queue: pq_type* ): key_type {
+    let key: key_type;
+    let item: item_type;
+    queue.deleteMin(&key,&item);
     return item;
 }
 
-key_type pq_delete( pq_type *queue, pq_node_type* node )
-{
+export function pq_delete( queue: pq_type*, node: pq_node_type* ): key_type {
     return PQ_KEY_INF;
 }
 
-void pq_decrease_key( pq_type *queue, pq_node_type *node,
-    key_type new_key )
-{
+export function pq_decrease_key( queue: pq_type*, node: pq_node_type*,
+    new_key: key_type ): void {
 
 }
 
-bool pq_empty( pq_type *queue )
-{
-    return (queue->getSize() == 0);
+export function pq_empty( queue: pq_type* ): boolean {
+    return (queue.getSize() === 0);
 }
 

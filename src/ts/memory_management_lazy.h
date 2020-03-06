@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PQ_MEM_WIDTH 32
+export const PQ_MEM_WIDTH = 32;
 
 /**
  * Basic memory pool to use for node allocation.  Memory maps can be shared
@@ -17,22 +17,21 @@
  * doubled when the current capacity is exceeded.
  */
 
-typedef struct mem_map_t
-{
+export interface mem_map {
     //! number of different node types
-    uint32_t types;
+    let types: uint32_t;
     //! sizes of single nodes
-    uint32_t *sizes;
+    let sizes: uint32_t*;
 
-    uint8_t ***data;
-    uint8_t ****free;
+    let data: uint8_t*[][];
+    let free: uint8_t*[][][];
 
-    uint32_t *chunk_data;
-    uint32_t *chunk_free;
+    let chunk_data: uint32_t*;
+    let chunk_free: uint32_t*;
 
-    uint32_t *index_data;
-    uint32_t *index_free;
-} mem_map;
+    let index_data: uint32_t*;
+    let index_free: uint32_t*;
+}
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -45,21 +44,21 @@ typedef struct mem_map_t
  * @param size  Sizes of a single node of each type
  * @return      Pointer to the new memory map
  */
-mem_map* mm_create( uint32_t types, uint32_t *sizes );
+export function mm_create( types: uint32_t, sizes: uint32_t* ): mem_map* ;
 
 /**
  * Releases all allocated memory associated with the map.
  *
  * @param map   Map to deallocate
  */
-void mm_destroy( mem_map *map );
+export function mm_destroy( map: mem_map* ): void ;
 
 /**
  * Resets map to initial state.  Does not deallocate memory.
  *
  * @param map   Map to reset
  */
-void mm_clear( mem_map *map );
+export function mm_clear( map: mem_map* ): void ;
 
 /**
  * Allocates a single node from the memory pool.  First attempts to recycle old
@@ -70,7 +69,7 @@ void mm_clear( mem_map *map );
  * @param type  Type of node to allocate
  * @return      Pointer to allocated node
  */
-void* pq_alloc_node( mem_map *map, uint32_t type );
+export function pq_alloc_node( map: mem_map*, type: uint32_t ): void* ;
 
 /**
  * Takes a previously allocated node and adds it to the free list to be
@@ -80,6 +79,6 @@ void* pq_alloc_node( mem_map *map, uint32_t type );
  * @param type  Type of node to free
  * @param node  Node to free
  */
-void pq_free_node( mem_map *map, uint32_t type, void *node );
+export function pq_free_node( map: mem_map*, type: uint32_t, node: void* ): void ;
 
 #endif

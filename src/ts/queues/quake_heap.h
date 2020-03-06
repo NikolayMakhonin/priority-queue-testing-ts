@@ -5,7 +5,7 @@
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 /**
  * Holds an inserted element, as well as pointers to maintain tree
@@ -13,53 +13,51 @@
  * mutability.  Keeps track of the height of the node as well as pointer
  * to the node's parent, left child (duplicate), and right child.
  */
-struct quake_node_t
-{
+export interface quake_node_t {
     //! Parent node
-    struct quake_node_t *parent;
+    struct parent: quake_node_t*;
     //! Left child
-    struct quake_node_t *left;
+    struct left: quake_node_t*;
     //! Right child, or next root if this node is a root
-    struct quake_node_t *right;
+    struct right: quake_node_t*;
 
     //! The height of this node
-    uint8_t height;
+    let height: uint8_t;
 
     //! Pointer to a piece of client data
-    item_type item;
+    let item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    let key: key_type;
+};
 
-typedef struct quake_node_t quake_node;
-typedef quake_node pq_node_type;
+export type quake_node = quake_node_t;
+export type pq_node_type = quake_node;
 
 /**
  * A mutable, meldable, Quake heap.  Maintains a forest of (binary) tournament
  * trees of unique height.  Maintains standard heap invariant and guarantees
  * exponential decay in node height.
  */
-struct quake_heap_t
-{
+export interface quake_heap_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    let map: mem_map*;
     //! The number of items held in the queue
-    uint32_t size;
+    let size: uint32_t;
     //! Pointer to the minimum node in the queue
-    quake_node *minimum;
+    let minimum: quake_node*;
     //! An array of roots of the queue, indexed by height
-    quake_node *roots[MAXRANK];
+    let roots: quake_node*[MAXRANK];
     //! An array of counters corresponding to the number of nodes at height
     //! equal to the index
-    uint32_t nodes[MAXRANK];
+    let nodes: uint32_t[MAXRANK];
     //! Current height of highest node in queue
-    uint32_t highest_node;
+    let highest_node: uint32_t;
     //! Index at which first decay violation occurs, MAXRANK if none
-    uint32_t violation;
-} __attribute__ ((aligned(4)));
+    let violation: uint32_t;
+};
 
-typedef struct quake_heap_t quake_heap;
-typedef quake_heap pq_type;
+export type quake_heap = quake_heap_t;
+export type pq_type = quake_heap;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -71,21 +69,21 @@ typedef quake_heap pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-quake_heap* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): quake_heap* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( quake_heap *queue );
+export function pq_destroy( queue: quake_heap* ): void ;
 
 /**
  * Deletes all nodes, leaving the queue empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( quake_heap *queue );
+export function pq_clear( queue: quake_heap* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -94,7 +92,7 @@ void pq_clear( quake_heap *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( quake_heap *queue, quake_node *node );
+export function pq_get_key( queue: quake_heap*, node: quake_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -103,7 +101,7 @@ key_type pq_get_key( quake_heap *queue, quake_node *node );
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( quake_heap *queue, quake_node *node );
+export function pq_get_item( queue: quake_heap*, node: quake_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -111,7 +109,7 @@ item_type* pq_get_item( quake_heap *queue, quake_node *node );
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( quake_heap *queue );
+export function pq_get_size( queue: quake_heap* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -122,7 +120,7 @@ uint32_t pq_get_size( quake_heap *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-quake_node* pq_insert( quake_heap *queue, item_type item, key_type key );
+export function pq_insert( queue: quake_heap*, item: item_type, key: key_type ): quake_node* ;
 
 /**
  * Returns the minimum item from the queue.
@@ -130,7 +128,7 @@ quake_node* pq_insert( quake_heap *queue, item_type item, key_type key );
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-quake_node* pq_find_min( quake_heap *queue );
+export function pq_find_min( queue: quake_heap* ): quake_node* ;
 
 /**
  * Removes the minimum item from the queue and returns it, restructuring
@@ -140,7 +138,7 @@ quake_node* pq_find_min( quake_heap *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( quake_heap *queue );
+export function pq_delete_min( queue: quake_heap* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue and modifies queue structure
@@ -153,7 +151,7 @@ key_type pq_delete_min( quake_heap *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( quake_heap *queue, quake_node *node );
+export function pq_delete( queue: quake_heap*, node: quake_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -165,7 +163,7 @@ key_type pq_delete( quake_heap *queue, quake_node *node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( quake_heap *queue, quake_node *node, key_type new_key );
+export function pq_decrease_key( queue: quake_heap*, node: quake_node*, new_key: key_type ): void ;
 
 /**
  * Combines two different item-disjoint queues which share a memory map.
@@ -176,7 +174,7 @@ void pq_decrease_key( quake_heap *queue, quake_node *node, key_type new_key );
  * @param b Second queue
  * @return  Resulting merged queue
  */
-quake_heap* pq_meld( quake_heap *a, quake_heap *b );
+export function pq_meld( a: quake_heap*, b: quake_heap* ): quake_heap* ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -184,7 +182,7 @@ quake_heap* pq_meld( quake_heap *a, quake_heap *b );
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( quake_heap *queue );
+export function pq_empty( queue: quake_heap* ): boolean ;
 
 #endif
 

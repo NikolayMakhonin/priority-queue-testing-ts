@@ -1,24 +1,24 @@
 // hierarchical memory priority queue data structure
 #ifndef KNHEAP
 #define KNHEAP
-#include "queue_common.h"
-#include "util.h"
+import {} from 'queue_common.h'
+import {} from 'util.h'
 #include <limits>
 
-const int KNBufferSize1 = 32; // equalize procedure call overheads etc.
-const int KNN = 512; // bandwidth
-const int KNKMAX = 64;  // maximal arity
-const int KNLevels = 4; // overall capacity >= KNN*KNKMAX^KNLevels
-const int LogKNKMAX = 6;  // ceil(log KNK)
+const KNBufferSize1: int = 32; // equalize procedure call overheads etc.
+const KNN: int = 512; // bandwidth
+const KNKMAX: int = 64;  // maximal arity
+const KNLevels: int = 4; // overall capacity >= KNN*KNKMAX^KNLevels
+const LogKNKMAX: int = 6;  // ceil(log KNK)
 /*
-const int KNBufferSize1 = 3; // equalize procedure call overheads etc.
-const int KNN = 10; // bandwidth
-const int KNKMAX = 4;  // maximal arity
-const int KNLevels = 4; // overall capacity >= KNN*KNKMAX^KNLevels
-const int LogKNKMAX = 2;  // ceil(log KNK)
+const KNBufferSize1: int = 3; // equalize procedure call overheads etc.
+const KNN: int = 10; // bandwidth
+const KNKMAX: int = 4;  // maximal arity
+const KNLevels: int = 4; // overall capacity >= KNN*KNKMAX^KNLevels
+const LogKNKMAX: int = 2;  // ceil(log KNK)
 */
 template <class Key, class Value>
-struct KNElement {Key key; Value value;};
+export interface KNElement {Key key; Value value;};
 
 //////////////////////////////////////////////////////////////////////
 // fixed size binary heap
@@ -28,7 +28,7 @@ class BinaryHeap {
   //static const Key supremum = numeric_limits<Key>.max();
   typedef KNElement<Key, Value> Element;
   Element data[capacity + 2];
-  int size;  // index of last used element
+  let size: int;  // index of last used element
 public:
   BinaryHeap(Key sup, Key infimum):size(0) {
     data[0].key = infimum; // sentinel
@@ -41,13 +41,13 @@ public:
   Key   getMinKey()   const { return data[1].key; }
   Value getMinValue() const { return data[1].value; }
   void  deleteMin();
-  void  deleteMinFancy(Key *key, Value *value) {
+  void  deleteMinFancy(key: Key*, value: Value*) {
     *key   = getMinKey();
     *value = getMinValue();
     deleteMin();
   }
   void  insert(Key k, Value v);
-  void  sortTo(Element *to); // sort in increasing order and empty
+  void  sortTo(to: Element*); // sort in increasing order and empty
   //void  sortInPlace(); // in decreasing order
 };
 
@@ -58,7 +58,7 @@ inline void BinaryHeap<Key, Value, capacity>::
 reset() {
   size = 0;
   Key sup = getSupremum();
-  for (int i = 1;  i <= capacity;  i++) {
+  for (i: int = 1;  i <= capacity;  i++) {
     data[i].key = sup;
   }
   // if this becomes a bottle neck
@@ -73,9 +73,9 @@ deleteMin()
   Assert2(size > 0);
 
   // first move up elements on a min-path
-  int hole = 1;
-  int succ = 2;
-  int sz   = size;
+  let hole: int = 1;
+  let succ: int = 2;
+  let sz: int   = size;
   while (succ < sz) {
     Key key1 = data[succ].key;
     Key key2 = data[succ + 1].key;
@@ -93,7 +93,7 @@ deleteMin()
 
   // bubble up rightmost element
   Key bubble = data[sz].key;
-  int pred = hole >> 1;
+  let pred: int = hole >> 1;
   while (data[pred].key > bubble) { // must terminate since min at root
     data[hole] = data[pred];
     hole = pred;
@@ -113,9 +113,9 @@ deleteMin()
 // sorted in increasing order
 template <class Key, class Value, int capacity>
 inline void BinaryHeap<Key, Value, capacity>::
-sortTo(Element *to)
+sortTo(to: Element*)
 {
-  const int           sz = size;
+  const sz: int = size;
   const Key          sup = getSupremum();
   Element * const beyond = to + sz;
   Element * const root   = data + 1;
@@ -125,8 +125,8 @@ sortTo(Element *to)
     to++;
 
     // bubble up second smallest as in deleteMin
-    int hole = 1;
-    int succ = 2;
+    let hole: int = 1;
+    let succ: int = 2;
     while (succ <= sz) {
       Key key1 = data[succ    ].key;
       Key key2 = data[succ + 1].key;
@@ -157,8 +157,8 @@ insert(Key k, Value v)
   Debug4(cout << "insert(" << k << ", " << v << ")" << endl);
 
   size++;
-  int hole = size;
-  int pred = hole >> 1;
+  let hole: int = size;
+  let pred: int = hole >> 1;
   Key predKey = data[pred].key;
   while (predKey > k) { // must terminate due to sentinel at 0
     data[hole].key   = predKey;
@@ -181,18 +181,18 @@ class KNLooserTree {
   // sequence of template friends which I doubt to work
   // on all compilers
   typedef KNElement<Key, Value> Element;
-  struct Entry   {
+  export interface Entry {
     Key key;   // Key of Looser element (winner for 0)
-    int index; // number of loosing segment
+    let index: int; // number of loosing segment
   };
 
   // stack of empty segments
-  int empty[KNKMAX]; // indices of empty segments
-  int lastFree;  // where in "empty" is the last valid entry?
+  let empty: int[KNKMAX]; // indices of empty segments
+  let lastFree: int;  // where in "empty" is the last valid entry?
 
-  int size; // total number of elements stored
-  int logK; // log of current tree size
-  int k; // invariant k = 1 << logK
+  let size: int; // total number of elements stored
+  let logK: int; // log of current tree size
+  let k: int; // invariant k = 1 << logK
 
   Element dummy; // target of empty segment pointers
 
@@ -203,36 +203,36 @@ class KNLooserTree {
   // leaf information
   // note that Knuth uses indices k..k-1
   // while we use 0..k-1
-  Element *current[KNKMAX]; // pointer to actual element
-  Element *segment[KNKMAX]; // start of Segments
+  let current: Element*[KNKMAX]; // pointer to actual element
+  let segment: Element*[KNKMAX]; // start of Segments
 
   // private member functions
-  int initWinner(int root);
-  void updateOnInsert(int node, Key newKey, int newIndex,
-                      Key *winnerKey, int *winnerIndex, int *mask);
-  void deallocateSegment(int index);
+  int initWinner(root: int);
+  void updateOnInsert(node: int, Key newKey, newIndex: int,
+                      winnerKey: Key*, winnerIndex: [], mask: []);
+  void deallocateSegment(index: int);
   void doubleK();
   void compactTree();
   void rebuildLooserTree();
-  int segmentIsEmpty(int i);
-public:
+  int segmentIsEmpty(i: int);
+let public:
   KNLooserTree();
   void init(Key sup); // before, no consistent state is reached :-(
 
-  void multiMergeUnrolled3(Element *to, int l);
-  void multiMergeUnrolled4(Element *to, int l);
-  void multiMergeUnrolled5(Element *to, int l);
-  void multiMergeUnrolled6(Element *to, int l);
-  void multiMergeUnrolled7(Element *to, int l);
-  void multiMergeUnrolled8(Element *to, int l);
-  void multiMergeUnrolled9(Element *to, int l);
-  void multiMergeUnrolled10(Element *to, int l);
+  void multiMergeUnrolled3(to: Element*, l: int);
+  void multiMergeUnrolled4(to: Element*, l: int);
+  void multiMergeUnrolled5(to: Element*, l: int);
+  void multiMergeUnrolled6(to: Element*, l: int);
+  void multiMergeUnrolled7(to: Element*, l: int);
+  void multiMergeUnrolled8(to: Element*, l: int);
+  void multiMergeUnrolled9(to: Element*, l: int);
+  void multiMergeUnrolled10(to: Element*, l: int);
 
-  void multiMerge(Element *to, int l); // delete l smallest element to "to"
-  void multiMergeK(Element *to, int l);
+  void multiMerge(to: Element*, l: int); // delete l smallest element to "to"
+  void multiMergeK(to: Element*, l: int);
   int  spaceIsAvailable() { return k < KNKMAX || lastFree >= 0; }
      // for new segment
-  void insertSegment(Element *to, int sz); // insert segment beginning at to
+  void insertSegment(to: Element*, sz: int); // insert segment beginning at to
   int  getSize() { return size; }
   Key getSupremum() { return dummy.key; }
 };
@@ -247,39 +247,39 @@ class KNHeap {
   KNLooserTree<Key, Value> tree[KNLevels];
 
   // one delete buffer for each tree (extra space for sentinel)
-  Element buffer2[KNLevels][KNN + 1]; // tree->buffer2->buffer1
-  Element *minBuffer2[KNLevels];
+  Element buffer2[KNLevels][KNN + 1]; // tree.buffer2.buffer1
+  let minBuffer2: Element*[KNLevels];
 
   // overall delete buffer
   Element buffer1[KNBufferSize1 + 1];
-  Element *minBuffer1;
+  let minBuffer1: Element*;
 
   // insert buffer
   BinaryHeap<Key, Value, KNN> insertHeap;
 
   // how many levels are active
-  int activeLevels;
+  let activeLevels: int;
 
   // total size not counting insertBuffer and buffer1
-  int size;
+  let size: int;
 
   // private member functions
   void refillBuffer1();
-  void refillBuffer11(int sz);
-  void refillBuffer12(int sz);
-  void refillBuffer13(int sz);
-  void refillBuffer14(int sz);
-  int refillBuffer2(int k);
-  int makeSpaceAvailable(int level);
+  void refillBuffer11(sz: int);
+  void refillBuffer12(sz: int);
+  void refillBuffer13(sz: int);
+  void refillBuffer14(sz: int);
+  int refillBuffer2(k: int);
+  int makeSpaceAvailable(level: int);
   void emptyInsertHeap();
   Key getSupremum() const { return buffer2[0][KNN].key; }
   int getSize1( ) const { return ( buffer1 + KNBufferSize1) - minBuffer1; }
-  int getSize2(int i) const { return &(buffer2[i][KNN])     - minBuffer2[i]; }
-public:
+  int getSize2(i: int) const { return &(buffer2[i][KNN])     - minBuffer2[i]; }
+let public:
   KNHeap(Key sup, Key infimum);
   int   getSize() const;
-  void  getMin(Key *key, Value *value);
-  void  deleteMin(Key *key, Value *value);
+  void  getMin(key: Key*, value: Value*);
+  void  deleteMin(key: Key*, value: Value*);
   void  insert(Key key, Value value);
 };
 
@@ -294,12 +294,12 @@ inline int KNHeap<Key, Value>::getSize() const
 }
 
 template <class Key, class Value>
-inline void  KNHeap<Key, Value>::getMin(Key *key, Value *value) {
-  Key key1 = minBuffer1->key;
+inline void  KNHeap<Key, Value>::getMin(key: Key*, value: Value*) {
+  Key key1 = minBuffer1.key;
   Key key2 = insertHeap.getMinKey();
   if (key2 >= key1) {
     *key   = key1;
-    *value = minBuffer1->value;
+    *value = minBuffer1.value;
   } else {
     *key   = key2;
     *value = insertHeap.getMinValue();
@@ -307,15 +307,15 @@ inline void  KNHeap<Key, Value>::getMin(Key *key, Value *value) {
 }
 
 template <class Key, class Value>
-inline void  KNHeap<Key, Value>::deleteMin(Key *key, Value *value) {
-  Key key1 = minBuffer1->key;
+inline void  KNHeap<Key, Value>::deleteMin(key: Key*, value: Value*) {
+  Key key1 = minBuffer1.key;
   Key key2 = insertHeap.getMinKey();
   if (key2 >= key1) {
     *key   = key1;
-    *value = minBuffer1->value;
+    *value = minBuffer1.value;
     Assert2(minBuffer1 < buffer1 + KNBufferSize1); // no delete from empty
     minBuffer1++;
-    if (minBuffer1 == buffer1 + KNBufferSize1) {
+    if (minBuffer1 === buffer1 + KNBufferSize1) {
       refillBuffer1();
     }
   } else {
@@ -327,7 +327,7 @@ inline void  KNHeap<Key, Value>::deleteMin(Key *key, Value *value) {
 
 template <class Key, class Value>
 inline  void  KNHeap<Key, Value>::insert(Key k, Value v) {
-  if (insertHeap.getSize() == KNN) { emptyInsertHeap(); }
+  if (insertHeap.getSize() === KNN) { emptyInsertHeap(); }
   insertHeap.insert(k, v);
 }
 
@@ -335,25 +335,25 @@ inline  void  KNHeap<Key, Value>::insert(Key k, Value v) {
 //////////////////////////////////////////////////////////////////////
 // Wrapper API for ompatibility with trace driver
 
-key_type PQ_KEY_SUP = std::numeric_limits<uint64_t>::max();
-key_type PQ_KEY_INF = 0;
+PQ_KEY_SUP: key_type = std::numeric_limits<uint64_t>::max();
+let PQ_KEY_INF: key_type = 0;
 
 typedef KNHeap<key_type, item_type> pq_type;
 typedef KNElement<key_type, item_type> pq_node_type;
 
-pq_type* pq_create( mem_map *map );
-void pq_destroy( pq_type *queue );
-void pq_clear( pq_type *queue );
-key_type pq_get_key( pq_type *queue, pq_node_type *node );
-item_type* pq_get_item( pq_type *queue, pq_node_type *node );
-uint32_t pq_get_size( pq_type *queue );
-pq_node_type* pq_insert( pq_type *queue, item_type item, key_type key );
-pq_node_type* pq_find_min( pq_type *queue );
-key_type pq_delete_min( pq_type *queue );
-key_type pq_delete( pq_type *queue, pq_node_type* node );
-void pq_decrease_key( pq_type *queue, pq_node_type *node,
-    key_type new_key );
-bool pq_empty( pq_type *queue );
+export function pq_create( map: mem_map* ): pq_type* ;
+export function pq_destroy( queue: pq_type* ): void ;
+export function pq_clear( queue: pq_type* ): void ;
+export function pq_get_key( queue: pq_type*, node: pq_node_type* ): key_type ;
+export function pq_get_item( queue: pq_type*, node: pq_node_type* ): item_type* ;
+export function pq_get_size( queue: pq_type* ): uint32_t ;
+export function pq_insert( queue: pq_type*, item: item_type, key: key_type ): pq_node_type* ;
+export function pq_find_min( queue: pq_type* ): pq_node_type* ;
+export function pq_delete_min( queue: pq_type* ): key_type ;
+export function pq_delete( queue: pq_type*, node: pq_node_type* ): key_type ;
+export function pq_decrease_key( queue: pq_type*, node: pq_node_type*,
+    new_key: key_type ): void ;
+export function pq_empty( queue: pq_type* ): boolean ;
 
 //////////////////////////////////////////////////////////////////////
 

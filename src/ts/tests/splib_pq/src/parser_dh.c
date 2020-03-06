@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "types_dh.h"
+import {} from 'types_dh.h'
 
 
 /* ----------------------------------------------------------------- */
@@ -21,24 +21,24 @@ int parse( n_ad, m_ad, nodes_ad, arcs_ad,
            source_ad, node_min_ad, problem_name )
 
 /* all parameters are output */
-long    *n_ad;                 /* address of the number of nodes */
-long    *m_ad;                 /* address of the number of arcs */
-node    **nodes_ad;            /* address of the array of nodes */
-arc     **arcs_ad;             /* address of the array of arcs */
-node    **source_ad;           /* address of the pointer to the source */
-long    *node_min_ad;          /* address of the minimal node */
-char    *problem_name;         /* pointer to the string with problem name */
+let n_ad: [];                 /* address of the number of nodes */
+let m_ad: [];                 /* address of the number of arcs */
+let nodes_ad: node*[];            /* address of the array of nodes */
+let arcs_ad: arc*[];             /* address of the array of arcs */
+let source_ad: node*[];           /* address of the pointer to the source */
+let node_min_ad: [];          /* address of the minimal node */
+let problem_name: string;         /* pointer to the string with problem name */
 
 {
 
-#define MAXLINE       100	/* max line length in the input file */
-#define ARC_FIELDS      3	/* no of fields in arc input  */
-#define P_FIELDS        3       /* no of fields in problem line */
+export const MAXLINE = 100;	/* max line length in the input file */
+export const ARC_FIELDS = 3;	/* no of fields in arc input  */
+export const P_FIELDS = 3;       /* no of fields in problem line */
 #define PROBLEM_TYPE "sp"       /* name of problem type*/
 #define DEFAULT_NAME "unknown"  /* default name of the problem */
 
 
-long    n,                      /* internal number of nodes */
+n: long,                      /* internal number of nodes */
         node_min,               /* minimal no of node  */
         node_max,               /* maximal no of nodes */
        *arc_first,              /* internal array for holding
@@ -49,18 +49,18 @@ long    n,                      /* internal number of nodes */
         /* temporary variables carrying no of nodes */
         head, tail, i;
 
-long    m,                      /* internal number of arcs */
+let m: long,                      /* internal number of arcs */
         /* temporary variable carrying no of arcs */
         last, arc_num, arc_new_num;
 
-node    *nodes,                 /* pointer to the node structure */
+let nodes: node*,                 /* pointer to the node structure */
         *head_p;
 
-arc     *arcs,                  /* pointer to the arc structure */
+let arcs: arc*,                  /* pointer to the arc structure */
         *arc_current,
-        *arc_new;
+        arc_new;
 
-long    length;                 /* length of the current arc */
+let length: long;                 /* length of the current arc */
 
 long    no_lines=0,             /* no of current input line */
         no_plines=0,            /* no of problem-lines */
@@ -68,36 +68,36 @@ long    no_lines=0,             /* no of current input line */
         no_nlines=0,            /* no of node(source)-lines */
         no_alines=0;            /* no of arc-lines */
 
-char    in_line[MAXLINE],       /* for reading input line */
+let in_line: char[MAXLINE],       /* for reading input line */
         pr_type[3];             /* for reading type of the problem */
 
-int     k,                      /* temporary */
+let k: int,                      /* temporary */
         err_no;                 /* no of detected error */
 
 /* -------------- error numbers & error messages ---------------- */
-#define EN1   0
-#define EN2   1
-#define EN3   2
-#define EN4   3
-#define EN6   4
-#define EN10  5
-#define EN7   6
-#define EN8   7
-#define EN9   8
-#define EN11  9
-#define EN12 10
-#define EN13 11
-#define EN14 12
-#define EN16 13
-#define EN15 14
-#define EN17 15
-#define EN18 16
-#define EN21 17
-#define EN19 18
-#define EN20 19
-#define EN22 20
+export const EN1 = 0;
+export const EN2 = 1;
+export const EN3 = 2;
+export const EN4 = 3;
+export const EN6 = 4;
+export const EN10 = 5;
+export const EN7 = 6;
+export const EN8 = 7;
+export const EN9 = 8;
+export const EN11 = 9;
+export const EN12 = 10;
+export const EN13 = 11;
+export const EN14 = 12;
+export const EN16 = 13;
+export const EN15 = 14;
+export const EN17 = 15;
+export const EN18 = 16;
+export const EN21 = 17;
+export const EN19 = 18;
+export const EN20 = 19;
+export const EN22 = 20;
 
-static char *err_message[] = 
+static err_message: string[] =
   { 
 /* 0*/    "more than one problem line.",
 /* 1*/    "wrong number of parameters in the problem line.",
@@ -131,7 +131,7 @@ static char *err_message[] =
         -  does service functions
 */
 
-while ( gets ( in_line ) != NULL )
+while ( gets ( in_line ) != null )
   {
   no_lines ++;
 
@@ -153,7 +153,7 @@ while ( gets ( in_line ) != NULL )
                 if (
         /* reading problem line: type of problem, no of nodes, no of arcs */
                     sscanf ( in_line, "%*c %2s %ld %ld", pr_type, &n, &m )
-                != P_FIELDS
+                !== P_FIELDS
                    )
 		    /*wrong number of parameters in the problem line*/
 		    { err_no = EN2; goto error; }
@@ -167,14 +167,14 @@ while ( gets ( in_line ) != NULL )
 		    { err_no = EN4; goto error; }
 
         /* allocating memory for  'nodes', 'arcs'  and internal arrays */
-                nodes    = (node*) calloc ( n+2, sizeof(node) );
-		arcs     = (arc*)  calloc ( m+1, sizeof(arc) );
-	        arc_tail = (long*) calloc ( m,   sizeof(long) ); 
-		arc_first= (long*) calloc ( n+2, sizeof(long) );
+                nodes    = new Array<node>(n+2);
+		arcs     = new Array<arc>(m+1);
+	        arc_tail = new Array<long>(m);
+		arc_first= new Array<long>(n+2);
                 /* arc_first [ 0 .. n+1 ] = 0 - initialized by calloc */
 
-                if ( nodes == NULL || arcs == NULL || 
-                     arc_first == NULL || arc_tail == NULL )
+                if ( nodes == null || arcs == null ||
+                     arc_first == null || arc_tail == null )
                     /* memory is not allocated */
 		    { err_no = EN6; goto error; }
 		     
@@ -192,7 +192,7 @@ while ( gets ( in_line ) != NULL )
                 if (
                 /* reading problem name */
 	        sscanf ( in_line, "%*c %30s", problem_name )
-                != 1
+                !== 1
                    )
                 /* t-line doesn't contain problem name */
 		    { err_no = EN7; goto error; }
@@ -200,11 +200,11 @@ while ( gets ( in_line ) != NULL )
                 break;
 
       case 'n':		         /* source(s) description */
-		if ( no_plines == 0 )
+		if ( no_plines === 0 )
                   /* there was not problem line above */
                   { err_no = EN8; goto error; }
 
-		if ( no_nlines != 0)
+		if ( no_nlines !== 0)
                   /* more than one node (source) line */
                   { err_no = EN9; goto error; }
 
@@ -230,7 +230,7 @@ while ( gets ( in_line ) != NULL )
 		err_no = EN13; goto error;
 
       case 'a':                    /* arc description */
-		if ( no_nlines == 0 ) 
+		if ( no_nlines === 0 )
                   /* there was not source description above */
                   { err_no = EN14; goto error; }
 
@@ -242,7 +242,7 @@ while ( gets ( in_line ) != NULL )
                     /* reading an arc description */
                     sscanf ( in_line,"%*c %ld %ld %ld",
                                       &tail, &head, &length )
-                    != 3 
+                    !== 3
                    ) 
                     /* arc description is not correct */
                     { err_no = EN15; goto error; }
@@ -258,8 +258,8 @@ while ( gets ( in_line ) != NULL )
 
                 /* storing information about the arc */
 		arc_tail[no_alines] = tail;
-		arc_current -> head = nodes + head;
-		arc_current -> len  = length;
+		arc_current . head = nodes + head;
+		arc_current . len  = length;
 
 		/* searching minimumu and maximum node */
                 if ( head < node_min ) node_min = head;
@@ -281,23 +281,23 @@ while ( gets ( in_line ) != NULL )
 
 /* ----- all is red  or  error while reading ----- */ 
 
-if ( feof (stdin) == 0 ) /* reading error */
+if ( feof (stdin) === 0 ) /* reading error */
   { err_no=EN21; goto error; } 
 
-if ( no_lines == 0 ) /* empty input */
+if ( no_lines === 0 ) /* empty input */
   { err_no = EN22; goto error; } 
 
 if ( no_alines < m ) /* not enough arcs */
   { err_no = EN19; goto error; } 
 
-if ( no_tlines == 0 ) /* input doesn't contain problem name */
+if ( no_tlines === 0 ) /* input doesn't contain problem name */
   strcpy ( problem_name, DEFAULT_NAME );
 
   
 /********** ordering arcs - linear time algorithm ***********/
 
 /* first arc from the first node */
-( nodes + node_min ) -> first = arcs;
+( nodes + node_min ) . first = arcs;
 
 /* before below loop arc_first[i+1] is the number of arcs outgoing from i;
    after this loop arc_first[i] is the position of the first 
@@ -308,7 +308,7 @@ if ( no_tlines == 0 ) /* input doesn't contain problem name */
 for ( i = node_min + 1; i <= node_max + 1; i ++ ) 
   {
     arc_first[i]          += arc_first[i-1];
-    ( nodes + i ) -> first = arcs + arc_first[i];
+    ( nodes + i ) . first = arcs + arc_first[i];
   }
 
 
@@ -316,7 +316,7 @@ for ( i = node_min; i < node_max; i ++ ) /* scanning all the nodes
                                             exept the last*/
   {
 
-    last = ( ( nodes + i + 1 ) -> first ) - arcs;
+    last = ( ( nodes + i + 1 ) . first ) - arcs;
                              /* arcs outgoing from i must be cited    
                               from position arc_first[i] to the position
                               equal to initial value of arc_first[i+1]-1  */
@@ -324,7 +324,7 @@ for ( i = node_min; i < node_max; i ++ ) /* scanning all the nodes
     for ( arc_num = arc_first[i]; arc_num < last; arc_num ++ )
       { tail = arc_tail[arc_num];
 
-	while ( tail != i )
+	while ( tail !== i )
           /* the arc no  arc_num  is not in place because arc cited here
              must go out from i;
              we'll put it to its place and continue this process
@@ -337,13 +337,13 @@ for ( i = node_min; i < node_max; i ++ ) /* scanning all the nodes
 	    /* arc_current must be cited in the position arc_new    
 	       swapping these arcs:                                 */
 
-	    head_p               = arc_new -> head;
-	    arc_new -> head      = arc_current -> head;
-	    arc_current -> head = head_p;
+	    head_p               = arc_new . head;
+	    arc_new . head      = arc_current . head;
+	    arc_current . head = head_p;
 
-	    length              = arc_new -> len;
-	    arc_new -> len      = arc_current -> len;
-	    arc_current -> len = length;
+	    length              = arc_new . len;
+	    arc_new . len      = arc_current . len;
+	    arc_current . len = length;
 
 	    arc_tail[arc_num] = arc_tail[arc_new_num];
 
@@ -372,7 +372,7 @@ if ( source < node_min || source > node_max )
   /* bad value of the source */
   { err_no = EN20; goto error; }
   
-if ( (*source_ad) -> first == ((*source_ad) + 1) -> first ) 
+if ( (*source_ad) . first === ((*source_ad) + 1) . first )
   /* no arc goes out of the source */
   { err_no = EN20; goto error; }
 

@@ -32,21 +32,21 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define NNULL (node*) NULL
-#define InTree 0xFFFFFFFF00000000
-#define MAX_INT64 0x7FFFFFFF00000000
-#define MASK_PRIO 0xFFFFFFFF00000000
+#define NNULL (node*) null
+export const InTree = 0xFFFFFFFF00000000;
+export const MAX_INT64 = 0x7FFFFFFF00000000;
+export const MASK_PRIO = 0xFFFFFFFF00000000;
 
 /* If HYBRID is on, disable our PR tests */
 #ifdef HYBRID
 #define NO_PR
 #endif
 
-#include "../../trace_tools.h"
-#include "types_ni.h"
-#include "heap.h"
-#include "heap.c"
-/**CH5 comented out #include "timer.c"*/ 
+import {} from '../../trace_tools.h'
+import {} from 'types_ni.h'
+import {} from 'heap.h'
+import {} from 'heap.c'
+/**CH5 comented out import {} from 'timer.c'*/
 
 /************************************************ shared macros *******/
 
@@ -54,21 +54,21 @@
 #define MIN( x, y ) ( ( (x) < (y) ) ? x : y )
 #define Reverse( a ) (last_r_arc - ((a) - arcs))
 #define ABS( x ) ( (x) >= 0 ) ? (x) : -(x)
-#define nNode( i ) ( ( (i) == NULL ) ? -1 : ( (i) - nodes + 1) )
-#define N_ARC( a ) ( ( (a) == NULL )? -1 : (a) - arcs )
+#define nNode( i ) ( ( (i) == null ) ? -1 : ( (i) - nodes + 1) )
+#define N_ARC( a ) ( ( (a) == null )? -1 : (a) - arcs )
 
-#define ForAllNodes(v) for ( v = nodes; v != sentinelNode; v++ )
-#define ForAllArcs(v,a) for ( a = v -> first; a != NULL; a = a -> next )
+#define ForAllNodes(v) for ( v = nodes; v !== sentinelNode; v++ )
+#define ForAllArcs(v,a) for ( a = v . first; a != null; a = a . next )
 
 #define DeleteArc(v,a) \
 {\
-  if ( a == v -> first ) v -> first = a -> next;\
-  if ( a == v -> last ) v -> last = a -> prev;\
-  if ( a -> next != NULL ) a -> next -> prev = a -> prev;\
-  if ( a -> prev != NULL ) a -> prev -> next = a -> next;\
+  if ( a === v . first ) v . first = a . next;\
+  if ( a === v . last ) v . last = a . prev;\
+  if ( a . next != null ) a . next . prev = a . prev;\
+  if ( a . prev != null ) a . prev . next = a . next;\
 }
 
-#define EmptyAStack ( aStack == aTOS )
+#define EmptyAStack ( aStack === aTOS )
 
 #define APush( a ) \
 {\
@@ -86,120 +86,115 @@
 /************************************* global variables **************/
 /* operation counts */
 
-/* int timeStamp; */
-int newMinCut;
+/* timeStamp: int; */
+let newMinCut: int;
 
-long numPhases, numScans;
-long numPRC;
+let numPhases: long, numScans;
+let numPRC: long;
 
-arc  **aStack;             /* set of arcs to contract */
-arc  **aTOS;               /* top of stack pointer */
+let aStack: arc*[];             /* set of arcs to contract */
+let aTOS: arc*[];               /* top of stack pointer */
 
-int64_t minCap;            /* minimum cut capacity seen */
+let minCap: int64_t;            /* minimum cut capacity seen */
 heap   h;
 
-long   input_n,            /* original number of nodes */
+let input_n: long,            /* original number of nodes */
        currentN,          /* current number of nodes */
        input_m;            /* number of arcs */
 
-node   *nodes,               /* array of nodes */
+let nodes: node*,               /* array of nodes */
        *sentinelNode;       /* next after last */
-node   *minV;               /* candidate for mincut */
+let minV: node*;               /* candidate for mincut */
 
-arc    *arcs,                /* array of arcs */
+let arcs: arc*,                /* array of arcs */
        *r_arcs,              /* array of Reverse arcs */
        *sentinel_arc,        /* next after last */
        *last_r_arc;
 
-float  t, dt;                /* time, detection time */
+let t: float, dt;                /* time, detection time */
 
-arc *lastA;
+let lastA: arc*;
 
 arc   d_arc;                 /* dummy arc - for technical reasons */
 
-int trace_file;
-pq_trace_header header;
-pq_op_create op_create;
-pq_op_destroy op_destroy;
-pq_op_insert op_insert;
-pq_op_decrease_key op_decrease_key;
-pq_op_find_min op_find_min;
-pq_op_delete_min op_delete_min;
-pq_op_delete_min op_get_size;
+let trace_file: int;
+let header: pq_trace_header;
+let op_create: pq_op_create;
+let op_destroy: pq_op_destroy;
+let op_insert: pq_op_insert;
+let op_decrease_key: pq_op_decrease_key;
+let op_find_min: pq_op_find_min;
+let op_delete_min: pq_op_delete_min;
+let op_get_size: pq_op_delete_min;
 
 #ifdef HYBRID
-node *last_node;		
+let last_node: node*;
 #endif
 
 
-#include "parser_ni.c"
+import {} from 'parser_ni.c'
 
 void printGraph ()
 /* used for debuggeing */
 {
-  node *i;
-  arc *a;
+  let i: node*;
+  let a: arc*;
 
   printf("GRAPH:\n");
   ForAllNodes ( i ) {
-    printf("node %d leader %d\n", nNode ( i ), nNode ( i -> leader ));
+    printf("node %d leader %d\n", nNode ( i ), nNode ( i . leader ));
     ForAllArcs ( i, a ) {
-      printf("arc (%d %d) cap %f\n", nNode ( i ), nNode ( a -> head ),
-	     a -> cap );
+      printf("arc (%d %d) cap %f\n", nNode ( i ), nNode ( a . head ),
+	     a . cap );
     }
   }
 }
 
-node *findLeader ( node *v )
+node *findLeader ( v: node* )
 /* do path compression */
 {
-  if ( v != v -> leader )
-    v -> leader = findLeader ( v -> leader );
-  return ( v -> leader );
+  if ( v !== v . leader )
+    v . leader = findLeader ( v . leader );
+  return ( v . leader );
 }
 
-void contract ( arc *e )
-
-{
-  node *v, *w;
+export function contract( e: arc* ): void {
+  let v: node*, w;
 
 
   currentN--;
 /*
-printf("contracting %d %d\n", nNode(e->head), nNode(Reverse(e)->head));
+printf("contracting %d %d\n", nNode(e.head), nNode(Reverse(e).head));
 */
-  v = findLeader ( Reverse ( e ) -> head );
-  w = findLeader ( e -> head );
+  v = findLeader ( Reverse ( e ) . head );
+  w = findLeader ( e . head );
 
-  w -> leader = v;
+  w . leader = v;
 
-  v -> last -> next = w -> first;
-  w -> first -> prev = v -> last;
-  v -> last = w -> last;
+  v . last . next = w . first;
+  w . first . prev = v . last;
+  v . last = w . last;
 
 }
 
 
 
-int64_t computeCap ( node *v)
-
-{
-  int64_t ans;
-  arc *a;
+export function computeCap( v: node*): int64_t {
+  let ans: int64_t;
+  let a: arc*;
 
   ans = 0;
 
   ForAllArcs ( v, a )
-    if ( findLeader ( a -> head ) != v )
-      ans += a -> cap;
+    if ( findLeader ( a . head ) !== v )
+      ans += a . cap;
 
   return ( ans );
 }
 
-void updateMinCut (node *v)
-{
-  node *w;
-  minCap = v->cap;
+export function updateMinCut(v: node*): void {
+  let w: node*;
+  minCap = v.cap;
 /**CH5 comented out  dt = timer () -t ;*/
 
 /*  printf("Min cut value = %f\n",minCap); */
@@ -207,10 +202,10 @@ void updateMinCut (node *v)
 
 #ifdef SAVECUT
   ForAllNodes(w) {
-    if (w -> leader == v)
-      w->status = 1;
+    if (w . leader === v)
+      w.status = 1;
   else
-    w-> status = 0;
+    w. status = 0;
   }
 #endif
 
@@ -218,98 +213,94 @@ void updateMinCut (node *v)
 
 
 /* useful for cuts updated by alpha test */
-void saveTCut ( )
-
-{
-  node *w;
+export function saveTCut( ): void {
+  let w: node*;
 
   ForAllNodes ( w )
-    if ( (int64_t) (findLeader ( w ) -> key & MASK_PRIO) == (int64_t) InTree )
-      w -> status = 1;
+    if ( (int64_t) (findLeader ( w ) . key & MASK_PRIO) === (int64_t) InTree )
+      w . status = 1;
     else
-      w -> status = 0;
+      w . status = 0;
 }
 
 
-void printCut ( )
-
-{
-  node *w;
+export function printCut( ): void {
+  let w: node*;
 
   printf("c one side of the mincut\n");
   ForAllNodes ( w )
-    if ( w -> status == 0 )
+    if ( w . status === 0 )
       printf("n %d\n", nNode ( w ));
 }
 
 
-void deleteExtras ( node *v )
+void deleteExtras ( v: node* )
 /* delete parallel edges adjacent to v */
 /* delete self-loops */
 
 {
-  node *w;
-  arc *a, *b, *ar;
+  let w: node*;
+  let a: arc*, b, ar;
 
   ForAllArcs ( v, a ) {
-    a -> head = a -> head -> leader;
-    a -> head -> auxArc = NULL;
+    a . head = a . head . leader;
+    a . head . auxArc = null;
   }
 
-  v -> cap = 0;
+  v . cap = 0;
   ForAllArcs ( v, a ) {
-    w = a -> head;
-    if ( w == v ) {
+    w = a . head;
+    if ( w === v ) {
       /* delete self-loop */
      DeleteArc ( v, a );
     }
     else {
-      v -> cap += a -> cap;
-      if ( w -> auxArc == NULL ) {
-	w -> auxArc = a;
+      v . cap += a . cap;
+      if ( w . auxArc == null ) {
+	w . auxArc = a;
       }
       else {
-	b = w -> auxArc;
-	if ( a == lastA )
+	b = w . auxArc;
+	if ( a === lastA )
 	  lastA = b;
-	b -> cap += a -> cap;
-	Reverse ( b ) -> cap = b -> cap;
+	b . cap += a . cap;
+	Reverse ( b ) . cap = b . cap;
 	DeleteArc ( v, a );
-	DeleteArc ( a -> head, Reverse ( a ) );
+	DeleteArc ( a . head, Reverse ( a ) );
       }
     }
-    assert(w->leader == w);
+    assert(w.leader === w);
   }
 
-  if ( v -> cap < minCap ) updateMinCut(v);
+  if ( v . cap < minCap ) updateMinCut(v);
 }
 
 
 void componentSizes ()
 
 {
-  node *v;
-  long bigSize;
+  let v: node*;
+  let bigSize: long;
 
   bigSize = 2 * input_n / currentN;
 
   ForAllNodes ( v )
-    v -> leader -> key += (int64_t) 1 << 32;
+    v . leader . key += (int64_t) 1 << 32;
 
   ForAllNodes ( v )
-    if ( v -> key >> 32 >= bigSize )
-      printf("Big supernode %10d size %10.0f\n", nNode ( v ), v -> key >> 32 );
+    if ( v . key >> 32 >= bigSize )
+      printf("Big supernode %10d size %10.0f\n", nNode ( v ), v . key >> 32 );
 
   ForAllNodes ( v )
-    v -> key = v - nodes;
+    v . key = v - nodes;
 }
 
 void compact ()
 
 {
 
-  node *w;
-  arc *a;
+  let w: node*;
+  let a: arc*;
 
   ForAllNodes ( w )
     findLeader ( w );
@@ -317,10 +308,10 @@ void compact ()
   /* now there are no leader chains until contract is called */
 
   ForAllNodes ( w )
-    if ( w -> leader == w ) {
+    if ( w . leader === w ) {
       deleteExtras ( w );
-      w -> key = w - nodes;
-      if ( w -> cap < minCap ) updateMinCut(w);
+      w . key = w - nodes;
+      if ( w . cap < minCap ) updateMinCut(w);
 
     }
 
@@ -330,15 +321,13 @@ void compact ()
 #endif
 }
 
-void *phase ( node *v )
-
-{
-  arc *a;
-  node *w, *v1;
-  int64_t newKey;
-  int64_t alphaP = 0;
-  long phaseScans = 0;
-  long phaseContracts = 0;
+export function phase( v: node* ): void* {
+  let a: arc*;
+  let w: node*, v1;
+  let newKey: int64_t;
+  let alphaP: int64_t = 0;
+  let phaseScans: long = 0;
+  let phaseContracts: long = 0;
 
   numPhases++;
 
@@ -346,7 +335,7 @@ void *phase ( node *v )
 /***CH5***/
     op_insert.node_id = v - nodes;
     op_insert.item = v - nodes;
-    op_insert.key = MAX_INT64 - v->key;
+    op_insert.key = MAX_INT64 - v.key;
     pq_trace_write_op( trace_file, &op_insert );
     header.op_count++;
     header.node_ids++;
@@ -363,7 +352,7 @@ void *phase ( node *v )
 
     /* NOI alpha heuristic */
 
-    alphaP += v1 -> cap -  2 * (v1 -> key>>32);
+    alphaP += v1 . cap -  2 * (v1 . key>>32);
 
 /***CH5***/
     pq_trace_write_op( trace_file, &op_get_size );
@@ -378,33 +367,33 @@ void *phase ( node *v )
 /**CH5 commented out       dt = timer () - t;*/
     }
 
-    v1 -> key = (int64_t) InTree | (int64_t) (v1 - nodes);
+    v1 . key = (int64_t) InTree | (int64_t) (v1 - nodes);
     ForAllArcs ( v1, a ) {
-      w = a -> head;
-      if ( (int64_t) (w -> key & MASK_PRIO) > (int64_t) InTree ) {
+      w = a . head;
+      if ( (int64_t) (w . key & MASK_PRIO) > (int64_t) InTree ) {
 	lastA = a;
-	newKey = (w -> key>>32) + a -> cap;
-	if (( newKey >= minCap ) && ( minCap > (w -> key>>32) )) {
+	newKey = (w . key>>32) + a . cap;
+	if (( newKey >= minCap ) && ( minCap > (w . key>>32) )) {
 	  APush ( a );
 	}
-	if ( (int64_t)(w -> key & MASK_PRIO) == 0 ) {
-	  w -> key = (int64_t)(newKey << 32) | (int64_t)(w - nodes);
+	if ( (int64_t)(w . key & MASK_PRIO) === 0 ) {
+	  w . key = (int64_t)(newKey << 32) | (int64_t)(w - nodes);
 	  hInsert ( h, w );
 /***CH5***/
     op_insert.node_id = w - nodes;
     op_insert.item = w - nodes;
-    op_insert.key = MAX_INT64 - w->key;
+    op_insert.key = MAX_INT64 - w.key;
     pq_trace_write_op( trace_file, &op_insert );
     header.op_count++;
     header.node_ids++;
 	  
 	}
 	else {
-	  w -> key = (int64_t)(newKey<<32) | (int64_t)(w-nodes);
-	  increaseKey ( h, w, w->key );
+	  w . key = (int64_t)(newKey<<32) | (int64_t)(w-nodes);
+	  increaseKey ( h, w, w.key );
 /***CH5***/
     op_decrease_key.node_id = w - nodes;
-    op_decrease_key.key = MAX_INT64 - w->key;
+    op_decrease_key.key = MAX_INT64 - w.key;
     pq_trace_write_op( trace_file, &op_decrease_key );
     header.op_count++;
 	}
@@ -414,7 +403,7 @@ void *phase ( node *v )
   } while ( nonEmptyH ( h ) );
 
 
-  if ( phaseScans == currentN ) 
+  if ( phaseScans === currentN )
     numScans += phaseScans;
   else {
     fprintf( stderr, ">>> Input graph not connected! (%d,%d)\n",phaseScans,
@@ -422,12 +411,12 @@ void *phase ( node *v )
     exit ( 5 );
   }
     
-  if (v1 -> cap < minCap) updateMinCut ( v1 );
+  if (v1 . cap < minCap) updateMinCut ( v1 );
 
   while ( !EmptyAStack ) {
     APop ( a );
 #ifdef HYBRID
-    last_node = findLeader( Reverse(a) -> head );
+    last_node = findLeader( Reverse(a) . head );
 #endif
     contract ( a );
     phaseContracts++;
@@ -435,10 +424,10 @@ void *phase ( node *v )
 
   /* might as well contract the last arc scanned if not contracted */
 
-  if ( findLeader ( lastA -> head ) != 
-       findLeader ( Reverse ( lastA ) -> head )) {
+  if ( findLeader ( lastA . head ) !==
+       findLeader ( Reverse ( lastA ) . head )) {
 #ifdef HYBRID
-    last_node = findLeader( Reverse(lastA) -> head );
+    last_node = findLeader( Reverse(lastA) . head );
 #endif
     contract ( lastA );
     phaseContracts++;
@@ -454,15 +443,15 @@ void *phase ( node *v )
 void mainInit ()
 
 {
-  int64_t cutCap;
-  node *v;
+  let cutCap: int64_t;
+  let v: node*;
 
   newMinCut = 0;
 /*  timeStamp = 0; */
   makeHeap ( h, input_n );
 
-  aStack = (arc **) calloc ( 2 * input_m + 1, sizeof (arc*));
-  if ( aStack == NULL ) {
+  aStack = (arc **) new Array(2 * input_m + 1);
+  if ( aStack == null ) {
     fprintf( stderr, "can't obtain enough memory to solve this problem\n");
     exit ( 4 );
   }
@@ -475,7 +464,7 @@ void mainInit ()
   minCap = MAX_INT64;
 
   ForAllNodes ( v ) {
-    v -> leader = v;
+    v . leader = v;
   }
 
 #ifdef HYBRID
@@ -487,15 +476,15 @@ void mainInit ()
 void cutCapInit ()
 
 {
-  node *v;
-  int64_t bestTrivial;
-  node *bestv;
+  let v: node*;
+  let bestTrivial: int64_t;
+  let bestv: node*;
 
   bestTrivial = minCap;
   ForAllNodes ( v ) {
-   v->cap = computeCap ( v );
-   if ( v->cap < bestTrivial){
-     bestTrivial = v->cap;
+   v.cap = computeCap ( v );
+   if ( v.cap < bestTrivial){
+     bestTrivial = v.cap;
      bestv = v;
    }
    
@@ -504,14 +493,11 @@ void cutCapInit ()
 }
 
 
-void PrContract ( node * v, node * w )
-
-
-{
-  arc *a, *to_delete;
-  arc *ra;
-  arc *self_loop;
-  node *x;
+export function PrContract( node * v, node * w ): void {
+  let a: arc*, to_delete;
+  let ra: arc*;
+  let self_loop: arc*;
+  let x: node*;
 
 /*  assumes that v and w are leaders.  */
 
@@ -526,40 +512,40 @@ printGraph();
 
   /*  scan w's arcs looking for parallel edges and self loops */
 
-  for (a = w->first; a != NULL ; a = a->next) {
+  for (a = w.first; a != null ; a = a.next) {
     ra = Reverse(a);
-    x = a-> head;
-    if (x == v){ /* self loop */
+    x = a. head;
+    if (x === v){ /* self loop */
       self_loop = a;  /* pointing w to v */
 
     }
-    else if (x->auxArc != NULL) {  /* catch for a vertex that 
+    else if (x.auxArc != null) {  /* catch for a vertex that
 				      never had auxArc */ 
-      if ((x->auxArc->head == v) /* && (x->status == timeStamp)*/ ){ /* parallel edge, merge earlier edge 
+      if ((x.auxArc.head === v) /* && (x.status === timeStamp)*/ ){ /* parallel edge, merge earlier edge
 				      into this one */
-	to_delete = x->auxArc;
+	to_delete = x.auxArc;
 
-	a->cap += to_delete->cap;
-	ra -> cap = a-> cap;
-	ra -> head = v;
+	a.cap += to_delete.cap;
+	ra . cap = a. cap;
+	ra . head = v;
 
-	x->auxArc = ra;  /* reset auxArc to new one */
+	x.auxArc = ra;  /* reset auxArc to new one */
       
 	DeleteArc(x,to_delete);
 	DeleteArc(v,Reverse(to_delete));
 	
       }
       else {  /* not a parallel arc */
-	x->auxArc = ra;
-/*	x->status = timeStamp; */
-	ra -> head = v;
+	x.auxArc = ra;
+/*	x.status = timeStamp; */
+	ra . head = v;
       }
 
     }
     else {  /* not a parallel arc */
-      x->auxArc = ra;
-/*      x->status = timeStamp; */
-      ra -> head = v;
+      x.auxArc = ra;
+/*      x.status = timeStamp; */
+      ra . head = v;
     }
     
   }
@@ -568,9 +554,9 @@ printGraph();
 
   DeleteArc(v,Reverse(self_loop));
 
-  if (w->first == w->last) { /* handle case when w's only edge is to v */
-    w->first = w->last = NULL;
-    w->leader = v;
+  if (w.first === w.last) { /* handle case when w's only edge is to v */
+    w.first = w.last = null;
+    w.leader = v;
     return;
   }
 
@@ -578,27 +564,27 @@ printGraph();
 
 /* done deleting self loop */
 
-  if ( v->first == NULL ) { /* catch case when v's neighbors are all w's 
+  if ( v.first == null ) { /* catch case when v's neighbors are all w's
 				neighbors too */
-    v->first = w->first;
-    v->last = w->last;
-    w-> leader = v;
+    v.first = w.first;
+    v.last = w.last;
+    w. leader = v;
     return;
   }
 
-  w -> leader = v;
-  v -> last -> next = w -> first;
-  w -> first -> prev = v -> last;
-  v -> last = w -> last;
+  w . leader = v;
+  v . last . next = w . first;
+  w . first . prev = v . last;
+  v . last = w . last;
 }
 
 int PRTest12 ()
 
 {
-  node *v, *w;
-  arc *a;
-  int64_t vCap;
-  long PRContracts=0;
+  let v: node*, w;
+  let a: arc*;
+  let vCap: int64_t;
+  let PRContracts: long=0;
 
   ForAllNodes ( v ) {
 /*    timeStamp ++; */
@@ -606,43 +592,43 @@ int PRTest12 ()
 
     if ( currentN <= 2 ) break;
 
-    if ( v -> leader == v ) { 
+    if ( v . leader === v ) {
 
-      while (v->first == v->last) {  /* contract singlton chains  */
-	w = v->first->head;
+      while (v.first === v.last) {  /* contract singlton chains  */
+	w = v.first.head;
 	/* printf("singleton contracting %d %d\n", nNode(v), nNode(w)); */
-	v->cap += w->cap - 2 * v->first->cap;
-	if (v->cap < minCap) updateMinCut(v);
+	v.cap += w.cap - 2 * v.first.cap;
+	if (v.cap < minCap) updateMinCut(v);
 	PrContract(v,w);
 	if (currentN <= 2) break;
 	PRContracts++;
       }
 	if (currentN <= 2) break;
 
-      vCap = v -> cap;
+      vCap = v . cap;
 
       /* store pointers back to v for merging */
       ForAllArcs(v,a) {
-	a->head->auxArc = Reverse(a);
-/* 	a->head->status = timeStamp; */
+	a.head.auxArc = Reverse(a);
+/* 	a.head.status = timeStamp; */
       }
 
       ForAllArcs ( v, a ) {
 	if ( currentN <= 2 ) break;
-	w = a->head;  
+	w = a.head;
 	
- 	assert(w == findLeader ( w ));  /* correctness check,
+ 	assert(w === findLeader ( w ));  /* correctness check,
 					      remember to remove */
 	if ( v < w ) {  /* to insure linear time */
-	  if (( 2 * a -> cap >= MIN(vCap, w -> cap )) || 
-	      ( a -> cap >= minCap )) {
+	  if (( 2 * a . cap >= MIN(vCap, w . cap )) ||
+	      ( a . cap >= minCap )) {
 	    
 
-	    v -> cap  += w-> cap - 2 * a-> cap;
-	    if (v->cap < minCap) updateMinCut(v);  
+	    v . cap  += w. cap - 2 * a. cap;
+	    if (v.cap < minCap) updateMinCut(v);
 
 	    PrContract ( v, w );
-	    vCap = v->cap;
+	    vCap = v.cap;
 	    PRContracts++;
 
 	    
@@ -667,16 +653,15 @@ int PRTest12 ()
 
 /* PR tests as implemented by Nagamochi and Ibaraki in their Hybrid algorithm */
 
-long PR_contracts12 = 0;
-long PR_contracts34 = 0;
+let PR_contracts12: long = 0;
+let PR_contracts34: long = 0;
 
-void PR_Hybrid(node *x)
-{
-  arc *a, *b;
-  int flag = 1;
-  node *v;
-  node *y, *z;
-  int64_t bigCap;
+export function PR_Hybrid(x: node*): void {
+  let a: arc*, b;
+  let flag: int = 1;
+  let v: node*;
+  let y: node*, z;
+  let bigCap: int64_t;
 
 v  if ( currentN <= 2 )
     return;
@@ -684,23 +669,23 @@ v  if ( currentN <= 2 )
   while ( flag ) 
     {
       flag = 0;
-      bigCap = 0.7 * x -> cap / currentN;
+      bigCap = 0.7 * x . cap / currentN;
       ForAllArcs ( x, a )
 	{
-	  if (a -> cap < bigCap)
+	  if (a . cap < bigCap)
 	    continue;
       
-	  z = findLeader(a -> head);
-	  y = findLeader(Reverse(a) -> head);
+	  z = findLeader(a . head);
+	  y = findLeader(Reverse(a) . head);
 
 	  /* tests 1 and 2 */
-	  if ( a->cap >= minCap || ( 2 * a -> cap >= y->cap ) ||
-	      (2 * a -> cap >= z -> cap)) 
+	  if ( a.cap >= minCap || ( 2 * a . cap >= y.cap ) ||
+	      (2 * a . cap >= z . cap))
 	    {
 	      PR_contracts12++;
 	      contract(a);
 	      ForAllArcs ( z, b ) 
-		Reverse(b) -> head = y;
+		Reverse(b) . head = y;
 	    
 	      deleteExtras( y ); 
 	      x = y;
@@ -715,7 +700,7 @@ v  if ( currentN <= 2 )
 	      PR_contracts34++;
 	      contract(a);
 	      ForAllArcs ( z, b ) 
-		Reverse(b) -> head = y;
+		Reverse(b) . head = y;
 	      deleteExtras( y );
 	      x = y;
 	      if ( currentN > 2 ) 
@@ -731,32 +716,31 @@ v  if ( currentN <= 2 )
 #ifdef PR_34
 /* to test if an arc satisfies the PR tests 3 & 4 */
 
-int PR34(arc *a)
-{
-  node *x, *y, *z;
-  int64_t cap = 0;
-  int64_t cap_xy, cap_xz, cap_yz;
-  arc *b;
-  int flag = 0;
+export function PR34(a: arc*): int {
+  let x: node*, y, z;
+  let cap: int64_t = 0;
+  let cap_xy: int64_t, cap_xz, cap_yz;
+  let b: arc*;
+  let flag: int = 0;
 
-  y = a -> head;
-  x = Reverse(a) -> head;
-  cap_xy = a -> cap;
+  y = a . head;
+  x = Reverse(a) . head;
+  cap_xy = a . cap;
 
   ForAllArcs (y , b)
-    b -> head -> auxArc = NULL;
+    b . head . auxArc = null;
 
   ForAllArcs ( x , b ) {
-    if ( b -> head != y )
-      b -> head -> auxArc = b;
+    if ( b . head !== y )
+      b . head . auxArc = b;
   }
 
   ForAllArcs ( y , b ) {
-    z = b -> head;
-    if ( z -> auxArc != NULL ) {
-      cap_xz = z -> auxArc -> cap;
-      cap_yz = b -> cap;
-      if ( ( x -> cap <= 2*(cap_xy + cap_xz) ) && ( y -> cap <= 2*(cap_xy + cap_yz) ) ) {
+    z = b . head;
+    if ( z . auxArc != null ) {
+      cap_xz = z . auxArc . cap;
+      cap_yz = b . cap;
+      if ( ( x . cap <= 2*(cap_xy + cap_xz) ) && ( y . cap <= 2*(cap_xy + cap_yz) ) ) {
 	flag = 1;
 	break;
       }
@@ -767,7 +751,7 @@ int PR34(arc *a)
   
 /*
   ForAllArcs ( x , b ) {	
-    b -> head -> auxArc = NULL; 
+    b . head . auxArc = null;
   }
 */
   
@@ -784,19 +768,19 @@ int PR34(arc *a)
 #endif
 #endif
 
-int trace_file;
+let trace_file: int;
 
 main (argc, argv )
 
-int   argc;
-char *argv[];
+let argc: int;
+let argv: string[];
 
 {
 
-  arc *a;
-  node  *v;
-  int beforen;
-  int first_iteration = 1;
+  let a: arc*;
+  let v: node*;
+  let beforen: int;
+  let first_iteration: int = 1;
 
   header.op_count = 0;
   header.pq_ids = 1;

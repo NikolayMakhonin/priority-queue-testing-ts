@@ -1,103 +1,93 @@
-#include "binomial_queue.h"
+import {} from 'binomial_queue.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static void make_root( binomial_queue *queue, binomial_node *node );
-static void cherry_pick_min( binomial_queue *queue );
-static binomial_node* join( binomial_queue *queue, binomial_node *a,
-    binomial_node *b );
-static binomial_node* attempt_insert( binomial_queue *queue,
-    binomial_node *node );
-static void break_tree( binomial_queue *queue, binomial_node *node );
-static void swap_with_parent( binomial_queue *queue, binomial_node *node,
-    binomial_node *parent );
+export function make_root( queue: binomial_queue*, node: binomial_node* ): void ;
+export function cherry_pick_min( queue: binomial_queue* ): void ;
+export function join( queue: binomial_queue*, a: binomial_node*,
+    b: binomial_node* ): binomial_node* ;
+export function attempt_insert( queue: binomial_queue*,
+    node: binomial_node* ): binomial_node* ;
+export function break_tree( queue: binomial_queue*, node: binomial_node* ): void ;
+export function swap_with_parent( queue: binomial_queue*, node: binomial_node*,
+    parent: binomial_node* ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-binomial_queue* pq_create( mem_map *map )
-{
-    binomial_queue *queue = calloc( 1, sizeof( binomial_queue ) );
-    queue->map = map;
+export function pq_create( map: mem_map* ): binomial_queue* {
+    let queue: binomial_queue* = new Array(1);
+    queue.map = map;
 
     return queue;
 }
 
-void pq_destroy( binomial_queue *queue )
-{
+export function pq_destroy( queue: binomial_queue* ): void {
     pq_clear( queue );
     free( queue );
 }
 
-void pq_clear( binomial_queue *queue )
-{
-    mm_clear( queue->map );
-    queue->minimum = NULL;
-    queue->registry = 0;
-    memset( queue->roots, 0, MAXRANK * sizeof( binomial_node* ) );
-    queue->size = 0;
+export function pq_clear( queue: binomial_queue* ): void {
+    mm_clear( queue.map );
+    queue.minimum = null;
+    queue.registry = 0;
+    memset( queue.roots, 0, MAXRANK * sizeof( binomial_node* ) );
+    queue.size = 0;
 }
 
-key_type pq_get_key( binomial_queue *queue, binomial_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: binomial_queue*, node: binomial_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( binomial_queue *queue, binomial_node *node )
-{
-    return (item_type*) &(node->item);
+export function pq_get_item( queue: binomial_queue*, node: binomial_node* ): item_type* {
+    return (item_type*) &(node.item);
 }
 
-uint32_t pq_get_size( binomial_queue *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: binomial_queue* ): uint32_t {
+    return queue.size;
 }
 
-binomial_node* pq_insert( binomial_queue *queue, item_type item, key_type key )
-{
-    binomial_node *wrapper = pq_alloc_node( queue->map, 0 );
-    ITEM_ASSIGN( wrapper->item, item );
-    wrapper->key = key;
-    queue->size++;
+export function pq_insert( queue: binomial_queue*, item: item_type, key: key_type ): binomial_node* {
+    let wrapper: binomial_node* = pq_alloc_node( queue.map, 0 );
+    wrapper.item = item;
+    wrapper.key = key;
+    queue.size++;
     make_root( queue, wrapper );
 
     return wrapper;
 }
 
-binomial_node* pq_find_min( binomial_queue *queue )
-{
+export function pq_find_min( queue: binomial_queue* ): binomial_node* {
     if ( pq_empty( queue ) )
-        return NULL;
+        return null;
 
-    return queue->minimum;
+    return queue.minimum;
 }
 
-key_type pq_delete_min( binomial_queue *queue )
-{
-    key_type key = queue->minimum->key;
-    binomial_node *old_min = queue->minimum;
+export function pq_delete_min( queue: binomial_queue* ): key_type {
+    let key: key_type = queue.minimum.key;
+    let old_min: binomial_node* = queue.minimum;
 
-    //printf("Deleting minimum: %u\n",old_min->item);
+    //printf("Deleting minimum: %u\n",old_min.item);
 
-    REGISTRY_UNSET( queue->registry, old_min->rank );
-    queue->roots[old_min->rank] = NULL;
-    queue->minimum = NULL;
+    REGISTRY_UNSET( queue.registry, old_min.rank );
+    queue.roots[old_min.rank] = null;
+    queue.minimum = null;
 
     break_tree( queue, old_min );
     cherry_pick_min( queue );
 
-    pq_free_node( queue->map, 0, old_min );
-    queue->size--;
+    pq_free_node( queue.map, 0, old_min );
+    queue.size--;
 
     return key;
 }
 
-key_type pq_delete( binomial_queue *queue, binomial_node *node )
-{
-    key_type key = node->key;
+export function pq_delete( queue: binomial_queue*, node: binomial_node* ): key_type {
+    let key: key_type = node.key;
 
     pq_decrease_key( queue, node, 0 );
     pq_delete_min( queue );
@@ -105,34 +95,32 @@ key_type pq_delete( binomial_queue *queue, binomial_node *node )
     return key;
 }
 
-void pq_decrease_key( binomial_queue *queue, binomial_node *node,
-    key_type new_key )
-{
-    node->key = new_key;
-    binomial_node *current, *parent;
-    while( node->parent != NULL )
+export function pq_decrease_key( queue: binomial_queue*, node: binomial_node*,
+    new_key: key_type ): void {
+    node.key = new_key;
+    let current: binomial_node*, parent;
+    while( node.parent != null )
     {
-        parent = node->parent;
+        parent = node.parent;
         current = node;
-        while( parent->right == current )
+        while( parent.right === current )
         {
-            current = current->parent;
-            parent = current->parent;
+            current = current.parent;
+            parent = current.parent;
         }
 
-        if( node->key < parent->key )
+        if( node.key < parent.key )
             swap_with_parent( queue, node, parent );
         else
             break;
     }
 
-    if( new_key < queue->minimum->key )
-        queue->minimum = node;
+    if( new_key < queue.minimum.key )
+        queue.minimum = node;
 }
 
-bool pq_empty( binomial_queue *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: binomial_queue* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -145,16 +133,15 @@ bool pq_empty( binomial_queue *queue )
  * @param queue Queue in which the node will be a root
  * @param node  Node to make a root
  */
-static void make_root( binomial_queue *queue, binomial_node *node )
-{
-    node->parent = NULL;
-    node->right = NULL;
+export function make_root( queue: binomial_queue*, node: binomial_node* ): void {
+    node.parent = null;
+    node.right = null;
 
-    if( queue->minimum == NULL || node->key < queue->minimum->key )
-        queue->minimum = node;
+    if( queue.minimum == null || node.key < queue.minimum.key )
+        queue.minimum = node;
 
-    binomial_node *result = node;
-    while( result != NULL )
+    let result: binomial_node* = node;
+    while( result != null )
         result = attempt_insert( queue, result );
 }
 
@@ -164,11 +151,10 @@ static void make_root( binomial_queue *queue, binomial_node *node )
  *
  * @param queue Queue from which to select the minimum
  */
-static void cherry_pick_min( binomial_queue *queue )
-{
-    uint32_t rank;
-    uint64_t registry = queue->registry;
-    uint32_t min = REGISTRY_LEADER( registry );
+export function cherry_pick_min( queue: binomial_queue* ): void {
+    let rank: uint32_t;
+    let registry: uint64_t = queue.registry;
+    let min: uint32_t = REGISTRY_LEADER( registry );
     if( min >= MAXRANK )
         return;
 
@@ -177,11 +163,11 @@ static void cherry_pick_min( binomial_queue *queue )
     {
         rank = REGISTRY_LEADER( registry );
         REGISTRY_UNSET( registry, rank );
-        if( queue->roots[rank]->key < queue->roots[min]->key )
+        if( queue.roots[rank].key < queue.roots[min].key )
             min = rank;
     }
 
-    queue->minimum = queue->roots[min];
+    queue.minimum = queue.roots[min];
 }
 
 /**
@@ -192,11 +178,10 @@ static void cherry_pick_min( binomial_queue *queue )
  * @param b Root of second tree
  * @return  The resulting tree
  */
-static binomial_node* join( binomial_queue *queue, binomial_node *a,
-    binomial_node *b )
-{
-    binomial_node *parent, *child;
-    if( b->key < a->key)
+export function join( queue: binomial_queue*, a: binomial_node*,
+    b: binomial_node* ): binomial_node* {
+    let parent: binomial_node*, child;
+    if( b.key < a.key)
     {
         parent = b;
         child = a;
@@ -207,16 +192,16 @@ static binomial_node* join( binomial_queue *queue, binomial_node *a,
         child = b;
     }
 
-    child->right = parent->left;
-    if( parent->left != NULL )
-        parent->left->parent = child;
-    child->parent = parent;
-    parent->left = child;
+    child.right = parent.left;
+    if( parent.left != null )
+        parent.left.parent = child;
+    child.parent = parent;
+    parent.left = child;
 
-    parent->rank++;
+    parent.rank++;
 
-    if( queue->minimum == child )
-        queue->minimum = parent;
+    if( queue.minimum === child )
+        queue.minimum = parent;
 
     return parent;
 }
@@ -228,24 +213,23 @@ static binomial_node* join( binomial_queue *queue, binomial_node *a,
  *
  * @param queue Queue in which the tree resides
  * @param node  Root of the tree to insert
- * @return      NULL if successful, merged tree if not
+ * @return      null if successful, merged tree if not
  */
-static binomial_node* attempt_insert( binomial_queue *queue,
-    binomial_node *node )
-{
-    uint32_t rank = node->rank;
-    binomial_node *result = NULL;
+export function attempt_insert( queue: binomial_queue*,
+    node: binomial_node* ): binomial_node* {
+    let rank: uint32_t = node.rank;
+    let result: binomial_node* = null;
 
-    if( OCCUPIED( queue->registry, rank ) )
+    if( OCCUPIED( queue.registry, rank ) )
     {
-        result = join( queue, queue->roots[rank], node );
-        queue->roots[rank] = NULL;
-        REGISTRY_UNSET( queue->registry, rank );
+        result = join( queue, queue.roots[rank], node );
+        queue.roots[rank] = null;
+        REGISTRY_UNSET( queue.registry, rank );
     }
     else
     {
-        queue->roots[rank] = node;
-        REGISTRY_SET( queue->registry, rank );
+        queue.roots[rank] = node;
+        REGISTRY_SET( queue.registry, rank );
     }
 
     return result;
@@ -258,14 +242,13 @@ static binomial_node* attempt_insert( binomial_queue *queue,
  * @param queue Queue in which to operate
  * @param node  Node whose subtree to break
  */
-static void break_tree( binomial_queue *queue, binomial_node *node )
-{
-    binomial_node *current, *next;
+export function break_tree( queue: binomial_queue*, node: binomial_node* ): void {
+    let current: binomial_node*, next;
 
-    current = node->left;
-    while( current != NULL )
+    current = node.left;
+    while( current != null )
     {
-        next = current->right;
+        next = current.right;
         make_root( queue, current );
         current = next;
     }
@@ -278,103 +261,100 @@ static void break_tree( binomial_queue *queue, binomial_node *node )
  * @param node      Node to swap
  * @param parent    Heap order parent of the node
  */
-static void swap_with_parent( binomial_queue *queue, binomial_node *node,
-    binomial_node *parent )
-{
-    binomial_node *s = node->parent;
-    binomial_node *a = node->left;
-    binomial_node *b = node->right;
-    binomial_node *g = parent->parent;
-    binomial_node *c = parent->left;
-    binomial_node *d = parent->right;
+export function swap_with_parent( queue: binomial_queue*, node: binomial_node*,
+    parent: binomial_node* ): void {
+    let s: binomial_node* = node.parent;
+    let a: binomial_node* = node.left;
+    let b: binomial_node* = node.right;
+    let g: binomial_node* = parent.parent;
+    let c: binomial_node* = parent.left;
+    let d: binomial_node* = parent.right;
 
     // fix ranks
-    uint32_t temp = node->rank;
-    node->rank = parent->rank;
-    parent->rank = temp;
+    let temp: uint32_t = node.rank;
+    node.rank = parent.rank;
+    parent.rank = temp;
 
     // easy subtree steps
-    parent->left = a;
-    if( a != NULL )
-        a->parent = parent;
-    parent->right = b;
-    if( b != NULL )
-        b->parent = parent;
-    node->right = d;
-    if( d != NULL )
-        d->parent = node;
+    parent.left = a;
+    if( a != null )
+        a.parent = parent;
+    parent.right = b;
+    if( b != null )
+        b.parent = parent;
+    node.right = d;
+    if( d != null )
+        d.parent = node;
 
-    if( s == parent )
+    if( s === parent )
     {
-        // we are in the first-child case (node == c)
-        node->left = parent;
-        parent->parent = node;
+        // we are in the first-child case (node === c)
+        node.left = parent;
+        parent.parent = node;
     }
     else
     {
-        // we aren't the first child (node != c)
-        node->left = c;
-        if( c != NULL )
-            c->parent = node;
-        parent->parent = s;
-        s->right = parent;
+        // we aren't the first child (node !== c)
+        node.left = c;
+        if( c != null )
+            c.parent = node;
+        parent.parent = s;
+        s.right = parent;
     }
 
-    node->parent = g;
-    if( g == NULL )
+    node.parent = g;
+    if( g == null )
     {
         // parent was a root
-        queue->roots[node->rank] = node;
-/*        if( queue->minimum == parent )
-            queue->minimum = node;
+        queue.roots[node.rank] = node;
+/*        if( queue.minimum === parent )
+            queue.minimum = node;
 */    }
     else
     {
         // not dealing with a root
-        if( g->left == parent )
-            g->left = node;
+        if( g.left === parent )
+            g.left = node;
         else
-            g->right = node;
+            g.right = node;
     }
 }
 
-static void verify_subtree( binomial_node *node, uint8_t *seen, int depth, int max_depth );
-void verify_queue( binomial_queue *queue, uint32_t node_count )
-{
-    uint32_t rank;
-    uint64_t registry = queue->registry;
-    binomial_node *current;
-    uint8_t *seen = calloc( node_count, sizeof( uint8_t ) );
+export function verify_subtree( node: binomial_node*, seen: uint8_t*, depth: int, max_depth: int ): void ;
+export function verify_queue( queue: binomial_queue*, node_count: uint32_t ): void {
+    let rank: uint32_t;
+    let registry: uint64_t = queue.registry;
+    let current: binomial_node*;
+    let seen: uint8_t* = new Array(node_count);
 
-    if( queue->minimum != NULL )
-        printf("Now verifying tree with min %u...\n",queue->minimum->item);
+    if( queue.minimum != null )
+        printf("Now verifying tree with min %u...\n",queue.minimum.item);
     while( registry )
     {
         rank = REGISTRY_LEADER( registry );
         REGISTRY_UNSET( registry, rank );
-        current = queue->roots[rank];
+        current = queue.roots[rank];
         verify_subtree( current, seen, 0, rank );
     }
 
     free( seen );
 }
 
-static void verify_subtree( binomial_node *node, uint8_t *seen, int depth, int max_depth )
-{
-    if( node == NULL )
+export function verify_subtree( node: binomial_node*, seen: uint8_t*, depth: int, max_depth: int ): void {
+    if( node == null )
         return;
 
-    for( int i = 0; i < depth; i++ )
+    for( i: int = 0; i < depth; i++ )
         printf("\t");
-    printf("%u (%u)\n",node->item, node->rank);
+    printf("%u (%u)\n",node.item, node.rank);
 
-    if( seen[node->item] )
+    if( seen[node.item] )
     {
         printf("TWINS!\n");
         exit(4);
     }
     else
-        seen[node->item] = 1;
+        seen[node.item] = 1;
 
     if( depth > max_depth )
     {
@@ -382,18 +362,18 @@ static void verify_subtree( binomial_node *node, uint8_t *seen, int depth, int m
         exit(3);
     }
 
-    if( node->parent != NULL && node->parent->parent == node )
+    if( node.parent != null && node.parent.parent === node )
     {
         printf("LOOPER\n");
         exit(2);
     }
 
-    if( node->parent != NULL && node->parent->parent != NULL && node->parent->parent->parent == node )
+    if( node.parent != null && node.parent.parent != null && node.parent.parent.parent === node )
     {
         printf("LOOPER\n");
         exit(2);
     }
 
-    verify_subtree( node->left, seen, depth + 1, max_depth );
-    verify_subtree( node->right, seen, depth + 1, max_depth );
+    verify_subtree( node.left, seen, depth + 1, max_depth );
+    verify_subtree( node.right, seen, depth + 1, max_depth );
 }

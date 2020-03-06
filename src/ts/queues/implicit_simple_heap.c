@@ -1,112 +1,100 @@
-#include "implicit_simple_heap.h"
+import {} from 'implicit_simple_heap.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static void push( implicit_simple_heap *queue, uint32_t src, uint32_t dst );
-static void dump( implicit_simple_heap *queue, implicit_simple_node *node, uint32_t dst );
-static uint32_t heapify_down( implicit_simple_heap *queue, implicit_simple_node *node );
-static uint32_t heapify_up( implicit_simple_heap *queue, implicit_simple_node *node );
-static void grow_heap( implicit_simple_heap *queue );
+export function push( queue: implicit_simple_heap*, src: uint32_t, dst: uint32_t ): void ;
+export function dump( queue: implicit_simple_heap*, node: implicit_simple_node*, dst: uint32_t ): void ;
+export function heapify_down( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32_t ;
+export function heapify_up( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32_t ;
+export function grow_heap( queue: implicit_simple_heap* ): void ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-implicit_simple_heap* pq_create( mem_map *map )
-{
-    implicit_simple_heap *queue = calloc( 1, sizeof( implicit_simple_heap ) );
+export function pq_create( map: mem_map* ): implicit_simple_heap* {
+    let queue: implicit_simple_heap* = new Array(1);
 #ifndef USE_EAGER
-    queue->capacity = 1;
-    queue->nodes = calloc( 1, sizeof( implicit_simple_node ) );
+    queue.capacity = 1;
+    queue.nodes = new Array(1);
 #else
-    queue->capacity = map->capacities[0];
-    queue->nodes = calloc( queue->capacity, sizeof( implicit_simple_node ) );
+    queue.capacity = map.capacities[0];
+    queue.nodes = new Array(queue.capacity);
 #endif
-    queue->map = map;
+    queue.map = map;
 
     return queue;
 }
 
-void pq_destroy( implicit_simple_heap *queue )
-{
+export function pq_destroy( queue: implicit_simple_heap* ): void {
     pq_clear( queue );
-    free( queue->nodes );
+    free( queue.nodes );
     free( queue );
 }
 
-void pq_clear( implicit_simple_heap *queue )
-{
-    mm_clear( queue->map );
-    queue->size = 0;
+export function pq_clear( queue: implicit_simple_heap* ): void {
+    mm_clear( queue.map );
+    queue.size = 0;
 }
 
-key_type pq_get_key( implicit_simple_heap *queue, implicit_simple_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( implicit_simple_heap *queue, implicit_simple_node *node )
-{
-    return node->item;
+export function pq_get_item( queue: implicit_simple_heap*, node: implicit_simple_node* ): item_type* {
+    return node.item;
 }
 
-uint32_t pq_get_size( implicit_simple_heap *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: implicit_simple_heap* ): uint32_t {
+    return queue.size;
 }
 
-implicit_simple_node* pq_insert( implicit_simple_heap *queue, item_type item, key_type key )
-{
+export function pq_insert( queue: implicit_simple_heap*, item: item_type, key: key_type ): implicit_simple_node* {
 #ifndef USE_EAGER
-    if( queue->size == queue->capacity )
+    if( queue.size === queue.capacity )
         grow_heap( queue );
 #endif
-    implicit_simple_node *node = &(queue->nodes[queue->size++]);
-    node->key = key;
-    ITEM_ASSIGN( node->item, item );
+    let node: implicit_simple_node* = &(queue.nodes[queue.size++]);
+    node.key = key;
+    node.item = item;
 
     heapify_up( queue, node );
 
     return 0;
 }
 
-implicit_simple_node* pq_find_min( implicit_simple_heap *queue )
-{
+export function pq_find_min( queue: implicit_simple_heap* ): implicit_simple_node* {
     if ( pq_empty( queue ) )
-        return NULL;
-    return &(queue->nodes[0]);
+        return null;
+    return &(queue.nodes[0]);
 }
 
-key_type pq_delete_min( implicit_simple_heap *queue )
-{
-    implicit_simple_node node = queue->nodes[0];
-    key_type key = node.key;
+export function pq_delete_min( queue: implicit_simple_heap* ): key_type {
+    let node: implicit_simple_node = queue.nodes[0];
+    let key: key_type = node.key;
 
-    queue->size--;
-    push( queue, queue->size, 0 );
-    if ( queue->size > 1 )
-        heapify_down( queue, &(queue->nodes[0]) );
+    queue.size--;
+    push( queue, queue.size, 0 );
+    if ( queue.size > 1 )
+        heapify_down( queue, &(queue.nodes[0]) );
 
     return key;
 }
 
-key_type pq_delete( implicit_simple_heap *queue, implicit_simple_node* node )
-{
+export function pq_delete( queue: implicit_simple_heap*, node: implicit_simple_node* ): key_type {
     return 0;
 }
 
-void pq_decrease_key( implicit_simple_heap *queue, implicit_simple_node *node,
-    key_type new_key )
-{
-    node->key = new_key;
+export function pq_decrease_key( queue: implicit_simple_heap*, node: implicit_simple_node*,
+    new_key: key_type ): void {
+    node.key = new_key;
     heapify_up( queue, node );
 }
 
-bool pq_empty( implicit_simple_heap *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: implicit_simple_heap* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -124,9 +112,8 @@ bool pq_empty( implicit_simple_heap *queue )
  * @param src   Index of data to be duplicated
  * @param dst   Index of data to overwrite
  */
-static void push( implicit_simple_heap *queue, uint32_t src, uint32_t dst )
-{
-    queue->nodes[dst] = queue->nodes[src];
+export function push( queue: implicit_simple_heap*, src: uint32_t, dst: uint32_t ): void {
+    queue.nodes[dst] = queue.nodes[src];
 }
 
 /**
@@ -137,9 +124,8 @@ static void push( implicit_simple_heap *queue, uint32_t src, uint32_t dst )
  * @param node  Pointer to node to be dumped
  * @param dst   Index of location to dump node
  */
-static void dump( implicit_simple_heap *queue, implicit_simple_node *node, uint32_t dst )
-{
-    queue->nodes[dst] = *node;
+export function dump( queue: implicit_simple_heap*, node: implicit_simple_node*, dst: uint32_t ): void {
+    queue.nodes[dst] = *node;
 }
 
 /**
@@ -149,26 +135,25 @@ static void dump( implicit_simple_heap *queue, implicit_simple_node *node, uint3
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-static uint32_t heapify_down( implicit_simple_heap *queue, implicit_simple_node *node )
-{
-    implicit_simple_node saved = *node;
-    uint32_t sentinel, i, min;
-    uint32_t base = node - queue->nodes;
-    while( base * BRANCHING_FACTOR + 1 < queue->size )
+export function heapify_down( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32_t {
+    let saved: implicit_simple_node = *node;
+    let sentinel: uint32_t, i, min;
+    let base: uint32_t = node - queue.nodes;
+    while( base * BRANCHING_FACTOR + 1 < queue.size )
     {
         i = base * BRANCHING_FACTOR + 1;
         sentinel = i + BRANCHING_FACTOR;
-        if( sentinel > queue->size )
-            sentinel = queue->size;
+        if( sentinel > queue.size )
+            sentinel = queue.size;
 
         min = i++;
         for( i = i; i < sentinel; i++ )
         {
-            if( queue->nodes[i].key < queue->nodes[min].key )
+            if( queue.nodes[i].key < queue.nodes[min].key )
                 min = i;
         }
 
-        if ( queue->nodes[min].key < saved.key )
+        if ( queue.nodes[min].key < saved.key )
             push( queue, min, base );
         else
             break;
@@ -188,13 +173,12 @@ static uint32_t heapify_down( implicit_simple_heap *queue, implicit_simple_node 
  * @param queue Queue to which node belongs
  * @param node  Potentially violating node
  */
-static uint32_t heapify_up( implicit_simple_heap *queue, implicit_simple_node *node )
-{
-    implicit_simple_node saved = *node;
-    uint32_t i;
-    for( i = node - queue->nodes; i > 0; i = (i-1)/BRANCHING_FACTOR )
+export function heapify_up( queue: implicit_simple_heap*, node: implicit_simple_node* ): uint32_t {
+    let saved: implicit_simple_node = *node;
+    let i: uint32_t;
+    for( i = node - queue.nodes; i > 0; i = (i-1)/BRANCHING_FACTOR )
     {
-        if ( saved.key < queue->nodes[(i-1)/BRANCHING_FACTOR].key )
+        if ( saved.key < queue.nodes[(i-1)/BRANCHING_FACTOR].key )
             push( queue, (i-1)/BRANCHING_FACTOR, i );
         else
             break;
@@ -204,15 +188,14 @@ static uint32_t heapify_up( implicit_simple_heap *queue, implicit_simple_node *n
     return 0;
 }
 
-static void grow_heap( implicit_simple_heap *queue )
-{
-    uint32_t new_capacity = queue->capacity * 2;
-    implicit_simple_node **new_array = realloc( queue->nodes, new_capacity *
+export function grow_heap( queue: implicit_simple_heap* ): void {
+    let new_capacity: uint32_t = queue.capacity * 2;
+    let new_array: implicit_simple_node*[] = realloc( queue.nodes, new_capacity *
         sizeof( implicit_simple_node* ) );
 
-    if( new_array == NULL )
+    if( new_array == null )
         exit( -1 );
 
-    queue->capacity = new_capacity;
-    queue->nodes = new_array;
+    queue.capacity = new_capacity;
+    queue.nodes = new_array;
 }

@@ -1,147 +1,136 @@
-#include "violation_heap.h"
+import {} from 'violation_heap.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static void merge_into_roots( violation_heap *queue, violation_node *list );
-static violation_node* triple_join( violation_heap *queue, violation_node *a,
-    violation_node *b, violation_node *c );
-static violation_node* join( violation_heap *queue, violation_node *parent,
-    violation_node *child1, violation_node *child2 );
-static void fix_roots( violation_heap *queue );
-static bool attempt_insert( violation_heap *queue, violation_node *node );
-static void set_min( violation_heap *queue );
-static violation_node* find_prev_root( violation_heap *queue, violation_node *node );
-static void propagate_ranks( violation_heap *queue, violation_node *node );
-static void strip_list( violation_heap *queue, violation_node *node );
-static bool is_active( violation_heap *queue, violation_node *node );
-static violation_node* get_parent( violation_heap *queue, violation_node *node );
-static int is_root( violation_heap *queue, violation_node *node );
+export function merge_into_roots( queue: violation_heap*, list: violation_node* ): void ;
+export function triple_join( queue: violation_heap*, a: violation_node*,
+    b: violation_node*, c: violation_node* ): violation_node* ;
+export function join( queue: violation_heap*, parent: violation_node*,
+    child1: violation_node*, child2: violation_node* ): violation_node* ;
+export function fix_roots( queue: violation_heap* ): void ;
+export function attempt_insert( queue: violation_heap*, node: violation_node* ): boolean ;
+export function set_min( queue: violation_heap* ): void ;
+export function find_prev_root( queue: violation_heap*, node: violation_node* ): violation_node* ;
+export function propagate_ranks( queue: violation_heap*, node: violation_node* ): void ;
+export function strip_list( queue: violation_heap*, node: violation_node* ): void ;
+export function is_active( queue: violation_heap*, node: violation_node* ): boolean ;
+export function get_parent( queue: violation_heap*, node: violation_node* ): violation_node* ;
+export function is_root( queue: violation_heap*, node: violation_node* ): int ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-violation_heap* pq_create( mem_map *map )
-{
-    violation_heap *queue = calloc( 1, sizeof( violation_heap ) );
-    queue->map = map;
+export function pq_create( map: mem_map* ): violation_heap* {
+    let queue: violation_heap* = new Array(1);
+    queue.map = map;
 
     return queue;
 }
 
-void pq_destroy( violation_heap *queue )
-{
+export function pq_destroy( queue: violation_heap* ): void {
     pq_clear( queue );
     free( queue );
 }
 
-void pq_clear( violation_heap *queue )
-{
-    mm_clear( queue->map );
-    queue->minimum = NULL;
-    memset( queue->roots, 0, 2 * MAXRANK * sizeof( violation_node* ) );
-    queue->largest_rank = 0;
-    queue->size = 0;
+export function pq_clear( queue: violation_heap* ): void {
+    mm_clear( queue.map );
+    queue.minimum = null;
+    memset( queue.roots, 0, 2 * MAXRANK * sizeof( violation_node* ) );
+    queue.largest_rank = 0;
+    queue.size = 0;
 }
 
-key_type pq_get_key( violation_heap *queue, violation_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: violation_heap*, node: violation_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( violation_heap *queue, violation_node *node )
-{
-    return (item_type*) &(node->item);
+export function pq_get_item( queue: violation_heap*, node: violation_node* ): item_type* {
+    return (item_type*) &(node.item);
 }
 
-uint32_t pq_get_size( violation_heap *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: violation_heap* ): uint32_t {
+    return queue.size;
 }
 
-violation_node* pq_insert( violation_heap *queue, item_type item, key_type key )
-{
-    violation_node* wrapper = pq_alloc_node( queue->map, 0 );
-    ITEM_ASSIGN( wrapper->item, item );
-    wrapper->key = key;
-    wrapper->next = wrapper;
-    queue->size++;
+export function pq_insert( queue: violation_heap*, item: item_type, key: key_type ): violation_node* {
+    let wrapper: violation_node* = pq_alloc_node( queue.map, 0 );
+    wrapper.item = item;
+    wrapper.key = key;
+    wrapper.next = wrapper;
+    queue.size++;
 
     merge_into_roots( queue, wrapper );
 
-    if ( ( queue->minimum == NULL ) || ( key < queue->minimum->key ) )
-        queue->minimum = wrapper;
+    if ( ( queue.minimum == null ) || ( key < queue.minimum.key ) )
+        queue.minimum = wrapper;
 
     return wrapper;
 }
 
-violation_node* pq_find_min( violation_heap *queue )
-{
+export function pq_find_min( queue: violation_heap* ): violation_node* {
     if ( pq_empty( queue ) )
-        return NULL;
-    return queue->minimum;
+        return null;
+    return queue.minimum;
 }
 
-key_type pq_delete_min( violation_heap *queue )
-{
-    return pq_delete( queue, queue->minimum );
+export function pq_delete_min( queue: violation_heap* ): key_type {
+    return pq_delete( queue, queue.minimum );
 }
 
-key_type pq_delete( violation_heap *queue, violation_node *node )
-{
-    key_type key = node->key;
-    violation_node *prev;
+export function pq_delete( queue: violation_heap*, node: violation_node* ): key_type {
+    let key: key_type = node.key;
+    let prev: violation_node*;
 
     if ( is_root( queue, node ) )
     {
         prev = find_prev_root( queue, node );
-        prev->next = node->next;
+        prev.next = node.next;
     }
     else
     {
-        if ( node->next->child == node )
-            node->next->child = node->prev;
+        if ( node.next.child === node )
+            node.next.child = node.prev;
         else
-            node->next->prev = node->prev;
+            node.next.prev = node.prev;
 
-        if ( node->prev != NULL )
-            node->prev->next = node->next;
+        if ( node.prev != null )
+            node.prev.next = node.next;
     }
 
-    if ( queue->minimum == node )
+    if ( queue.minimum === node )
     {
-        if ( node->next != node )
-            queue->minimum = node->next;
+        if ( node.next !== node )
+            queue.minimum = node.next;
         else
-            queue->minimum = node->child;
+            queue.minimum = node.child;
     }
 
-    if ( node->child != NULL )
+    if ( node.child != null )
     {
-        strip_list( queue, node->child );
-        merge_into_roots( queue, node->child );
+        strip_list( queue, node.child );
+        merge_into_roots( queue, node.child );
     }
     fix_roots( queue );
 
-    pq_free_node( queue->map, 0, node );
-    queue->size--;
+    pq_free_node( queue.map, 0, node );
+    queue.size--;
 
     return key;
 }
 
-void pq_decrease_key( violation_heap *queue, violation_node *node,
-    key_type new_key )
-{
-    node->key = new_key;
-    violation_node *parent = NULL;
-    violation_node *first_child, *second_child, *replacement;
+export function pq_decrease_key( queue: violation_heap*, node: violation_node*,
+    new_key: key_type ): void {
+    node.key = new_key;
+    let parent: violation_node* = null;
+    let first_child: violation_node*, second_child, replacement;
 
     if( is_root( queue, node ) )
     {
-        if ( node->key < queue->minimum->key )
-            queue->minimum = node;
+        if ( node.key < queue.minimum.key )
+            queue.minimum = node;
         return;
     }
     else
@@ -149,76 +138,75 @@ void pq_decrease_key( violation_heap *queue, violation_node *node,
         if ( is_active( queue, node ) )
         {
             parent = get_parent( queue, node );
-            if ( !( node->key < parent->key ) )
+            if ( !( node.key < parent.key ) )
                 return;
         }
-        first_child = node->child;
-        if( first_child != NULL )
+        first_child = node.child;
+        if( first_child != null )
         {
             // determine active child of greater rank
-            second_child = first_child->prev;
-            if ( second_child == NULL )
+            second_child = first_child.prev;
+            if ( second_child == null )
             {
-                node->child = NULL;
+                node.child = null;
                 replacement = first_child;
             }
             else
             {
-                if ( second_child->rank > first_child->rank )
+                if ( second_child.rank > first_child.rank )
                 {
-                    if ( second_child->prev != NULL )
-                        second_child->prev->next = first_child;
-                    first_child->prev = second_child->prev;
+                    if ( second_child.prev != null )
+                        second_child.prev.next = first_child;
+                    first_child.prev = second_child.prev;
                     replacement = second_child;
                 }
                 else
                 {
-                    node->child = second_child;
-                    second_child->next = node;
+                    node.child = second_child;
+                    second_child.next = node;
                     replacement = first_child;
                 }
             }
 
             // swap child into place of this node
-            replacement->next = node->next;
-            replacement->prev = node->prev;
-            if ( replacement->next != NULL )
+            replacement.next = node.next;
+            replacement.prev = node.prev;
+            if ( replacement.next != null )
             {
-                if ( replacement->next->child == node )
-                    replacement->next->child = replacement;
+                if ( replacement.next.child === node )
+                    replacement.next.child = replacement;
                 else
-                    replacement->next->prev = replacement;
+                    replacement.next.prev = replacement;
             }
-            if ( replacement->prev != NULL )
-                replacement->prev->next = replacement;
+            if ( replacement.prev != null )
+                replacement.prev.next = replacement;
 
-            if ( parent != NULL && is_active( queue, parent ) )
+            if ( parent != null && is_active( queue, parent ) )
                 propagate_ranks( queue, parent );
         }
         else
         {
-            if ( node->next->child == node )
-                node->next->child = node->prev;
+            if ( node.next.child === node )
+                node.next.child = node.prev;
             else
-                node->next->prev = node->prev;
+                node.next.prev = node.prev;
 
-            if ( node->prev != NULL )
-                node->prev->next = node->next;
+            if ( node.prev != null )
+                node.prev.next = node.next;
 
-            if ( is_active( queue, node->next ) )
-                propagate_ranks( queue, node->next );
+            if ( is_active( queue, node.next ) )
+                propagate_ranks( queue, node.next );
         }
 
         // make node a root
-        node->next = node;
-        node->prev = NULL;
+        node.next = node;
+        node.prev = null;
         merge_into_roots( queue, node );
     }
 }
 
-bool pq_empty( violation_heap *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: violation_heap* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -231,19 +219,18 @@ bool pq_empty( violation_heap *queue )
  * @param queue Queue to merge list into
  * @param list  List to merge
  */
-void merge_into_roots( violation_heap *queue, violation_node *list )
-{
-    violation_node *temp;
-    if ( queue->minimum == NULL )
-        queue->minimum = list;
-    else if ( ( list != NULL ) && ( queue->minimum != list ) )
+export function merge_into_roots( queue: violation_heap*, list: violation_node* ): void {
+    let temp: violation_node*;
+    if ( queue.minimum == null )
+        queue.minimum = list;
+    else if ( ( list != null ) && ( queue.minimum !== list ) )
     {
-        temp = queue->minimum->next;
-        queue->minimum->next = list->next;
-        list->next = temp;
+        temp = queue.minimum.next;
+        queue.minimum.next = list.next;
+        list.next = temp;
 
-        if ( list->key < queue->minimum->key )
-            queue->minimum = list;
+        if ( list.key < queue.minimum.key )
+            queue.minimum = list;
     }
 }
 
@@ -256,39 +243,38 @@ void merge_into_roots( violation_heap *queue, violation_node *list )
  * @param c     Third node
  * @return      Returns the resulting tree
  */
-static violation_node* triple_join( violation_heap *queue, violation_node *a,
-    violation_node *b, violation_node *c )
-{
-    violation_node *parent, *child1, *child2;
+export function triple_join( queue: violation_heap*, a: violation_node*,
+    b: violation_node*, c: violation_node* ): violation_node* {
+    let parent: violation_node*, child1, child2;
 
-    if ( a->key < b->key )
+    if ( a.key < b.key )
     {
-        if ( a->key < c->key )
+        if ( a.key < c.key )
         {
             parent = a;
-            child1 = ( b->rank >= c->rank ) ? b : c;
-            child2 = ( b->rank >= c->rank ) ? c : b;
+            child1 = ( b.rank >= c.rank ) ? b : c;
+            child2 = ( b.rank >= c.rank ) ? c : b;
         }
         else
         {
             parent = c;
-            child1 = ( a->rank >= b->rank ) ? a : b;
-            child2 = ( a->rank >= b->rank ) ? b : a;
+            child1 = ( a.rank >= b.rank ) ? a : b;
+            child2 = ( a.rank >= b.rank ) ? b : a;
         }
     }
     else
     {
-        if ( b->key < c->key )
+        if ( b.key < c.key )
         {
             parent = b;
-            child1 = ( a->rank >= c->rank ) ? a : c;
-            child2 = ( a->rank >= c->rank ) ? c : a;
+            child1 = ( a.rank >= c.rank ) ? a : c;
+            child2 = ( a.rank >= c.rank ) ? c : a;
         }
         else
         {
             parent = c;
-            child1 = ( a->rank >= b->rank ) ? a : b;
-            child2 = ( a->rank >= b->rank ) ? b : a;
+            child1 = ( a.rank >= b.rank ) ? a : b;
+            child2 = ( a.rank >= b.rank ) ? b : a;
         }
     }
 
@@ -304,43 +290,42 @@ static violation_node* triple_join( violation_heap *queue, violation_node *a,
  * @param child2    Child of lesser rank
  * @return          Root of new tree
  */
-static violation_node* join( violation_heap *queue, violation_node *parent,
-    violation_node *child1, violation_node *child2 )
-{
-    violation_node *active1, *active2;
-    uint32_t rank1, rank2;
+export function join( queue: violation_heap*, parent: violation_node*,
+    child1: violation_node*, child2: violation_node* ): violation_node* {
+    let active1: violation_node*, active2;
+    let rank1: uint32_t, rank2;
 
-    if ( parent->child != NULL )
+    if ( parent.child != null )
     {
-        active1 = parent->child;
-        active2 = parent->child->prev;
-        if ( active2 != NULL )
+        active1 = parent.child;
+        active2 = parent.child.prev;
+        if ( active2 != null )
         {
-            rank1 = active1->rank;
-            rank2 = active2->rank;
+            rank1 = active1.rank;
+            rank2 = active2.rank;
             if ( rank1 < rank2 )
             {
-                active1->prev = active2->prev;
-                if ( active1->prev != NULL )
-                    active1->prev->next = active1;
-                active2->next = parent;
-                active1->next = active2;
-                active2->prev = active1;
-                parent->child = active2;
+                active1.prev = active2.prev;
+                if ( active1.prev != null )
+                    active1.prev.next = active1;
+                active2.next = parent;
+                active1.next = active2;
+                active2.prev = active1;
+                parent.child = active2;
             }
         }
     }
 
-    child1->next = parent;
-    child1->prev = child2;
-    child2->next = child1;
-    child2->prev = parent->child;
+    child1.next = parent;
+    child1.prev = child2;
+    child2.next = child1;
+    child2.prev = parent.child;
 
-    if ( parent->child != NULL )
-        parent->child->next = child2;
-    parent->child = child1;
+    if ( parent.child != null )
+        parent.child.next = child2;
+    parent.child = child1;
 
-    parent->rank++;
+    parent.rank++;
 
     return parent;
 }
@@ -351,66 +336,65 @@ static violation_node* join( violation_heap *queue, violation_node *parent,
  *
  * @param queue Queue whose roots to fix
  */
-static void fix_roots( violation_heap *queue )
-{
-    violation_node *current, *next, *head, *tail;
-    int i;
-    int32_t rank;
+export function fix_roots( queue: violation_heap* ): void {
+    let current: violation_node*, next, head, tail;
+    let i: int;
+    let rank: int32_t;
 
-    for ( i = 0; i <= queue->largest_rank; i++ )
+    for ( i = 0; i <= queue.largest_rank; i++ )
     {
-        queue->roots[i][0] = NULL;
-        queue->roots[i][1] = NULL;
+        queue.roots[i][0] = null;
+        queue.roots[i][1] = null;
     }
 
-    if ( queue->minimum == NULL )
+    if ( queue.minimum == null )
         return;
 
-    head = queue->minimum->next;
-    queue->minimum->next = NULL;
-    tail = queue->minimum;
+    head = queue.minimum.next;
+    queue.minimum.next = null;
+    tail = queue.minimum;
     current = head;
-    while ( current != NULL )
+    while ( current != null )
     {
-        next = current->next;
-        current->next = NULL;
+        next = current.next;
+        current.next = null;
         if ( !attempt_insert( queue, current ) )
         {
-            rank = current->rank;
-            tail->next = triple_join( queue, current, queue->roots[rank][0],
-                queue->roots[rank][1] );
-            if ( tail == current )
-                next = tail->next;
-            tail = tail->next;
-            queue->roots[rank][0] = NULL;
-            queue->roots[rank][1] = NULL;
+            rank = current.rank;
+            tail.next = triple_join( queue, current, queue.roots[rank][0],
+                queue.roots[rank][1] );
+            if ( tail === current )
+                next = tail.next;
+            tail = tail.next;
+            queue.roots[rank][0] = null;
+            queue.roots[rank][1] = null;
         }
         current = next;
     }
 
-    head = NULL;
-    tail = NULL;
-    for ( i = 0; i <= queue->largest_rank; i++ )
+    head = null;
+    tail = null;
+    for ( i = 0; i <= queue.largest_rank; i++ )
     {
-        if ( queue->roots[i][0] != NULL )
+        if ( queue.roots[i][0] != null )
         {
-            if ( head == NULL )
-                head = queue->roots[i][0];
+            if ( head == null )
+                head = queue.roots[i][0];
             else
-                tail->next = queue->roots[i][0];
-            tail = queue->roots[i][0];
+                tail.next = queue.roots[i][0];
+            tail = queue.roots[i][0];
         }
-        if ( queue->roots[i][1] != NULL )
+        if ( queue.roots[i][1] != null )
         {
-            if ( head == NULL )
-                head = queue->roots[i][1];
+            if ( head == null )
+                head = queue.roots[i][1];
             else
-                tail->next = queue->roots[i][1];
-            tail = queue->roots[i][1];
+                tail.next = queue.roots[i][1];
+            tail = queue.roots[i][1];
         }
     }
 
-    tail->next = head;
+    tail.next = head;
 
     set_min( queue );
 }
@@ -423,22 +407,21 @@ static void fix_roots( violation_heap *queue )
  * @param node  Node to insert
  * @return      True if inserted, false if not
  */
-static bool attempt_insert( violation_heap *queue, violation_node *node )
-{
-    int32_t rank = node->rank;
-    if ( ( queue->roots[rank][0] != NULL ) && ( queue->roots[rank][0] != node ) )
+export function attempt_insert( queue: violation_heap*, node: violation_node* ): boolean {
+    let rank: int32_t = node.rank;
+    if ( ( queue.roots[rank][0] != null ) && ( queue.roots[rank][0] !== node ) )
     {
-        if ( ( queue->roots[rank][1] != NULL ) && ( queue->roots[rank][1] !=
+        if ( ( queue.roots[rank][1] != null ) && ( queue.roots[rank][1] !==
                 node ) )
             return FALSE;
         else
-            queue->roots[rank][1] = node;
+            queue.roots[rank][1] = node;
     }
     else
-        queue->roots[rank][0] = node;
+        queue.roots[rank][0] = node;
 
-    if ( rank > queue->largest_rank )
-        queue->largest_rank = rank;
+    if ( rank > queue.largest_rank )
+        queue.largest_rank = rank;
 
     return TRUE;
 }
@@ -449,25 +432,24 @@ static bool attempt_insert( violation_heap *queue, violation_node *node )
  *
  * @param queue Queue to fix
  */
-static void set_min( violation_heap *queue )
-{
-    int i;
-    queue->minimum = NULL;
-    for ( i = 0; i <= queue->largest_rank; i++ )
+export function set_min( queue: violation_heap* ): void {
+    let i: int;
+    queue.minimum = null;
+    for ( i = 0; i <= queue.largest_rank; i++ )
     {
-        if ( queue->roots[i][0] != NULL )
+        if ( queue.roots[i][0] != null )
         {
-            if ( queue->minimum == NULL )
-                queue->minimum = queue->roots[i][0];
-            else if ( queue->roots[i][0]->key < queue->minimum->key )
-                queue->minimum = queue->roots[i][0];
+            if ( queue.minimum == null )
+                queue.minimum = queue.roots[i][0];
+            else if ( queue.roots[i][0].key < queue.minimum.key )
+                queue.minimum = queue.roots[i][0];
         }
-        if ( queue->roots[i][1] != NULL )
+        if ( queue.roots[i][1] != null )
         {
-            if ( queue->minimum == NULL )
-                queue->minimum = queue->roots[i][1];
-            else if ( queue->roots[i][1]->key < queue->minimum->key )
-                queue->minimum = queue->roots[i][1];
+            if ( queue.minimum == null )
+                queue.minimum = queue.roots[i][1];
+            else if ( queue.roots[i][1].key < queue.minimum.key )
+                queue.minimum = queue.roots[i][1];
         }
     }
 }
@@ -480,12 +462,11 @@ static void set_min( violation_heap *queue )
  * @param node  The specified node to start from
  * @return      The node prior to the start
  */
-static violation_node* find_prev_root( violation_heap *queue,
-    violation_node *node )
-{
-    violation_node *prev = node->next;
-    while ( prev->next != node )
-        prev = prev->next;
+export function find_prev_root( queue: violation_heap*,
+    node: violation_node* ): violation_node* {
+    let prev: violation_node* = node.next;
+    while ( prev.next !== node )
+        prev = prev.next;
 
     return prev;
 }
@@ -496,35 +477,34 @@ static violation_node* find_prev_root( violation_heap *queue,
  * @param queue Queue in which node resides
  * @param node  Initial node to begin updating from.
  */
-static void propagate_ranks( violation_heap *queue, violation_node *node )
-{
-    int32_t rank1 = -1;
-    int32_t rank2 = -1;
-    int32_t new_rank, total;
-    bool updated;
-    violation_node *parent;
+export function propagate_ranks( queue: violation_heap*, node: violation_node* ): void {
+    let rank1: int32_t = -1;
+    let rank2: int32_t = -1;
+    let new_rank: int32_t, total;
+    let updated: boolean;
+    let parent: violation_node*;
 
-    if ( node->child != NULL )
+    if ( node.child != null )
     {
-        rank1 = node->child->rank;
-        if ( node->child->prev != NULL )
-            rank2 = node->child->prev->rank;
+        rank1 = node.child.rank;
+        if ( node.child.prev != null )
+            rank2 = node.child.prev.rank;
     }
 
     total = rank1 + rank2;
-    if ( total == -2 )
+    if ( total === -2 )
         new_rank = 0;
-    else if ( total == -1 )
+    else if ( total === -1 )
         new_rank = 1;
     else
         new_rank = ( ( total / 2 ) + ( total % 2 ) + 1 );
-    updated = new_rank < node->rank;
-    node->rank = new_rank;
+    updated = new_rank < node.rank;
+    node.rank = new_rank;
 
     if ( updated && is_active( queue, node ) )
     {
         parent = get_parent( queue, node );
-        if( parent != NULL )
+        if( parent != null )
             propagate_ranks( queue, parent );
     }
 }
@@ -535,17 +515,16 @@ static void propagate_ranks( violation_heap *queue, violation_node *node )
  * @param queue Queue in which node resides
  * @param node  Last node in the list
  */
-static void strip_list( violation_heap *queue, violation_node *node )
-{
-    violation_node *current = node;
-    violation_node *prev;
-    while ( current->prev != NULL )
+export function strip_list( queue: violation_heap*, node: violation_node* ): void {
+    let current: violation_node* = node;
+    let prev: violation_node*;
+    while ( current.prev != null )
     {
-        prev = current->prev;
-        current->prev = NULL;
+        prev = current.prev;
+        current.prev = null;
         current = prev;
     }
-    node->next = current;
+    node.next = current;
 }
 
 /**
@@ -556,17 +535,16 @@ static void strip_list( violation_heap *queue, violation_node *node )
  * @param node  Node to query
  * @return      True if active, false if not
  */
-static bool is_active( violation_heap *queue, violation_node *node )
-{
+export function is_active( queue: violation_heap*, node: violation_node* ): boolean {
     if ( is_root( queue, node ) )
         return TRUE;
     else
     {
-        if ( node->next->child == node )
+        if ( node.next.child === node )
             return TRUE;
         else
         {
-            if ( node->next->next->child == node->next )
+            if ( node.next.next.child === node.next )
                 return TRUE;
             else
                 return FALSE;
@@ -579,16 +557,15 @@ static bool is_active( violation_heap *queue, violation_node *node )
  *
  * @param queue Queue to which node belongs
  * @param node  Node to query
- * @return      Parent of the queried node, NULL if root
+ * @return      Parent of the queried node, null if root
  */
-static violation_node* get_parent( violation_heap *queue, violation_node *node )
-{
-    if ( node->next->child == node )
-        return node->next;
-    else if ( ( node->prev == NULL ) && ( node->next->prev == NULL ) )
-        return NULL;
+export function get_parent( queue: violation_heap*, node: violation_node* ): violation_node* {
+    if ( node.next.child === node )
+        return node.next;
+    else if ( ( node.prev == null ) && ( node.next.prev == null ) )
+        return null;
     else
-        return ( get_parent( queue, node->next ) );
+        return ( get_parent( queue, node.next ) );
 }
 
 /**
@@ -598,8 +575,7 @@ static violation_node* get_parent( violation_heap *queue, violation_node *node )
  * @param node  Node to query
  * @return      TRUE if a root, FALSE otherwise
  */
-static int is_root( violation_heap *queue, violation_node *node )
-{
-    return ( ( node->prev == NULL ) && ( node->next->prev == NULL ) &&
-        ( node->next->child != node ) );
+export function is_root( queue: violation_heap*, node: violation_node* ): int {
+    return ( ( node.prev == null ) && ( node.next.prev == null ) &&
+        ( node.next.child !== node ) );
 }

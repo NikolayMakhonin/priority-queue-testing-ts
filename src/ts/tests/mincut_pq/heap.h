@@ -1,18 +1,16 @@
-typedef struct heap_st
-{
-   long              size;          /* the number of the last heap element */
-   node            **node;         /* heap of the pointers to nodes       */ 
-} 
-   heap;
+export interface heap {
+   let size: long;          /* the number of the last heap element */
+   let node: node*[];         /* heap of the pointers to nodes       */
+}
 
-long h_current_pos,
+let h_current_pos: long,
      h_new_pos,
      h_pos,
      h_last_pos;
 
-node *node_j,
-     *node_k;
+let node_j: node*,
+     node_k;
 
-double key_k,
+let key_k: double,
        key_min;
 

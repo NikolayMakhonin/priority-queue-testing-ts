@@ -2,7 +2,7 @@
  * Author: Matthew Levine (mslevine@theory.lcs.mit.edu)
  * $Id: timer.c,v 1.3 1996/06/19 17:17:14 mincut Exp $ */
 
-#include "timer.h"
+import {} from 'timer.h'
 
 float timer ()
 {

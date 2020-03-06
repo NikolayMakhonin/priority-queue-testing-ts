@@ -1,131 +1,119 @@
-#include "quake_heap.h"
+import {} from 'quake_heap.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static void make_root( quake_heap *queue, quake_node *node );
-static void remove_from_roots( quake_heap *queue, quake_node *node );
-static void cut( quake_heap *queue, quake_node *node );
-static quake_node* join( quake_heap *queue, quake_node *a, quake_node *b );
-static void fix_roots( quake_heap *queue );
-static bool attempt_insert( quake_heap *queue, quake_node *node );
-static void fix_min( quake_heap *queue );
-static void fix_decay( quake_heap *queue );
-static void check_decay( quake_heap *queue );
-static bool violation_exists( quake_heap *queue );
-static void prune( quake_heap *queue, quake_node *node );
-static quake_node* clone_node( quake_heap *queue, quake_node *original );
-static bool is_root( quake_heap *queue, quake_node *node );
+export function make_root( queue: quake_heap*, node: quake_node* ): void ;
+export function remove_from_roots( queue: quake_heap*, node: quake_node* ): void ;
+export function cut( queue: quake_heap*, node: quake_node* ): void ;
+export function join( queue: quake_heap*, a: quake_node*, b: quake_node* ): quake_node* ;
+export function fix_roots( queue: quake_heap* ): void ;
+export function attempt_insert( queue: quake_heap*, node: quake_node* ): boolean ;
+export function fix_min( queue: quake_heap* ): void ;
+export function fix_decay( queue: quake_heap* ): void ;
+export function check_decay( queue: quake_heap* ): void ;
+export function violation_exists( queue: quake_heap* ): boolean ;
+export function prune( queue: quake_heap*, node: quake_node* ): void ;
+export function clone_node( queue: quake_heap*, original: quake_node* ): quake_node* ;
+export function is_root( queue: quake_heap*, node: quake_node* ): boolean ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-quake_heap* pq_create( mem_map *map )
-{
-    quake_heap *queue = calloc( 1, sizeof( quake_heap ) );
-    queue->map = map;
+export function pq_create( map: mem_map* ): quake_heap* {
+    let queue: quake_heap* = new Array(1);
+    queue.map = map;
     
     return queue;
 }
 
-void pq_destroy( quake_heap *queue )
-{
+export function pq_destroy( queue: quake_heap* ): void {
     pq_clear( queue );
     free( queue );
 }
 
-void pq_clear( quake_heap *queue )
-{
-    mm_clear( queue->map );
-    queue->minimum = NULL;
-    memset( queue->roots, 0, MAXRANK * sizeof( quake_node* ) );
-    memset( queue->nodes, 0, MAXRANK * sizeof( uint32_t ) );
-    queue->highest_node = 0;
-    queue->violation = 0;
-    queue->size = 0;
+export function pq_clear( queue: quake_heap* ): void {
+    mm_clear( queue.map );
+    queue.minimum = null;
+    memset( queue.roots, 0, MAXRANK * sizeof( quake_node* ) );
+    memset( queue.nodes, 0, MAXRANK * sizeof( uint32_t ) );
+    queue.highest_node = 0;
+    queue.violation = 0;
+    queue.size = 0;
 }
 
-key_type pq_get_key( quake_heap *queue, quake_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: quake_heap*, node: quake_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( quake_heap *queue, quake_node *node )
-{
-    return (item_type*) &(node->item);
+export function pq_get_item( queue: quake_heap*, node: quake_node* ): item_type* {
+    return (item_type*) &(node.item);
 }
 
-uint32_t pq_get_size( quake_heap *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: quake_heap* ): uint32_t {
+    return queue.size;
 }
 
-quake_node* pq_insert( quake_heap *queue, item_type item, key_type key )
-{
-    quake_node *wrapper = pq_alloc_node( queue->map, 0 );
-    ITEM_ASSIGN( wrapper->item, item );
-    wrapper->key = key;
-    wrapper->parent = wrapper;
+export function pq_insert( queue: quake_heap*, item: item_type, key: key_type ): quake_node* {
+    let wrapper: quake_node* = pq_alloc_node( queue.map, 0 );
+    wrapper.item = item;
+    wrapper.key = key;
+    wrapper.parent = wrapper;
     
     make_root( queue, wrapper );
-    queue->size++;
-    (queue->nodes[0])++;
+    queue.size++;
+    (queue.nodes[0])++;
 
     return wrapper;
 }
 
-quake_node* pq_find_min( quake_heap *queue )
-{
+export function pq_find_min( queue: quake_heap* ): quake_node* {
     if ( pq_empty( queue ) )
-        return NULL;
-    return queue->minimum;
+        return null;
+    return queue.minimum;
 }
 
-key_type pq_delete_min( quake_heap *queue )
-{
-    return pq_delete( queue, queue->minimum );
+export function pq_delete_min( queue: quake_heap* ): key_type {
+    return pq_delete( queue, queue.minimum );
 }
 
-key_type pq_delete( quake_heap *queue, quake_node *node )
-{
-    key_type key = node->key;
+export function pq_delete( queue: quake_heap*, node: quake_node* ): key_type {
+    let key: key_type = node.key;
     cut( queue, node );
 
     fix_roots( queue );
     fix_decay( queue );
 
-    queue->size--;
+    queue.size--;
 
     return key;
 }
 
-void pq_decrease_key( quake_heap *queue, quake_node *node, key_type new_key )
-{
-    node->key = new_key;
+export function pq_decrease_key( queue: quake_heap*, node: quake_node*, new_key: key_type ): void {
+    node.key = new_key;
     if ( is_root( queue, node ) )
     {
-        if ( node->key < queue->minimum->key )
-            queue->minimum = node;
+        if ( node.key < queue.minimum.key )
+            queue.minimum = node;
     }
     else
     {
-        if ( node->parent->left == node )
-            node->parent->left = NULL;
+        if ( node.parent.left === node )
+            node.parent.left = null;
         else
-            node->parent->right = NULL;
+            node.parent.right = null;
 
         make_root( queue, node );
     }
 }
 
-quake_heap* pq_meld( quake_heap *a, quake_heap *b )
-{
-    quake_heap *result, *trash;
-    quake_node *temp;
+export function pq_meld( a: quake_heap*, b: quake_heap* ): quake_heap* {
+    let result: quake_heap*, trash;
+    let temp: quake_node*;
     
-    if( a->size >= b->size )
+    if( a.size >= b.size )
     {
         result = a;
         trash = b;
@@ -136,22 +124,21 @@ quake_heap* pq_meld( quake_heap *a, quake_heap *b )
         trash = a;
     }
         
-    if( trash->minimum == NULL )
+    if( trash.minimum == null )
         return result;
-    temp = result->minimum->parent;
-    result->minimum->parent = trash->minimum->parent;
-    trash->minimum->parent = temp;
+    temp = result.minimum.parent;
+    result.minimum.parent = trash.minimum.parent;
+    trash.minimum.parent = temp;
     
-    int k;
-    for( k = 0; k < result->highest_node; k++ )
-        result->nodes[k] += trash->nodes[k];
+    let k: int;
+    for( k = 0; k < result.highest_node; k++ )
+        result.nodes[k] += trash.nodes[k];
 
     return result;
 }
 
-bool pq_empty( quake_heap *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: quake_heap* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -164,22 +151,21 @@ bool pq_empty( quake_heap *queue )
  * @param queue Queue in which to operate
  * @param node  Node to make a new root
  */
-static void make_root( quake_heap *queue, quake_node* node )
-{
-    if ( node == NULL )
+export function make_root( queue: quake_heap*, node: quake_node* ): void {
+    if ( node == null )
         return;
 
-    if ( queue->minimum == NULL )
+    if ( queue.minimum == null )
     {
-         queue->minimum = node;
-         node->parent = node;
+         queue.minimum = node;
+         node.parent = node;
     }
     else
     {
-        node->parent = queue->minimum->parent;
-        queue->minimum->parent = node;
-        if ( node->key < queue->minimum->key )
-            queue->minimum = node;
+        node.parent = queue.minimum.parent;
+        queue.minimum.parent = node;
+        if ( node.key < queue.minimum.key )
+            queue.minimum = node;
     }
 }
 
@@ -189,18 +175,17 @@ static void make_root( quake_heap *queue, quake_node* node )
  * @param queue Queue the node belongs to
  * @param node  Node to remove
  */
-static void remove_from_roots( quake_heap *queue, quake_node *node )
-{
-    quake_node *current = node->parent;
-    while ( current->parent != node )
-        current = current->parent;
-    if ( current == node )
-        queue->minimum = NULL;
+export function remove_from_roots( queue: quake_heap*, node: quake_node* ): void {
+    let current: quake_node* = node.parent;
+    while ( current.parent !== node )
+        current = current.parent;
+    if ( current === node )
+        queue.minimum = null;
     else
     {
-        current->parent = node->parent;
-        if ( queue->minimum == node )
-            queue->minimum = current;
+        current.parent = node.parent;
+        if ( queue.minimum === node )
+            queue.minimum = current;
     }
 }
 
@@ -212,26 +197,25 @@ static void remove_from_roots( quake_heap *queue, quake_node *node )
  * @param queue Queue the node belongs to
  * @param node  Node to remove
  */
-static void cut( quake_heap *queue, quake_node *node )
-{
-    if ( node == NULL )
+export function cut( queue: quake_heap*, node: quake_node* ): void {
+    if ( node == null )
         return;
 
     if ( is_root( queue, node ) )
         remove_from_roots( queue, node );
     else
     {
-        if ( node->parent->left == node )
-            node->parent->left = NULL;
-        else if ( node->parent->right == node )
-            node->parent->right = NULL;
+        if ( node.parent.left === node )
+            node.parent.left = null;
+        else if ( node.parent.right === node )
+            node.parent.right = null;
     }
         
-    cut( queue, node->left );
-    make_root( queue, node->right );
+    cut( queue, node.left );
+    make_root( queue, node.right );
 
-    (queue->nodes[node->height])--;
-    pq_free_node( queue->map, 0, node );
+    (queue.nodes[node.height])--;
+    pq_free_node( queue.map, 0, node );
 }
 
 /**
@@ -244,11 +228,10 @@ static void cut( quake_heap *queue, quake_node *node )
  * @param b     Second node
  * @return      Returns the resulting tree
  */
-static quake_node* join( quake_heap *queue, quake_node *a, quake_node *b )
-{
-    quake_node *parent, *child, *duplicate;
+export function join( queue: quake_heap*, a: quake_node*, b: quake_node* ): quake_node* {
+    let parent: quake_node*, child, duplicate;
 
-    if ( b->key < a->key )
+    if ( b.key < a.key )
     {
         parent = b;
         child = a;
@@ -260,20 +243,20 @@ static quake_node* join( quake_heap *queue, quake_node *a, quake_node *b )
     }
 
     duplicate = clone_node( queue, parent );
-    if ( duplicate->left != NULL )
-        duplicate->left->parent = duplicate;
-    if ( duplicate->right != NULL )
-        duplicate->right->parent = duplicate;
+    if ( duplicate.left != null )
+        duplicate.left.parent = duplicate;
+    if ( duplicate.right != null )
+        duplicate.right.parent = duplicate;
 
-    duplicate->parent = parent;
-    child->parent = parent;
+    duplicate.parent = parent;
+    child.parent = parent;
 
-    parent->parent = NULL;
-    parent->left = duplicate;
-    parent->right = child;
+    parent.parent = null;
+    parent.left = duplicate;
+    parent.right = child;
 
-    parent->height++;
-    (queue->nodes[parent->height])++;
+    parent.height++;
+    (queue.nodes[parent.height])++;
 
     return parent;
 }
@@ -284,66 +267,65 @@ static quake_node* join( quake_heap *queue, quake_node *a, quake_node *b )
  *
  * @param queue Queue whose roots to fix
  */
-static void fix_roots( quake_heap *queue )
-{
-    quake_node *current, *next, *tail, *head, *joined;
-    uint32_t i, height;
+export function fix_roots( queue: quake_heap* ): void {
+    let current: quake_node*, next, tail, head, joined;
+    let i: uint32_t, height;
 
-    if ( queue->minimum == NULL )
+    if ( queue.minimum == null )
         return;
 
-    for ( i = 0; i <= queue->highest_node; i++ )
-        queue->roots[i] = NULL;
-    queue->highest_node = 0;
+    for ( i = 0; i <= queue.highest_node; i++ )
+        queue.roots[i] = null;
+    queue.highest_node = 0;
 
-    current = queue->minimum->parent;
-    tail = queue->minimum;
-    queue->minimum->parent = NULL;
+    current = queue.minimum.parent;
+    tail = queue.minimum;
+    queue.minimum.parent = null;
 
-    while ( current != NULL )
+    while ( current != null )
     {
-        next = current->parent;
-        current->parent = NULL;
+        next = current.parent;
+        current.parent = null;
         if ( !attempt_insert( queue, current ) )
         {
-            height = current->height;
-            joined = join( queue, current, queue->roots[height] );
-            if ( current == tail )
+            height = current.height;
+            joined = join( queue, current, queue.roots[height] );
+            if ( current === tail )
             {
                 tail = joined; 
                 next = tail;
             }
             else
             {
-                tail->parent = joined;
-                tail = tail->parent;
+                tail.parent = joined;
+                tail = tail.parent;
             }
-            queue->roots[height] = NULL;
+            queue.roots[height] = null;
         }
         current = next;
     }
 
-    head = NULL;
-    tail = NULL;
-    for ( i = 0; i <= queue->highest_node; i++ )
+    head = null;
+    tail = null;
+    for ( i = 0; i <= queue.highest_node; i++ )
     {
-        if ( queue->roots[i] != NULL )
+        if ( queue.roots[i] != null )
         {
-            if ( head == NULL )
+            if ( head == null )
             {
-                head = queue->roots[i];
-                tail = queue->roots[i];
+                head = queue.roots[i];
+                tail = queue.roots[i];
             }
             else
             {
-                tail->parent = queue->roots[i];
-                tail = tail->parent;
+                tail.parent = queue.roots[i];
+                tail = tail.parent;
             }
         }
     }
-    tail->parent = head;
+    tail.parent = head;
 
-    queue->minimum = head;
+    queue.minimum = head;
     fix_min( queue );
 }
 
@@ -356,15 +338,14 @@ static void fix_roots( quake_heap *queue )
  * @param node  Node to insert
  * @return      True if inserted, false if not
  */
-static bool attempt_insert( quake_heap *queue, quake_node *node )
-{
-    uint32_t height = node->height;
-    if ( ( queue->roots[height] != NULL ) && ( queue->roots[height] != node ) )
+export function attempt_insert( queue: quake_heap*, node: quake_node* ): boolean {
+    let height: uint32_t = node.height;
+    if ( ( queue.roots[height] != null ) && ( queue.roots[height] !== node ) )
         return FALSE;
 
-    if ( height > queue->highest_node )
-        queue->highest_node = height;
-    queue->roots[height] = node;
+    if ( height > queue.highest_node )
+        queue.highest_node = height;
+    queue.roots[height] = node;
 
     return TRUE;
 }
@@ -376,15 +357,14 @@ static bool attempt_insert( quake_heap *queue, quake_node *node )
  * 
  * @param queue Queue to fix
  */
-static void fix_min( quake_heap *queue )
-{
-    quake_node *start = queue->minimum;
-    quake_node *current = queue->minimum->parent;
-    while ( current != start )
+export function fix_min( queue: quake_heap* ): void {
+    let start: quake_node* = queue.minimum;
+    let current: quake_node* = queue.minimum.parent;
+    while ( current !== start )
     {
-        if ( current->key < queue->minimum->key )
-            queue->minimum = current;
-        current = current->parent;
+        if ( current.key < queue.minimum.key )
+            queue.minimum = current;
+        current = current.parent;
     }
 }
 
@@ -394,16 +374,15 @@ static void fix_min( quake_heap *queue )
  * 
  * @param queue Queue to fix
  */
-static void fix_decay( quake_heap *queue )
-{
-    uint32_t i;
+export function fix_decay( queue: quake_heap* ): void {
+    let i: uint32_t;
     check_decay( queue );
     if ( violation_exists( queue ) )
     {
-        for ( i = queue->violation; i < MAXRANK; i++ )
+        for ( i = queue.violation; i < MAXRANK; i++ )
         {
-            if ( queue->roots[i] != NULL )
-                prune( queue, queue->roots[i] );
+            if ( queue.roots[i] != null )
+                prune( queue, queue.roots[i] );
         }
     }
 }
@@ -413,16 +392,15 @@ static void fix_decay( quake_heap *queue )
  * 
  * @param queue Queue to check
  */
-static void check_decay( quake_heap *queue )
-{
-    uint32_t i;
-    for ( i = 1; i <= queue->highest_node; i++ )
+export function check_decay( queue: quake_heap* ): void {
+    let i: uint32_t;
+    for ( i = 1; i <= queue.highest_node; i++ )
     {
-        if ( ( (float) queue->nodes[i] ) > ( (float) ( ALPHA *
-                (float) queue->nodes[i-1] ) ) )
+        if ( ( (float) queue.nodes[i] ) > ( (float) ( ALPHA *
+                (float) queue.nodes[i-1] ) ) )
             break;
     }
-    queue->violation = i;
+    queue.violation = i;
 }
 
 /**
@@ -431,9 +409,8 @@ static void check_decay( quake_heap *queue )
  * @param queue Queue to check
  * @return      True if exists, false otherwise
  */
-static bool violation_exists( quake_heap *queue )
-{
-    return ( queue->violation < MAXRANK );
+export function violation_exists( queue: quake_heap* ): boolean {
+    return ( queue.violation < MAXRANK );
 }
 
 /**
@@ -445,14 +422,13 @@ static bool violation_exists( quake_heap *queue )
  * @param queue Queue to fix
  * @param node  Node to check and prune
  */
-static void prune( quake_heap *queue, quake_node *node )
-{
-    quake_node *duplicate, *child;
+export function prune( queue: quake_heap*, node: quake_node* ): void {
+    let duplicate: quake_node*, child;
 
-    if ( node == NULL )
+    if ( node == null )
         return;
 
-    if ( node->height < queue->violation )
+    if ( node.height < queue.violation )
     {
         if ( !is_root( queue, node ) )
             make_root( queue, node );
@@ -460,20 +436,20 @@ static void prune( quake_heap *queue, quake_node *node )
         return;
     }
 
-    duplicate = node->left;
-    child = node->right;
+    duplicate = node.left;
+    child = node.right;
 
     prune( queue, child );        
 
-    node->left = duplicate->left;
-    if ( node->left != NULL )
-        node->left->parent = node;
-    node->right = duplicate->right;
-    if ( node->right != NULL )
-        node->right->parent = node;
-    (queue->nodes[node->height])--;
-    node->height--;
-    pq_free_node( queue->map, 0, duplicate );
+    node.left = duplicate.left;
+    if ( node.left != null )
+        node.left.parent = node;
+    node.right = duplicate.right;
+    if ( node.right != null )
+        node.right.parent = node;
+    (queue.nodes[node.height])--;
+    node.height--;
+    pq_free_node( queue.map, 0, duplicate );
 
     prune( queue, node );
 }
@@ -485,15 +461,14 @@ static void prune( quake_heap *queue, quake_node *node )
  * @param original  Node to copy data from
  * @return          Copy of the new node
  */
-static quake_node* clone_node( quake_heap *queue, quake_node *original )
-{
-    quake_node *clone = pq_alloc_node( queue->map, 0 );
+export function clone_node( queue: quake_heap*, original: quake_node* ): quake_node* {
+    let clone: quake_node* = pq_alloc_node( queue.map, 0 );
         
-    ITEM_ASSIGN( clone->item, original->item );
-    clone->key = original->key;
-    clone->height = original->height;
-    clone->left = original->left;
-    clone->right = original->right;
+    clone.item = original.item;
+    clone.key = original.key;
+    clone.height = original.height;
+    clone.left = original.left;
+    clone.right = original.right;
 
     return clone;
 }
@@ -505,8 +480,7 @@ static quake_node* clone_node( quake_heap *queue, quake_node *original )
  * @param node  Node to query
  * @return      True if root, false otherwise
  */
-static bool is_root( quake_heap *queue, quake_node *node )
-{
-    return ( ( node->parent->left != node ) &&
-        ( node->parent->right != node ) );
+export function is_root( queue: quake_heap*, node: quake_node* ): boolean {
+    return ( ( node.parent.left !== node ) &&
+        ( node.parent.right !== node ) );
 }

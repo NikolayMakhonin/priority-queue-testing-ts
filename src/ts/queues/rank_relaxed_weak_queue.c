@@ -1,132 +1,122 @@
-#include "rank_relaxed_weak_queue.h"
+import {} from 'rank_relaxed_weak_queue.h'
 
 //==============================================================================
 // STATIC DECLARATIONS
 //==============================================================================
 
-static inline void register_node( rank_relaxed_weak_queue *queue, int type,
-    rank_relaxed_weak_node *node );
-static inline void unregister_node( rank_relaxed_weak_queue *queue, int type,
-    rank_relaxed_weak_node *node );
+static inline void register_node( queue: rank_relaxed_weak_queue*, type: int,
+    let node: rank_relaxed_weak_node* );
+static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int,
+    let node: rank_relaxed_weak_node* );
 
-static void insert_root( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *new_root );
-static void restore_invariants( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node );
-static rank_relaxed_weak_node* join( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b );
+export function insert_root( queue: rank_relaxed_weak_queue*,
+    new_root: rank_relaxed_weak_node* ): void ;
+export function restore_invariants( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): void ;
+export function join( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
 
-static void swap_parent_with_right_child( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *parent, rank_relaxed_weak_node *child );
-static void swap_parent_with_left_child( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *parent, rank_relaxed_weak_node *child );
-static void swap_disconnected( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b );
+export function swap_parent_with_right_child( queue: rank_relaxed_weak_queue*,
+    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void ;
+export function swap_parent_with_left_child( queue: rank_relaxed_weak_queue*,
+    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void ;
+export function swap_disconnected( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void ;
 
-static void switch_node_ranks( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b );
-static inline void flip_subtree( rank_relaxed_weak_node *node );
-static inline void swap_subtrees( rank_relaxed_weak_node *a,
-    rank_relaxed_weak_node **sub_a, rank_relaxed_weak_node *b,
-    rank_relaxed_weak_node **sub_b );
+export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void ;
+static inline void flip_subtree( node: rank_relaxed_weak_node* );
+static inline void swap_subtrees( a: rank_relaxed_weak_node*,
+    sub_a: rank_relaxed_weak_node*[], b: rank_relaxed_weak_node*,
+    let sub_b: rank_relaxed_weak_node*[] );
 
-static void sever_spine( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node );
-static void replace_node( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node, rank_relaxed_weak_node *replacement );
-static void fix_min( rank_relaxed_weak_queue *queue );
+export function sever_spine( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): void ;
+export function replace_node( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node*, replacement: rank_relaxed_weak_node* ): void ;
+export function fix_min( queue: rank_relaxed_weak_queue* ): void ;
 
-static rank_relaxed_weak_node* transformation_cleaning(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node );
-static rank_relaxed_weak_node* transformation_pair(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node );
-static rank_relaxed_weak_node* transformation_parent(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node );
-static rank_relaxed_weak_node* transformation_sibling(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node );
-static rank_relaxed_weak_node* transformation_zigzag(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node );
+export function transformation_cleaning(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+export function transformation_pair(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+export function transformation_parent(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+export function transformation_sibling(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
+export function transformation_zigzag(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-rank_relaxed_weak_queue* pq_create( mem_map *map )
-{
-    rank_relaxed_weak_queue *queue = calloc( 1,
-        sizeof( rank_relaxed_weak_queue ) );
-    queue->map = map;
+export function pq_create( map: mem_map* ): rank_relaxed_weak_queue* {
+    let queue: rank_relaxed_weak_queue* = new Array(1);
+    queue.map = map;
 
     return queue;
 }
 
-void pq_destroy( rank_relaxed_weak_queue *queue )
-{
+export function pq_destroy( queue: rank_relaxed_weak_queue* ): void {
     pq_clear( queue );
     free( queue );
 }
 
-void pq_clear( rank_relaxed_weak_queue *queue )
-{
-    mm_clear( queue->map );
-    queue->size = 0;
-    queue->minimum = NULL;
-    memset( queue->nodes[ROOTS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
-    memset( queue->nodes[MARKS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
-    queue->registry[ROOTS] = 0;
-    queue->registry[MARKS] = 0;
+export function pq_clear( queue: rank_relaxed_weak_queue* ): void {
+    mm_clear( queue.map );
+    queue.size = 0;
+    queue.minimum = null;
+    memset( queue.nodes[ROOTS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
+    memset( queue.nodes[MARKS], 0, MAXRANK * sizeof( rank_relaxed_weak_node* ) );
+    queue.registry[ROOTS] = 0;
+    queue.registry[MARKS] = 0;
 }
 
-key_type pq_get_key( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node )
-{
-    return node->key;
+export function pq_get_key( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): key_type {
+    return node.key;
 }
 
-item_type* pq_get_item( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node )
-{
-    return (item_type*) &(node->item);
+export function pq_get_item( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): item_type* {
+    return (item_type*) &(node.item);
 }
 
-uint32_t pq_get_size( rank_relaxed_weak_queue *queue )
-{
-    return queue->size;
+export function pq_get_size( queue: rank_relaxed_weak_queue* ): uint32_t {
+    return queue.size;
 }
 
-rank_relaxed_weak_node* pq_insert( rank_relaxed_weak_queue *queue,
-    item_type item, key_type key )
-{
-    rank_relaxed_weak_node *wrapper = pq_alloc_node( queue->map, 0 );
-    ITEM_ASSIGN( wrapper->item, item );
-    wrapper->key = key;
-    queue->size++;
+export function pq_insert( queue: rank_relaxed_weak_queue*,
+    item: item_type, key: key_type ): rank_relaxed_weak_node* {
+    let wrapper: rank_relaxed_weak_node* = pq_alloc_node( queue.map, 0 );
+    wrapper.item = item;
+    wrapper.key = key;
+    queue.size++;
     insert_root( queue, wrapper );
 
-    if ( ( queue->minimum == NULL ) || ( key < queue->minimum->key ) )
-        queue->minimum = wrapper;
+    if ( ( queue.minimum == null ) || ( key < queue.minimum.key ) )
+        queue.minimum = wrapper;
 
     return wrapper;
 }
 
-rank_relaxed_weak_node* pq_find_min( rank_relaxed_weak_queue *queue )
-{
+export function pq_find_min( queue: rank_relaxed_weak_queue* ): rank_relaxed_weak_node* {
     if ( pq_empty( queue ) )
-        return NULL;
-    return queue->minimum;
+        return null;
+    return queue.minimum;
 }
 
-key_type pq_delete_min( rank_relaxed_weak_queue *queue )
-{
-    rank_relaxed_weak_node *old_min = queue->minimum;
-    key_type min_key = old_min->key;
+export function pq_delete_min( queue: rank_relaxed_weak_queue* ): key_type {
+    let old_min: rank_relaxed_weak_node* = queue.minimum;
+    let min_key: key_type = old_min.key;
 
-    uint32_t replacement_rank;
-    rank_relaxed_weak_node *replacement = old_min;
-    if( old_min->parent != NULL )
+    let replacement_rank: uint32_t;
+    let replacement: rank_relaxed_weak_node* = old_min;
+    if( old_min.parent != null )
     {
-        replacement_rank = REGISTRY_LEADER( queue->registry[ROOTS] );
-        replacement = queue->nodes[ROOTS][replacement_rank];
+        replacement_rank = REGISTRY_LEADER( queue.registry[ROOTS] );
+        replacement = queue.nodes[ROOTS][replacement_rank];
     }
 
     // unregister old root so we don't join it into something again
@@ -135,51 +125,48 @@ key_type pq_delete_min( rank_relaxed_weak_queue *queue )
 
     unregister_node( queue, ROOTS, replacement );
     unregister_node( queue, MARKS, replacement );
-    replacement->marked = 0;
+    replacement.marked = 0;
 
-    sever_spine( queue, replacement->right );
-    replacement->parent = NULL;
-    replacement->left = NULL;
-    replacement->right = NULL;
-    replacement->rank = 0;
+    sever_spine( queue, replacement.right );
+    replacement.parent = null;
+    replacement.left = null;
+    replacement.right = null;
+    replacement.rank = 0;
 
-    if( old_min != replacement )
+    if( old_min !== replacement )
         replace_node( queue, old_min, replacement );
 
     fix_min( queue );
 
-    pq_free_node( queue->map, 0, old_min );
-    queue->size--;
+    pq_free_node( queue.map, 0, old_min );
+    queue.size--;
 
     return min_key;
 }
 
-key_type pq_delete( rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
+export function pq_delete( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): key_type {
     pq_decrease_key( queue, node, 0 );
-    key_type min_key = pq_delete_min( queue );
+    let min_key: key_type = pq_delete_min( queue );
 
     return min_key;
 }
 
-void pq_decrease_key( rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node,
-    key_type new_key )
-{
-    node->key = new_key;
-    if( node->parent != NULL )
+export function pq_decrease_key( queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node*,
+    new_key: key_type ): void {
+    node.key = new_key;
+    if( node.parent != null )
     {
-        if( !node->marked )
-            node->marked = 1;
+        if( !node.marked )
+            node.marked = 1;
         restore_invariants( queue, node );
     }
 
-    if( node->key <= queue->minimum->key )
-        queue->minimum = node;
+    if( node.key <= queue.minimum.key )
+        queue.minimum = node;
 }
 
-bool pq_empty( rank_relaxed_weak_queue *queue )
-{
-    return ( queue->size == 0 );
+export function pq_empty( queue: rank_relaxed_weak_queue* ): boolean {
+    return ( queue.size === 0 );
 }
 
 //==============================================================================
@@ -194,13 +181,13 @@ bool pq_empty( rank_relaxed_weak_queue *queue )
  * @param type  ROOTS or MARKS specifies which registry alter
  * @param node  Node to insert
  */
-static inline void register_node( rank_relaxed_weak_queue *queue, int type,
-    rank_relaxed_weak_node *node )
+static inline void register_node( queue: rank_relaxed_weak_queue*, type: int,
+    node: rank_relaxed_weak_node* )
 {
-    if( !OCCUPIED( queue->registry[type], node->rank ) )
+    if( !OCCUPIED( queue.registry[type], node.rank ) )
     {
-        REGISTRY_SET( queue->registry[type], node->rank );
-        queue->nodes[type][node->rank] = node;
+        REGISTRY_SET( queue.registry[type], node.rank );
+        queue.nodes[type][node.rank] = node;
     }
 }
 
@@ -212,13 +199,13 @@ static inline void register_node( rank_relaxed_weak_queue *queue, int type,
  * @param type  ROOTS or MARKS specifies which registry alter
  * @param node  Node to remove
  */
-static inline void unregister_node( rank_relaxed_weak_queue *queue, int type,
-    rank_relaxed_weak_node *node )
+static inline void unregister_node( queue: rank_relaxed_weak_queue*, type: int,
+    node: rank_relaxed_weak_node* )
 {
-    if( queue->nodes[type][node->rank] == node )
+    if( queue.nodes[type][node.rank] === node )
     {
-        REGISTRY_UNSET( queue->registry[type], node->rank );
-        queue->nodes[type][node->rank] = NULL;
+        REGISTRY_UNSET( queue.registry[type], node.rank );
+        queue.nodes[type][node.rank] = null;
     }
 }
 
@@ -230,14 +217,13 @@ static inline void unregister_node( rank_relaxed_weak_queue *queue, int type,
  * @param queue     Queue in which to operate
  * @param new_root  New root to insert
  */
-static void insert_root( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *new_root )
-{
-    rank_relaxed_weak_node *tree = new_root;
-    uint32_t rank = tree->rank;
-    while( OCCUPIED( queue->registry[ROOTS], rank ) )
+export function insert_root( queue: rank_relaxed_weak_queue*,
+    new_root: rank_relaxed_weak_node* ): void {
+    let tree: rank_relaxed_weak_node* = new_root;
+    let rank: uint32_t = tree.rank;
+    while( OCCUPIED( queue.registry[ROOTS], rank ) )
     {
-        tree = join( queue, tree, queue->nodes[ROOTS][rank] );
+        tree = join( queue, tree, queue.nodes[ROOTS][rank] );
         rank++;
     }
 
@@ -258,50 +244,49 @@ static void insert_root( rank_relaxed_weak_queue *queue,
  * @param queue Queue in which to operate
  * @param node  Most recently marked node
  */
-static void restore_invariants( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *new_mark = node;
+export function restore_invariants( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): void {
+    let new_mark: rank_relaxed_weak_node* = node;
 
     unregister_node( queue, MARKS, node );
-    new_mark->marked = 1;
+    new_mark.marked = 1;
 
     // make sure children aren't marked
-    if( new_mark->right != NULL && new_mark->right->marked )
-        new_mark = transformation_parent( queue, new_mark->right );
+    if( new_mark.right != null && new_mark.right.marked )
+        new_mark = transformation_parent( queue, new_mark.right );
 
     while( 1 )
     {
-        if( new_mark == NULL )
+        if( new_mark == null )
             break;
 
         // check if node is a root
-        if( new_mark->parent == NULL )
+        if( new_mark.parent == null )
         {
             unregister_node( queue, MARKS, new_mark );
-            new_mark->marked = 0;
-            new_mark = NULL;
+            new_mark.marked = 0;
+            new_mark = null;
 
             break;
         }
-        else if( new_mark->parent->parent == NULL )
+        else if( new_mark.parent.parent == null )
         {
             new_mark = transformation_parent( queue, new_mark );
-            if( new_mark != NULL )
+            if( new_mark != null )
             {
                 unregister_node( queue, MARKS, new_mark );
-                new_mark->marked = 0;
-                new_mark = NULL;
+                new_mark.marked = 0;
+                new_mark = null;
             }
 
             break;
         }
 
-        if( new_mark->parent->left == new_mark )
+        if( new_mark.parent.left === new_mark )
         {
             // check if node's sibling is marked
-            if( new_mark->parent->right != NULL &&
-                new_mark->parent->right->marked )
+            if( new_mark.parent.right != null &&
+                new_mark.parent.right.marked )
             {
                 new_mark = transformation_sibling( queue, new_mark );
 
@@ -309,10 +294,10 @@ static void restore_invariants( rank_relaxed_weak_queue *queue,
             }
 
             // node is a left child and parent marked
-            else if( new_mark->parent->left == new_mark && new_mark->parent->marked )
+            else if( new_mark.parent.left === new_mark && new_mark.parent.marked )
             {
                 new_mark = transformation_zigzag( queue, new_mark );
-                if( new_mark != NULL )
+                if( new_mark != null )
                     continue;
 
                 break;
@@ -324,7 +309,7 @@ static void restore_invariants( rank_relaxed_weak_queue *queue,
         }
 
         // node is a right child and parent marked
-        if( new_mark->parent->right == new_mark && new_mark->parent->marked )
+        if( new_mark.parent.right === new_mark && new_mark.parent.marked )
         {
             new_mark = transformation_parent( queue, new_mark );
 
@@ -332,9 +317,9 @@ static void restore_invariants( rank_relaxed_weak_queue *queue,
         }
 
         // node is a right child and parent unmarked
-        else if( new_mark->parent->right == new_mark && !new_mark->parent->marked )
+        else if( new_mark.parent.right === new_mark && !new_mark.parent.marked )
         {
-            if( OCCUPIED( queue->registry[MARKS], new_mark->rank ) )
+            if( OCCUPIED( queue.registry[MARKS], new_mark.rank ) )
             {
                 new_mark = transformation_pair( queue, new_mark );
 
@@ -348,7 +333,7 @@ static void restore_invariants( rank_relaxed_weak_queue *queue,
         break;
     }
 
-    if( new_mark != NULL && new_mark->marked )
+    if( new_mark != null && new_mark.marked )
         register_node( queue, MARKS, new_mark );
 }
 
@@ -361,11 +346,10 @@ static void restore_invariants( rank_relaxed_weak_queue *queue,
  * @param b     Second tree
  * @return      Pointer to new tree
  */
-static rank_relaxed_weak_node* join( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b )
-{
-    rank_relaxed_weak_node *parent, *child;
-    if( a->key <= b->key )
+export function join( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let parent: rank_relaxed_weak_node*, child;
+    if( a.key <= b.key )
     {
         parent = a;
         child = b;
@@ -380,34 +364,34 @@ static rank_relaxed_weak_node* join( rank_relaxed_weak_queue *queue,
     unregister_node( queue, ROOTS, child );
     unregister_node( queue, MARKS, parent );
     unregister_node( queue, MARKS, child );
-    if( child->marked )
-        child->marked = 0;
+    if( child.marked )
+        child.marked = 0;
 
-    /*if( child->left != NULL )
+    /*if( child.left != null )
     {
-        parent->left = child->left;
-        parent->left->parent = parent;
+        parent.left = child.left;
+        parent.left.parent = parent;
     }*/
-    child->left = parent->right;
-    parent->right = child;
-    child->parent = parent;
+    child.left = parent.right;
+    parent.right = child;
+    child.parent = parent;
 
-    if( child->left != NULL )
+    if( child.left != null )
     {
-        child->left->parent = child;
-        if( child->left->marked )
+        child.left.parent = child;
+        if( child.left.marked )
         {
-            if( child->right->marked )
-                transformation_sibling( queue, child->left );
+            if( child.right.marked )
+                transformation_sibling( queue, child.left );
             else
-                transformation_cleaning( queue, child->left );
+                transformation_cleaning( queue, child.left );
         }
     }
 
-    parent->rank++;
+    parent.rank++;
 
-    if( queue->minimum == child )
-        queue->minimum = parent;
+    if( queue.minimum === child )
+        queue.minimum = parent;
 
     return parent;
 }
@@ -419,37 +403,36 @@ static rank_relaxed_weak_node* join( rank_relaxed_weak_queue *queue,
  * @param parent    Parent node
  * @param child     Right child node
  */
-static void swap_parent_with_right_child( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *parent, rank_relaxed_weak_node *child )
-{
-    rank_relaxed_weak_node *parent_parent = parent->parent;
-    rank_relaxed_weak_node *parent_left = parent->left;
-    rank_relaxed_weak_node *child_left = child->left;
-    rank_relaxed_weak_node *child_right = child->right;
+export function swap_parent_with_right_child( queue: rank_relaxed_weak_queue*,
+    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void {
+    let parent_parent: rank_relaxed_weak_node* = parent.parent;
+    let parent_left: rank_relaxed_weak_node* = parent.left;
+    let child_left: rank_relaxed_weak_node* = child.left;
+    let child_right: rank_relaxed_weak_node* = child.right;
 
-    parent->parent = child;
-    child->right = parent;
+    parent.parent = child;
+    child.right = parent;
 
-    child->parent = parent_parent;
-    if( parent_parent != NULL )
+    child.parent = parent_parent;
+    if( parent_parent != null )
     {
-        if( parent_parent->left == parent )
-            parent_parent->left = child;
+        if( parent_parent.left === parent )
+            parent_parent.left = child;
         else
-            parent_parent->right = child;
+            parent_parent.right = child;
     }
 
-    child->left = parent_left;
-    if( parent_left != NULL )
-        parent_left->parent = child;
+    child.left = parent_left;
+    if( parent_left != null )
+        parent_left.parent = child;
 
-    parent->left = child_left;
-    if( child_left != NULL )
-        child_left->parent = parent;
+    parent.left = child_left;
+    if( child_left != null )
+        child_left.parent = parent;
 
-    parent->right = child_right;
-    if( child_right != NULL )
-        child_right->parent = parent;
+    parent.right = child_right;
+    if( child_right != null )
+        child_right.parent = parent;
 
     switch_node_ranks( queue, parent, child );
 }
@@ -461,37 +444,36 @@ static void swap_parent_with_right_child( rank_relaxed_weak_queue *queue,
  * @param parent    Parent node
  * @param child     Left child node
  */
-static void swap_parent_with_left_child( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *parent, rank_relaxed_weak_node *child )
-{
-    rank_relaxed_weak_node *parent_parent = parent->parent;
-    rank_relaxed_weak_node *parent_right = parent->right;
-    rank_relaxed_weak_node *child_left = child->left;
-    rank_relaxed_weak_node *child_right = child->right;
+export function swap_parent_with_left_child( queue: rank_relaxed_weak_queue*,
+    parent: rank_relaxed_weak_node*, child: rank_relaxed_weak_node* ): void {
+    let parent_parent: rank_relaxed_weak_node* = parent.parent;
+    let parent_right: rank_relaxed_weak_node* = parent.right;
+    let child_left: rank_relaxed_weak_node* = child.left;
+    let child_right: rank_relaxed_weak_node* = child.right;
 
-    parent->parent = child;
-    child->left = parent;
+    parent.parent = child;
+    child.left = parent;
 
-    child->parent = parent_parent;
-    if( parent_parent != NULL )
+    child.parent = parent_parent;
+    if( parent_parent != null )
     {
-        if( parent_parent->left == parent )
-            parent_parent->left = child;
+        if( parent_parent.left === parent )
+            parent_parent.left = child;
         else
-            parent_parent->right = child;
+            parent_parent.right = child;
     }
 
-    child->right = parent_right;
-    if( parent_right != NULL )
-        parent_right->parent = child;
+    child.right = parent_right;
+    if( parent_right != null )
+        parent_right.parent = child;
 
-    parent->left = child_left;
-    if( child_left != NULL )
-        child_left->parent = parent;
+    parent.left = child_left;
+    if( child_left != null )
+        child_left.parent = parent;
 
-    parent->right = child_right;
-    if( child_right != NULL )
-        child_right->parent = parent;
+    parent.right = child_right;
+    if( child_right != null )
+        child_right.parent = parent;
 
     switch_node_ranks( queue, parent, child );
 }
@@ -503,49 +485,48 @@ static void swap_parent_with_left_child( rank_relaxed_weak_queue *queue,
  * @param a     First node
  * @param b     Second node
  */
-static void swap_disconnected( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b )
-{
-    rank_relaxed_weak_node *a_parent = a->parent;
-    rank_relaxed_weak_node *a_left = a->left;
-    rank_relaxed_weak_node *a_right = a->right;
-    rank_relaxed_weak_node *b_parent = b->parent;
-    rank_relaxed_weak_node *b_left = b->left;
-    rank_relaxed_weak_node *b_right = b->right;
+export function swap_disconnected( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void {
+    let a_parent: rank_relaxed_weak_node* = a.parent;
+    let a_left: rank_relaxed_weak_node* = a.left;
+    let a_right: rank_relaxed_weak_node* = a.right;
+    let b_parent: rank_relaxed_weak_node* = b.parent;
+    let b_left: rank_relaxed_weak_node* = b.left;
+    let b_right: rank_relaxed_weak_node* = b.right;
 
-    a->parent = b_parent;
-    if( b_parent != NULL )
+    a.parent = b_parent;
+    if( b_parent != null )
     {
-        if( b_parent->left == b )
-            b_parent->left = a;
+        if( b_parent.left === b )
+            b_parent.left = a;
         else
-            b_parent->right = a;
+            b_parent.right = a;
     }
 
-    b->parent = a_parent;
-    if( a_parent != NULL )
+    b.parent = a_parent;
+    if( a_parent != null )
     {
-        if( a_parent->left == a )
-            a_parent->left = b;
+        if( a_parent.left === a )
+            a_parent.left = b;
         else
-            a_parent->right = b;
+            a_parent.right = b;
     }
 
-    a->left = b_left;
-    if( b_left != NULL )
-        b_left->parent = a;
+    a.left = b_left;
+    if( b_left != null )
+        b_left.parent = a;
 
-    b->left = a_left;
-    if( a_left != NULL )
-        a_left->parent = b;
+    b.left = a_left;
+    if( a_left != null )
+        a_left.parent = b;
 
-    a->right = b_right;
-    if( b_right != NULL )
-        b_right->parent = a;
+    a.right = b_right;
+    if( b_right != null )
+        b_right.parent = a;
 
-    b->right = a_right;
-    if( a_right != NULL )
-        a_right->parent = b;
+    b.right = a_right;
+    if( a_right != null )
+        a_right.parent = b;
 
     switch_node_ranks( queue, a, b );
 }
@@ -560,24 +541,23 @@ static void swap_disconnected( rank_relaxed_weak_queue *queue,
  * @param parent    Parent node
  * @param child     Right child node
  */
-static void switch_node_ranks( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *a, rank_relaxed_weak_node *b )
-{
-    int a_unrooted = ( queue->nodes[ROOTS][a->rank] == a );
-    int b_unrooted = ( queue->nodes[ROOTS][b->rank] == b );
+export function switch_node_ranks( queue: rank_relaxed_weak_queue*,
+    a: rank_relaxed_weak_node*, b: rank_relaxed_weak_node* ): void {
+    int a_unrooted = ( queue.nodes[ROOTS][a.rank] === a );
+    int b_unrooted = ( queue.nodes[ROOTS][b.rank] === b );
 
     if( a_unrooted )
         unregister_node( queue, ROOTS, a );
     if( b_unrooted )
         unregister_node( queue, ROOTS, b );
-    if( a->marked )
+    if( a.marked )
         unregister_node( queue, MARKS, a );
-    if( b->marked )
+    if( b.marked )
         unregister_node( queue, MARKS, b );
 
-    uint32_t temp_rank = a->rank;
-    a->rank = b->rank;
-    b->rank = temp_rank;
+    let temp_rank: uint32_t = a.rank;
+    a.rank = b.rank;
+    b.rank = temp_rank;
 
     if( a_unrooted )
         register_node( queue, ROOTS, b );
@@ -590,18 +570,18 @@ static void switch_node_ranks( rank_relaxed_weak_queue *queue,
  *
  * @param node  Node whose subtree to flip
  */
-static inline void flip_subtree( rank_relaxed_weak_node *node )
+static inline void flip_subtree( node: rank_relaxed_weak_node* )
 {
-    if( node->parent == NULL )
+    if( node.parent == null )
         return;
-    rank_relaxed_weak_node *temp = node->left;
-    node->left = node->right;
-    node->right = temp;
+    let temp: rank_relaxed_weak_node* = node.left;
+    node.left = node.right;
+    node.right = temp;
 }
 
 /**
  * Swap two arbitrary subtrees between their corresponding parents.  Takes
- * pointers to the entries for the subtrees (e.g. &(node->left)) and updates
+ * pointers to the entries for the subtrees (e.g. &(node.left)) and updates
  * them in place to reflect the swap.
  *
  * @param a     First parent node
@@ -609,18 +589,18 @@ static inline void flip_subtree( rank_relaxed_weak_node *node )
  * @param b     Second parent node
  * @param sub_b Pointer to the second subtree
  */
-static inline void swap_subtrees( rank_relaxed_weak_node *a,
-    rank_relaxed_weak_node **sub_a, rank_relaxed_weak_node *b,
-    rank_relaxed_weak_node **sub_b )
+static inline void swap_subtrees( a: rank_relaxed_weak_node*,
+    sub_a: rank_relaxed_weak_node*[], b: rank_relaxed_weak_node*,
+    sub_b: rank_relaxed_weak_node*[] )
 {
-    rank_relaxed_weak_node *temp = *sub_a;
+    let temp: rank_relaxed_weak_node* = *sub_a;
     *sub_a = *sub_b;
     *sub_b = temp;
 
-    if( *sub_a != NULL )
-        (*sub_a)->parent = a;
-    if( *sub_b != NULL )
-        (*sub_b)->parent = b;
+    if( *sub_a != null )
+        (*sub_a).parent = a;
+    if( *sub_b != null )
+        (*sub_b).parent = b;
 }
 
 /**
@@ -631,22 +611,21 @@ static inline void swap_subtrees( rank_relaxed_weak_node *a,
  * @param queue Queue in which to operate
  * @param node  Top node in the spine
  */
-static void sever_spine( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *next;
-    rank_relaxed_weak_node *current = node;
-    while( current != NULL )
+export function sever_spine( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node* ): void {
+    let next: rank_relaxed_weak_node*;
+    let current: rank_relaxed_weak_node* = node;
+    while( current != null )
     {
-        next = current->left;
+        next = current.left;
 
-        if( current->marked )
+        if( current.marked )
         {
             unregister_node( queue, MARKS, current );
-            current->marked = 0;
+            current.marked = 0;
         }
-        current->left = NULL;
-        current->parent = NULL;
+        current.left = null;
+        current.parent = null;
         insert_root( queue, current );
 
         current = next;
@@ -666,46 +645,45 @@ static void sever_spine( rank_relaxed_weak_queue *queue,
  * @param node          Node to remove
  * @param replacement   Replacement node
  */
-static void replace_node( rank_relaxed_weak_queue *queue,
-    rank_relaxed_weak_node *node, rank_relaxed_weak_node *replacement )
-{
-    rank_relaxed_weak_node *current, *next;
-    rank_relaxed_weak_node *result = replacement;
+export function replace_node( queue: rank_relaxed_weak_queue*,
+    node: rank_relaxed_weak_node*, replacement: rank_relaxed_weak_node* ): void {
+    let current: rank_relaxed_weak_node*, next;
+    let result: rank_relaxed_weak_node* = replacement;
 
-    if( node->right != NULL )
+    if( node.right != null )
     {
-        current = node->right;
-        while( current->left != NULL )
-            current = current->left;
+        current = node.right;
+        while( current.left != null )
+            current = current.left;
 
-        while( current != node )
+        while( current !== node )
         {
-            next = current->parent;
-            if( current->marked )
+            next = current.parent;
+            if( current.marked )
             {
                 unregister_node( queue, MARKS, current );
-                current->marked = 0;
+                current.marked = 0;
             }
-            current->parent = NULL;
-            current->left = NULL;
+            current.parent = null;
+            current.left = null;
             result = join( queue, result, current );
 
             current = next;
         }
     }
 
-    result->parent = node->parent;
-    if( result->parent != NULL )
-        result->parent->right = result;
-    result->left = node->left;
-    if( result->left != NULL )
-        result->left->parent = result;
+    result.parent = node.parent;
+    if( result.parent != null )
+        result.parent.right = result;
+    result.left = node.left;
+    if( result.left != null )
+        result.left.parent = result;
 
-    result->marked = 1;
+    result.marked = 1;
     register_node( queue, MARKS, result );
     restore_invariants( queue, result );
 
-    if( result->parent == NULL )
+    if( result.parent == null )
         register_node( queue, ROOTS, result );
 }
 
@@ -714,31 +692,30 @@ static void replace_node( rank_relaxed_weak_queue *queue,
  *
  * @param queue     Queue in which to operate
  */
-static void fix_min( rank_relaxed_weak_queue *queue )
-{
-    int i;
-    uint32_t rank;
-    rank_relaxed_weak_node *current;
-    rank_relaxed_weak_node *min = NULL;
+export function fix_min( queue: rank_relaxed_weak_queue* ): void {
+    let i: int;
+    let rank: uint32_t;
+    let current: rank_relaxed_weak_node*;
+    let min: rank_relaxed_weak_node* = null;
 
-    uint64_t search_registry;
-    rank_relaxed_weak_node **search_list;
+    let search_registry: uint64_t;
+    let search_list: rank_relaxed_weak_node*[];
     for( i = 0; i < 2; i++ )
     {
-        search_registry = queue->registry[i];
-        search_list = queue->nodes[i];
+        search_registry = queue.registry[i];
+        search_list = queue.nodes[i];
 
         while( search_registry )
         {
             rank = REGISTRY_LEADER( search_registry );
             current = search_list[rank];
-            if( min == NULL || current->key <= min->key )
+            if( min == null || current.key <= min.key )
                 min = current;
             REGISTRY_UNSET( search_registry, rank );
         }
     }
 
-    queue->minimum = min;
+    queue.minimum = min;
 }
 
 /**
@@ -749,12 +726,11 @@ static void fix_min( rank_relaxed_weak_queue *queue )
  * @param node  Node to relocate
  * @return      Pointer to marked node
  */
-static rank_relaxed_weak_node* transformation_cleaning(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *sibling = node->parent->right;
-    flip_subtree( node->parent );
-    swap_subtrees( node, &(node->left), sibling, &(sibling->left) );
+export function transformation_cleaning(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let sibling: rank_relaxed_weak_node* = node.parent.right;
+    flip_subtree( node.parent );
+    swap_subtrees( node, &(node.left), sibling, &(sibling.left) );
 
     return node;
 }
@@ -770,36 +746,35 @@ static rank_relaxed_weak_node* transformation_cleaning(
  * @param parent    One of the two equal-ranked nodes
  * @return          Pointer to the still-marked node
  */
-static rank_relaxed_weak_node* transformation_pair(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *primary = node;
-    rank_relaxed_weak_node *extra = queue->nodes[MARKS][primary->rank];
+export function transformation_pair(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let primary: rank_relaxed_weak_node* = node;
+    let extra: rank_relaxed_weak_node* = queue.nodes[MARKS][primary.rank];
 
-    rank_relaxed_weak_node *tmp = primary;
-    if( extra->parent->key < primary->parent->key )
+    let tmp: rank_relaxed_weak_node* = primary;
+    if( extra.parent.key < primary.parent.key )
     {
         primary = extra;
         extra = tmp;
     }
 
-    rank_relaxed_weak_node *extra_parent = extra->parent;
-    rank_relaxed_weak_node *primary_parent = primary->parent;
+    let extra_parent: rank_relaxed_weak_node* = extra.parent;
+    let primary_parent: rank_relaxed_weak_node* = primary.parent;
 
     unregister_node( queue, MARKS, extra );
 
     swap_disconnected( queue, primary, extra_parent );
-    swap_subtrees( extra_parent, &(extra_parent->right), extra, &(extra->left) );
+    swap_subtrees( extra_parent, &(extra_parent.right), extra, &(extra.left) );
 
-    if( extra_parent->key < primary_parent->key )
+    if( extra_parent.key < primary_parent.key )
     {
         swap_parent_with_right_child( queue, primary_parent, extra_parent );
         flip_subtree( primary_parent );
     }
 
-    rank_relaxed_weak_node *result = primary;
-    rank_relaxed_weak_node *unmarked = extra;
-    if( extra->key < primary->key )
+    let result: rank_relaxed_weak_node* = primary;
+    let unmarked: rank_relaxed_weak_node* = extra;
+    if( extra.key < primary.key )
     {
         swap_parent_with_right_child( queue, primary, extra );
         flip_subtree( primary );
@@ -807,7 +782,7 @@ static rank_relaxed_weak_node* transformation_pair(
         unmarked = primary;
     }
     unregister_node( queue, MARKS, unmarked );
-    unmarked->marked = 0;
+    unmarked.marked = 0;
 
     return result;
 }
@@ -818,20 +793,19 @@ static rank_relaxed_weak_node* transformation_pair(
  *
  * @param queue Queue in which to operate
  * @param node  Node to repair
- * @return      Pointer to remaining marked node, otherwise NULL
+ * @return      Pointer to remaining marked node, otherwise null
  */
-static rank_relaxed_weak_node* transformation_parent(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *parent = node->parent;
-    rank_relaxed_weak_node *result = parent;
-    rank_relaxed_weak_node *unmarked = node;
+export function transformation_parent(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let parent: rank_relaxed_weak_node* = node.parent;
+    let result: rank_relaxed_weak_node* = parent;
+    let unmarked: rank_relaxed_weak_node* = node;
 
-    if( parent->marked )
+    if( parent.marked )
         unregister_node( queue, MARKS, parent );
     unregister_node( queue, MARKS, node );
 
-    if( node->key < parent->key )
+    if( node.key < parent.key )
     {
         swap_parent_with_right_child( queue, parent, node );
         flip_subtree( parent );
@@ -839,10 +813,10 @@ static rank_relaxed_weak_node* transformation_parent(
         unmarked = parent;
     }
     unregister_node( queue, MARKS, unmarked );
-    unmarked->marked = 0;
+    unmarked.marked = 0;
 
-    if( !result->marked )
-        result = NULL;
+    if( !result.marked )
+        result = null;
 
     return result;
 }
@@ -856,20 +830,19 @@ static rank_relaxed_weak_node* transformation_parent(
  * @param node  Left child node
  * @return      Pointer to resulting marked parent node
  */
-static rank_relaxed_weak_node* transformation_sibling(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *parent = node->parent;
-    rank_relaxed_weak_node *sibling = parent->right;
-    rank_relaxed_weak_node *result = node;
-    rank_relaxed_weak_node *unmarked = sibling;
+export function transformation_sibling(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let parent: rank_relaxed_weak_node* = node.parent;
+    let sibling: rank_relaxed_weak_node* = parent.right;
+    let result: rank_relaxed_weak_node* = node;
+    let unmarked: rank_relaxed_weak_node* = sibling;
 
     unregister_node( queue, MARKS, sibling );
 
     swap_parent_with_left_child( queue, parent, node );
-    swap_subtrees( parent, &(parent->right), sibling, &(sibling->left) );
+    swap_subtrees( parent, &(parent.right), sibling, &(sibling.left) );
 
-    if( sibling->key < node->key )
+    if( sibling.key < node.key )
     {
         swap_parent_with_right_child( queue, node, sibling );
         flip_subtree( node );
@@ -877,7 +850,7 @@ static rank_relaxed_weak_node* transformation_sibling(
         unmarked = node;
     }
     unregister_node( queue, MARKS, unmarked );
-    unmarked->marked = 0;
+    unmarked.marked = 0;
 
     return result;
 }
@@ -892,14 +865,13 @@ static rank_relaxed_weak_node* transformation_sibling(
  * @param node  Marked left child node
  * @return      Pointer to lesser-ranked marked node
  */
-static rank_relaxed_weak_node* transformation_zigzag(
-    rank_relaxed_weak_queue *queue, rank_relaxed_weak_node *node )
-{
-    rank_relaxed_weak_node *parent = node->parent;
-    rank_relaxed_weak_node *grand = parent->parent;
+export function transformation_zigzag(
+    queue: rank_relaxed_weak_queue*, node: rank_relaxed_weak_node* ): rank_relaxed_weak_node* {
+    let parent: rank_relaxed_weak_node* = node.parent;
+    let grand: rank_relaxed_weak_node* = parent.parent;
 
-    if( grand->key < node->key )
-        node->marked = 0;
+    if( grand.key < node.key )
+        node.marked = 0;
     else
     {
         swap_disconnected( queue, grand, node );

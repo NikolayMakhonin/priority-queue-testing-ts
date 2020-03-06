@@ -8,15 +8,15 @@
 // Similarly I tried introducing LogP as a template
 // parameter but this did not compile on SunCC
   {
-    Entry *currentPos;
+    let currentPos: Entry*;
     Key currentKey;
-    int currentIndex; // leaf pointed to by current entry
-    Element *done = to + l;
-    Entry    *regEntry   = entry;
-    Element **regCurrent = current;
-    int      winnerIndex = regEntry[0].index;
+    let currentIndex: int; // leaf pointed to by current entry
+    let done: Element* = to + l;
+    let regEntry: Entry*   = entry;
+    let regCurrent: Element*[] = current;
+    let winnerIndex: int = regEntry[0].index;
     Key      winnerKey   = regEntry[0].key;
-    Element *winnerPos;
+    let winnerPos: Element*;
     Key sup = dummy.key; // supremum
     
     Assert2(logK >= LogK);
@@ -24,16 +24,16 @@
       winnerPos = regCurrent[winnerIndex];
       
       // write result
-      to->key   = winnerKey;
-      to->value = winnerPos->value;
+      to.key   = winnerKey;
+      to.value = winnerPos.value;
       
       // advance winner segment
       winnerPos++;
       regCurrent[winnerIndex] = winnerPos;
-      winnerKey = winnerPos->key;
+      winnerKey = winnerPos.key;
       
       // remove winner segment if empty now
-      if (winnerKey == sup) { 
+      if (winnerKey === sup) {
         deallocateSegment(winnerIndex); 
       } 
       to++;
@@ -42,11 +42,11 @@
 #define TreeStep(L)\
       if (1 << LogK >= 1 << L) {\
         Entry *pos##L = regEntry+((winnerIndex+(1<<LogK)) >> ((LogK-L)+1));\
-        Key    key##L = pos##L->key;\
+        Key    key##L = pos##L.key;\
         if (key##L < winnerKey) {\
-          int index##L  = pos##L->index;\
-          pos##L->key   = winnerKey;\
-          pos##L->index = winnerIndex;\
+          int index##L  = pos##L.index;\
+          pos##L.key   = winnerKey;\
+          pos##L.index = winnerIndex;\
           winnerKey     = key##L;\
           winnerIndex   = index##L;\
         }\

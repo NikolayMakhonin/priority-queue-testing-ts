@@ -1,20 +1,20 @@
 /* parser for getting  DIMACS format input and transforming the
    data to the internal representation */
 
-#define MAXLINE       100	/* max line length in the input file */
-#define ARC_FIELDS      3	/* no of fields in arc line  */
-#define P_FIELDS        3       /* no of fields in problem line */
+export const MAXLINE = 100;	/* max line length in the input file */
+export const ARC_FIELDS = 3;	/* no of fields in arc line  */
+export const P_FIELDS = 3;       /* no of fields in problem line */
 #define PROBLEM_TYPE "cut"      /* name of problem type*/
 
 void setLastArcs ()
 
 {
-  node *v;
-  arc *a;
+  let v: node*;
+  let a: arc*;
 
   ForAllNodes ( v ) {
-    for ( a = v -> first; a -> next != NULL; a = a -> next ) ;
-    v -> last = a;
+    for ( a = v . first; a . next != null; a = a . next ) ;
+    v . last = a;
   }
 
 }
@@ -22,14 +22,14 @@ void setLastArcs ()
 void setPrevArcs ()
 
 {
-  node *v;
-  arc *a;
+  let v: node*;
+  let a: arc*;
 
   ForAllNodes ( v ) {
-    v -> first -> prev = NULL;
+    v . first . prev = null;
     ForAllArcs ( v, a )
-      if ( a -> next != NULL )
-	a -> next -> prev = a;
+      if ( a . next != null )
+	a . next . prev = a;
   }
 }
 
@@ -37,37 +37,35 @@ void setPrevArcs ()
 void initInit ()
 
 {
-  node *v;
+  let v: node*;
 
   setLastArcs ();
   setPrevArcs ();
 
 }
 
-int parse( )
+export function parse( ): int {
 
-{
-
-long    n,                      /* internal number of nodes */
+let n: long,                      /* internal number of nodes */
         node_min,               /* minimal no of node  */
         node_max,               /* maximal no of nodes */
         head, tail, i;
 
-double  acap;                   /* input arc capacity */
-long    m,                      /* internal number of arcs */
+let acap: double;                   /* input arc capacity */
+let m: long,                      /* internal number of arcs */
         /* temporary variables carrying no of arcs */
         last, arc_num, arc_new_num;
 
-node    *pnodes,                 /* pointers to the node structure */
+let pnodes: node*,                 /* pointers to the node structure */
         *head_p,
-        *ndp,
-        *i_n,
-        *j_n;
+        ndp,
+        i_n,
+        j_n;
 
-arc     *parcs,
-        *arc_current, *r_arc_current,
-        *arc_new,
-        *arc_tmp;
+let parcs: arc*,
+        arc_current, r_arc_current,
+        arc_new,
+        arc_tmp;
 
 long    no_lines=0,             /* no of current input line */
         no_plines=0,            /* no of problem-lines */
@@ -75,37 +73,37 @@ long    no_lines=0,             /* no of current input line */
         no_nlines=0,            /* no of node lines */
         no_alines=0;            /* no of arc-lines */
 
-char    in_line[MAXLINE],       /* for reading input line */
+let in_line: char[MAXLINE],       /* for reading input line */
         pr_type[3];             /* for reading type of the problem */
 
-long    k;                      /* temporary */
-int     err_no;                 /* no of detected error */
+let k: long;                      /* temporary */
+let err_no: int;                 /* no of detected error */
 
 /* -------------- error numbers & error messages ---------------- */
-#define EN1   0
-#define EN2   1
-#define EN3   2
-#define EN4   3
-#define EN6   4
-#define EN10  5
-#define EN7   6
-#define EN8   7
-#define EN9   8
-#define EN11  9
-#define EN12 10
-#define EN13 11
-#define EN14 12
-#define EN16 13
-#define EN15 14
-#define EN17 15
-#define EN18 16
-#define EN21 17
-#define EN19 18
-#define EN20 19
-#define EN22 20
-#define EN23 21
+export const EN1 = 0;
+export const EN2 = 1;
+export const EN3 = 2;
+export const EN4 = 3;
+export const EN6 = 4;
+export const EN10 = 5;
+export const EN7 = 6;
+export const EN8 = 7;
+export const EN9 = 8;
+export const EN11 = 9;
+export const EN12 = 10;
+export const EN13 = 11;
+export const EN14 = 12;
+export const EN16 = 13;
+export const EN15 = 14;
+export const EN17 = 15;
+export const EN18 = 16;
+export const EN21 = 17;
+export const EN19 = 18;
+export const EN20 = 19;
+export const EN22 = 20;
+export const EN23 = 21;
 
-static char *err_message[] = 
+static err_message: string[] =
   { 
 /* 0*/    "more than one problem line",
 /* 1*/    "wrong number of parameters in the problem line",
@@ -132,7 +130,7 @@ static char *err_message[] =
   };
 /* --------------------------------------------------------------- */
 
-while ( gets ( in_line ) != NULL )
+while ( gets ( in_line ) != null )
   {
   no_lines ++;
 
@@ -154,7 +152,7 @@ while ( gets ( in_line ) != NULL )
         /* reading problem line: type of problem, no of nodes, no of arcs */
                     sscanf ( in_line, "%*c %3s %ld %ld", pr_type, 
 			    &input_n, &input_m )
-                != P_FIELDS
+                !== P_FIELDS
                    )
 		    /*wrong number of parameters in the problem line*/
 		    { err_no = EN2; goto error; }
@@ -172,15 +170,15 @@ while ( gets ( in_line ) != NULL )
 
 
 		/* allocating memory */
-                pnodes    = (node *) calloc ( n+1, sizeof(node) );
-		parcs     = (arc *)  calloc ( m+3, sizeof(arc) );
+                pnodes    = (node *) new Array(n+1);
+		parcs     = (arc *)  new Array(m+3);
 
-                if ( pnodes == NULL || parcs == NULL )
+                if ( pnodes == null || parcs == null )
                     /* memory is not allocated */
 		    { err_no = EN6; goto error; }
 		     
 		for ( i_n = pnodes; i_n < pnodes + n + 1; i_n++ )
-		  i_n -> first = NULL;
+		  i_n . first = null;
 
 		/* setting pointer to the first arc */
 		sentinel_arc = parcs + input_m + 1;
@@ -201,7 +199,7 @@ while ( gets ( in_line ) != NULL )
                     /* reading an arc description */
                     sscanf ( in_line,"%*c %ld %ld %lf ",
                                       &tail, &head, &acap )
-                    != ARC_FIELDS
+                    !== ARC_FIELDS
                    ) 
                     /* arc description is not correct */
                     { err_no = EN15; goto error; }
@@ -219,15 +217,15 @@ while ( gets ( in_line ) != NULL )
 		j_n    = pnodes + head;
 
                 /* storing information about the arc */
-		arc_current       -> head    = j_n;
-		arc_current       -> cap     = acap;
-		arc_current       -> next    = i_n -> first;
-		i_n -> first = arc_current;
+		arc_current       . head    = j_n;
+		arc_current       . cap     = acap;
+		arc_current       . next    = i_n . first;
+		i_n . first = arc_current;
 		
-		r_arc_current -> head    = i_n;
-		r_arc_current -> cap     = acap;
-		r_arc_current -> next    = j_n -> first;
-		j_n -> first = r_arc_current;
+		r_arc_current . head    = i_n;
+		r_arc_current . cap     = acap;
+		r_arc_current . next    = j_n . first;
+		j_n . first = r_arc_current;
 
 		/* searching for minimum and maximum node */
                 if ( head < node_min ) node_min = head;
@@ -251,10 +249,10 @@ while ( gets ( in_line ) != NULL )
 
 /* ----- all is red  or  error while reading ----- */ 
 
-if ( feof (stdin) == 0 ) /* reading error */
+if ( feof (stdin) === 0 ) /* reading error */
   { err_no=EN21; goto error; } 
 
-if ( no_lines == 0 ) /* empty input */
+if ( no_lines === 0 ) /* empty input */
   { err_no = EN22; goto error; } 
 
 if ( no_alines < input_m ) /* not enough arcs */

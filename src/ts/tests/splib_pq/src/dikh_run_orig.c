@@ -10,37 +10,37 @@
 #include <stdlib.h>
 
 /* statistical variables */
-long n_scans = 0;
-long n_impr = 0;
+let n_scans: long = 0;
+let n_impr: long = 0;
 
 /* definitions of types: node & arc */
 
-#include "types_dh.h"
+import {} from 'types_dh.h'
 
 /* parser for getting extended DIMACS format input and transforming the
    data to the internal representation */
 
-#include "parser_dh.c"
+import {} from 'parser_dh.c'
 
 /* function 'timer()' for mesuring processor time */
 
-#include "timer.c"
+import {} from 'timer.c'
 
 /* function for constructing shortest path tree */
 
-#include "dikh.c"
+import {} from 'dikh.c'
 
 
 main ()
 
 {
 
-float t;
-arc *arp, *ta;
-node *ndp, *source, *k;
-long n, m, nmin, i; 
-char name[21];
-double sum_d = 0;
+let t: float;
+let arp: arc*, ta;
+let ndp: node*, source, k;
+let n: long, m, nmin, i;
+let name: char[21];
+let sum_d: double = 0;
 
  parse( &n, &m, &ndp, &arp, &source, &nmin, name );
 /*
@@ -51,9 +51,9 @@ printf ( "%s\nn= %ld, m= %ld, nmin= %ld, source = %ld\n",
 printf ("\nordered arcs:\n");
 for ( k = ndp; k< ndp + n; k++ )
   { i = (k-ndp)+nmin;
-    for ( ta=k -> first; ta != (k+1)-> first; ta++ )
+    for ( ta=k . first; ta !== (k+1). first; ta++ )
       printf ( " %2ld %2ld %4ld\n",
-               i, ((ta->head)-ndp)+nmin, ta->len
+               i, ((ta.head)-ndp)+nmin, ta.len
              );
 
   }
@@ -65,10 +65,10 @@ dikh ( n, ndp, source );
 t = timer() - t;
 
 for ( k= ndp; k< ndp + n; k++ )
-  if ( k -> parent != (node*) NULL )
-   sum_d += (double) (k -> dist);
+  if ( k . parent !== (node*) null )
+   sum_d += (double) (k . dist);
 
-printf ("\nDijkstra with heap -> problem name: %s\n\n\
+printf ("\nDijkstra with heap . problem name: %s\n\n\
 Nodes: %ld    Arcs: %ld\n\
 Number of scans: %ld\n\
 Number of improveness: %ld\n\
@@ -80,6 +80,6 @@ Running time of SP computation: %.2f\n\n",
 
 /*
 for ( k=ndp; k< ndp+n; k++ )
-printf (" %d %d %d\n", nd(k), nd(k->parent), k->dist);
+printf (" %d %d %d\n", nd(k), nd(k.parent), k.dist);
 */
 }

@@ -5,7 +5,7 @@
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
-#include "queue_common.h"
+import {} from 'queue_common.h'
 
 /**
  * Holds an inserted element, as well as pointers to maintain tree
@@ -13,47 +13,45 @@
  * mutability.  Keeps a pointer to the parent, first child, and next sibiling.
  * A root is denoted by a null parent.
  */
-struct binomial_node_t
-{
+export interface binomial_node_t {
     //! Parent node in half-tree order
-    struct binomial_node_t *parent;
+    struct parent: binomial_node_t*;
     //! First child
-    struct binomial_node_t *left;
+    struct left: binomial_node_t*;
     //! Next sibling, or next root if this node is a root
-    struct binomial_node_t *right;
+    struct right: binomial_node_t*;
 
     //! Rank of binomial tree
-    uint32_t rank;
+    let rank: uint32_t;
 
     //! Pointer to a piece of client data
-    item_type item;
+    let item: item_type;
     //! Key for the item
-    key_type key;
-} __attribute__ ((aligned(4)));
+    let key: key_type;
+};
 
-typedef struct binomial_node_t binomial_node;
-typedef binomial_node pq_node_type;
+export type binomial_node = binomial_node_t;
+export type pq_node_type = binomial_node;
 
 /**
  * A mutable, meldable, binomial queue.  Maintains a forest of uniquely-sized
  * perfect binomial trees using a single binary tree representation.
  */
-struct binomial_queue_t
-{
+export interface binomial_queue_t {
     //! Memory map to use for node allocation
-    mem_map *map;
+    let map: mem_map*;
     //! The number of items held in the queue
-    uint32_t size;
+    let size: uint32_t;
     //! Pointer to the minimum node in the queue
-    binomial_node *minimum;
+    let minimum: binomial_node*;
     //! A registry to keep track of non-null roots
-    uint64_t registry;
+    let registry: uint64_t;
     //! An array of roots of the queue, indexed by rank
-    binomial_node *roots[MAXRANK];
-} __attribute__ ((aligned(4)));
+    let roots: binomial_node*[MAXRANK];
+};
 
-typedef struct binomial_queue_t binomial_queue;
-typedef binomial_queue pq_type;
+export type binomial_queue = binomial_queue_t;
+export type pq_type = binomial_queue;
 
 //==============================================================================
 // PUBLIC DECLARATIONS
@@ -65,21 +63,21 @@ typedef binomial_queue pq_type;
  * @param map   Memory map to use for node allocation
  * @return      Pointer to the new queue
  */
-binomial_queue* pq_create( mem_map *map );
+export function pq_create( map: mem_map* ): binomial_queue* ;
 
 /**
  * Frees all the memory used by the queue.
  *
  * @param queue Queue to destroy
  */
-void pq_destroy( binomial_queue *queue );
+export function pq_destroy( queue: binomial_queue* ): void ;
 
 /**
  * Deletes all nodes from the queue, leaving it empty.
  *
  * @param queue Queue to clear
  */
-void pq_clear( binomial_queue *queue );
+export function pq_clear( queue: binomial_queue* ): void ;
 
 /**
  * Returns the key associated with the queried node.
@@ -88,7 +86,7 @@ void pq_clear( binomial_queue *queue );
  * @param node  Node to query
  * @return      Node's key
  */
-key_type pq_get_key( binomial_queue *queue, binomial_node *node );
+export function pq_get_key( queue: binomial_queue*, node: binomial_node* ): key_type ;
 
 /**
  * Returns the item associated with the queried node.
@@ -97,7 +95,7 @@ key_type pq_get_key( binomial_queue *queue, binomial_node *node );
  * @param node  Node to query
  * @return      Node's item
  */
-item_type* pq_get_item( binomial_queue *queue, binomial_node *node );
+export function pq_get_item( queue: binomial_queue*, node: binomial_node* ): item_type* ;
 
 /**
  * Returns the current size of the queue.
@@ -105,7 +103,7 @@ item_type* pq_get_item( binomial_queue *queue, binomial_node *node );
  * @param queue Queue to query
  * @return      Size of queue
  */
-uint32_t pq_get_size( binomial_queue *queue );
+export function pq_get_size( queue: binomial_queue* ): uint32_t ;
 
 /**
  * Takes an item-key pair to insert it into the queue and creates a new
@@ -117,7 +115,7 @@ uint32_t pq_get_size( binomial_queue *queue );
  * @param key   Key to use for node priority
  * @return      Pointer to corresponding node
  */
-binomial_node* pq_insert( binomial_queue *queue, item_type item, key_type key );
+export function pq_insert( queue: binomial_queue*, item: item_type, key: key_type ): binomial_node* ;
 
 /**
  * Returns the minimum item from the queue.
@@ -125,7 +123,7 @@ binomial_node* pq_insert( binomial_queue *queue, item_type item, key_type key );
  * @param queue Queue to query
  * @return      Node with minimum key
  */
-binomial_node* pq_find_min( binomial_queue *queue );
+export function pq_find_min( queue: binomial_queue* ): binomial_node* ;
 
 /**
  * Removes the minimum item from the queue and returns it.  Relies on
@@ -134,7 +132,7 @@ binomial_node* pq_find_min( binomial_queue *queue );
  * @param queue Queue to query
  * @return      Minimum key, corresponding to item deleted
  */
-key_type pq_delete_min( binomial_queue *queue );
+export function pq_delete_min( queue: binomial_queue* ): key_type ;
 
 /**
  * Removes an arbitrary item from the queue and modifies queue structure
@@ -149,7 +147,7 @@ key_type pq_delete_min( binomial_queue *queue );
  * @param node  Pointer to node corresponding to the item to remove
  * @return      Key of item removed
  */
-key_type pq_delete( binomial_queue *queue, binomial_node *node );
+export function pq_delete( queue: binomial_queue*, node: binomial_node* ): key_type ;
 
 /**
  * If the item in the queue is modified in such a way to decrease the
@@ -162,8 +160,8 @@ key_type pq_delete( binomial_queue *queue, binomial_node *node );
  * @param node      Node to change
  * @param new_key   New key to use for the given node
  */
-void pq_decrease_key( binomial_queue *queue, binomial_node *node,
-    key_type new_key );
+export function pq_decrease_key( queue: binomial_queue*, node: binomial_node*,
+    new_key: key_type ): void ;
 
 /**
  * Determines whether the queue is empty, or if it holds some items.
@@ -171,8 +169,8 @@ void pq_decrease_key( binomial_queue *queue, binomial_node *node,
  * @param queue Queue to query
  * @return      True if queue holds nothing, false otherwise
  */
-bool pq_empty( binomial_queue *queue );
+export function pq_empty( queue: binomial_queue* ): boolean ;
 
-//void verify_queue( binomial_queue *queue, uint32_t node_count );
+//void verify_queue( queue: binomial_queue*, node_count: uint32_t );
 #endif
 

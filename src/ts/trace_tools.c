@@ -1,13 +1,13 @@
-#include "trace_tools.h"
+import {} from 'trace_tools.h'
 
 //==============================================================================
 // DEFINES, INCLUDES, and STRUCTS
 //==============================================================================
 
 // some internal implementation details
-#define PQ_OP_BUFFER_LEN    131072
-#define MASK_PRIO 0xFFFFFFFF00000000
-#define MASK_NAME 0x00000000FFFFFFFF
+export const PQ_OP_BUFFER_LEN = 131072;
+export const MASK_PRIO = 0xFFFFFFFF00000000;
+export const MASK_NAME = 0x00000000FFFFFFFF;
 #define PQ_MAX(a,b) ( (a >= b) ? a : b )
 #define PQ_MIN(a,b) ( (a <= b) ? a : b )
 
@@ -15,7 +15,7 @@
 // STATIC DECLARATIONS
 //==============================================================================
 
-static const size_t pq_op_lengths[13] =
+static const pq_op_lengths: size_t[13] =
 {
     sizeof( pq_op_create ),
     sizeof( pq_op_destroy ),
@@ -32,68 +32,63 @@ static const size_t pq_op_lengths[13] =
     sizeof( pq_op_empty )
 };
 
-static size_t pq_op_buffer_pos = 0;
-static uint8_t pq_op_buffer[PQ_OP_BUFFER_LEN];
+static pq_op_buffer_pos: size_t = 0;
+static pq_op_buffer: uint8_t[PQ_OP_BUFFER_LEN];
 
-static int buffered_write( int file, uint8_t* data, size_t length );
+export function buffered_write( file: int, data: uint8_t*, length: size_t ): int ;
 
 //==============================================================================
 // PUBLIC METHODS
 //==============================================================================
 
-int pq_trace_write_header( int file, pq_trace_header header )
-{
-    int flush = pq_trace_flush_buffer( file );
-    if( flush == -1 )
+export function pq_trace_write_header( file: int, header: pq_trace_header ): int {
+    let flush: int = pq_trace_flush_buffer( file );
+    if( flush === -1 )
         return -1;
     lseek( file, 0, SEEK_SET );
-    ssize_t bytes = write( file, &header, sizeof( pq_trace_header) );
-    if( bytes != sizeof( pq_trace_header ) )
+    let bytes: ssize_t = write( file, &header, sizeof( pq_trace_header) );
+    if( bytes !== sizeof( pq_trace_header ) )
         return -1;
 
     return 0;
 }
 
-int pq_trace_read_header( int file, pq_trace_header *header )
-{
-    ssize_t bytes = read( file, header, sizeof( pq_trace_header ) );
-    if( bytes != sizeof( pq_trace_header ) )
+export function pq_trace_read_header( file: int, header: pq_trace_header* ): int {
+    let bytes: ssize_t = read( file, header, sizeof( pq_trace_header ) );
+    if( bytes !== sizeof( pq_trace_header ) )
         return -1;
 
     return 0;
 }
 
-int pq_trace_write_op( int file, void *op )
-{
-    uint32_t code = *((uint32_t*) op);
-    ssize_t length = pq_op_lengths[code];
-    ssize_t bytes = buffered_write( file, op, length );
-    if( bytes != length )
+export function pq_trace_write_op( file: int, op: void* ): int {
+    let code: uint32_t = *((uint32_t*) op);
+    let length: ssize_t = pq_op_lengths[code];
+    let bytes: ssize_t = buffered_write( file, op, length );
+    if( bytes !== length )
         return -1;
 
     return 0;
 }
 
-int pq_trace_read_op( int file, void *op )
-{
-    size_t bytes = read( file, op, sizeof( uint32_t ) );
-    if( bytes != sizeof( uint32_t ) )
+export function pq_trace_read_op( file: int, op: void* ): int {
+    let bytes: size_t = read( file, op, sizeof( uint32_t ) );
+    if( bytes !== sizeof( uint32_t ) )
         return -1;
 
-    uint32_t code = *((uint32_t*) op);
-    size_t length = pq_op_lengths[code] - sizeof( uint32_t );
+    let code: uint32_t = *((uint32_t*) op);
+    let length: size_t = pq_op_lengths[code] - sizeof( uint32_t );
     bytes = read( file, op + sizeof( uint32_t ), length );
-    if( bytes != length )
+    if( bytes !== length )
         return -1;
 
     return 0;
 }
 
-int pq_trace_flush_buffer( int file )
-{
-    size_t to_write = pq_op_buffer_pos;
-    int bytes = write( file, pq_op_buffer, to_write );
-    if( bytes != to_write )
+export function pq_trace_flush_buffer( file: int ): int {
+    let to_write: size_t = pq_op_buffer_pos;
+    let bytes: int = write( file, pq_op_buffer, to_write );
+    if( bytes !== to_write )
         return -1;
 
     pq_op_buffer_pos = 0;
@@ -105,14 +100,13 @@ int pq_trace_flush_buffer( int file )
 // STATIC METHODS
 //==============================================================================
 
-static int buffered_write( int file, uint8_t* data, size_t length )
-{
-    int status;
+export function buffered_write( file: int, data: uint8_t*, length: size_t ): int {
+    let status: int;
 
     if( PQ_OP_BUFFER_LEN - pq_op_buffer_pos - 1 < length )
     {
         status = pq_trace_flush_buffer( file );
-        if( status == -1 )
+        if( status === -1 )
             return status;
     }
 

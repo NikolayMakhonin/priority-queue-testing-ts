@@ -16,39 +16,37 @@
 #include <fcntl.h>
 
 /* statistical variables */
-long n_scans = 0;
-long n_impr = 0;
+let n_scans: long = 0;
+let n_impr: long = 0;
 
 /* definitions of types: node & arc */
 
-#include "types_dh.h"
+import {} from 'types_dh.h'
 
 /* parser for getting extended DIMACS format input and transforming the
    data to the internal representation */
 
-#include "parser_dh.c"
+import {} from 'parser_dh.c'
 
 /* function 'timer()' for mesuring processor time */
 
-#include "timer.c"
+import {} from 'timer.c'
 
 /* function for constructing shortest path tree */
 
-#include "dikh.c"
+import {} from 'dikh.c'
 
 
-int main (int argc, char** argv)
+export function main(argc: int, argv: string*): int {
 
-{
+let t: float;
+let arp: arc*;
+let ndp: node*, source, k;
+let n: long, m, nmin;
+let name: char[21];
+let sum_d: uint64_t = 0;
 
-float t;
-arc *arp;
-node *ndp, *source, *k;
-long n, m, nmin; 
-char name[21];
-uint64_t sum_d = 0;
-
-int trace_file = open( argv[1], O_RDWR | O_CREAT | O_TRUNC, S_IRWXU );
+let trace_file: int = open( argv[1], O_RDWR | O_CREAT | O_TRUNC, S_IRWXU );
 
  parse( &n, &m, &ndp, &arp, &source, &nmin, name );
 /*
@@ -59,9 +57,9 @@ printf ( "%s\nn= %ld, m= %ld, nmin= %ld, source = %ld\n",
 printf ("\nordered arcs:\n");
 for ( k = ndp; k< ndp + n; k++ )
   { i = (k-ndp)+nmin;
-    for ( ta=k -> first; ta != (k+1)-> first; ta++ )
+    for ( ta=k . first; ta !== (k+1). first; ta++ )
       printf ( " %2ld %2ld %4ld\n",
-               i, ((ta->head)-ndp)+nmin, ta->len
+               i, ((ta.head)-ndp)+nmin, ta.len
              );
 
   }
@@ -73,8 +71,8 @@ dikh ( trace_file, n, ndp, source );
 t = timer() - t;
 
 for ( k= ndp; k< ndp + n; k++ )
-  if ( k -> parent != (node*) NULL )
-   sum_d += (uint64_t) (k -> dist);
+  if ( k . parent !== (node*) null )
+   sum_d += (uint64_t) (k . dist);
 
  
 #define nd(ptr) (int)(ptr-ndp+nmin)
@@ -85,7 +83,7 @@ return 0;
 
 /*
 for ( k=ndp; k< ndp+n; k++ )
-printf (" %d %d %d\n", nd(k), nd(k->parent), k->dist);
+printf (" %d %d %d\n", nd(k), nd(k.parent), k.dist);
 */
 }
 
