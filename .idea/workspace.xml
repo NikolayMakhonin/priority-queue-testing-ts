@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="PairingHeap refactoring...">
-      <change afterPath="$PROJECT_DIR$/src/main/common/ObjectPool.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/contracts.ts" afterDir="false" />
+    <list default="true" id="6926ed60-5721-4a9d-af77-9faa2963739a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/PairingHeap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/PairingHeap.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +84,7 @@
     <property name="js.buildTools.grunt.grunt-cli.package" value="$USER_HOME$/AppData/Roaming/npm/node_modules/grunt-cli" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="$USER_HOME$/AppData/Roaming/npm/node_modules/gulp" />
     <property name="jsx.switch.disabled" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/contracts.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.stylelint" value="true" />
@@ -114,6 +112,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\main\common\contracts.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\test\tests\common\main" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\priority-queues-ts\src\main\common" />
     </key>
   </component>
@@ -129,7 +128,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Test Dev">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma.conf.tests.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -293,7 +292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583506711462</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="PairingHeap refactoring completed">
+      <created>1583512898319</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1583512898319</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -360,7 +366,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Dialogs in process..." />
     <MESSAGE value="Devices in process..." />
     <MESSAGE value="Battery marker" />
     <MESSAGE value="Develop devices" />
@@ -385,6 +390,7 @@
     <MESSAGE value="Node.js module completed" />
     <MESSAGE value="Fix ReadMe" />
     <MESSAGE value="PairingHeap refactoring..." />
-    <option name="LAST_COMMIT_MESSAGE" value="PairingHeap refactoring..." />
+    <MESSAGE value="PairingHeap refactoring completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="PairingHeap refactoring completed" />
   </component>
 </project>
