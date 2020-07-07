@@ -86,7 +86,7 @@
     "cpy-cli": "^2.0.0",
     "cssnano": "^4.1.10",
     "depcheck": "^0.8.3",
-    "electron": "^6.0.11",
+    "electron": "^9.1.0",
     "electron-builder": "^21.2.0",
     "eslint": "^6.4.0",
     "eslint-config-pro": "^0.0.5",
